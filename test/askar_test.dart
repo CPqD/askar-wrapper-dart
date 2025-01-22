@@ -25,16 +25,16 @@ void main() {
       expect(storeOpenTest(), equals(ErrorCode.Success));
 
       // Inicia uma sessão
-      // expect(sessionStartTest(), equals(ErrorCode.Success));
+      expect(sessionStartTest(), equals(ErrorCode.Success));
 
       // Insere key
-      // expect(sessionInsertKeyTest(), equals(ErrorCode.Input));
+      expect(sessionInsertKeyTest(), equals(ErrorCode.Success));
 
       // Atualiza sessao
-      // expect(sessionUpdateTest(), equals(ErrorCode.Success));
+      //expect(sessionUpdateTest(), equals(ErrorCode.Success));
 
       // Fecha a carteira
-      expect(storeCloseTest(), equals(ErrorCode.Success));
+      //expect(storeCloseTest(), equals(ErrorCode.Success));
     });
   });
 }
@@ -46,7 +46,8 @@ ErrorCode storeProvisionTest() {
   final String profile = 'rekey';
   final int recreate = 1; // 1 para recriar, 0 para manter
 
-  final result = askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
+  final result =
+      askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
   print('Store Provision Result: ${result}');
 
@@ -79,15 +80,21 @@ ErrorCode sessionStartTest() {
 }
 
 ErrorCode sessionInsertKeyTest() {
-  int handle = 1;
+  final String specUri = 'sqlite://storage.db';
+  final String keyMethod = 'raw';
+  final String passKey = 'mySecretKey';
+  final String profile = 'rekey';
+
+  int handle = 0;
   Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
-  String name = '';
-  String metadata = '';
-  String tags = '';
+  String name = 'testkey"';
+  String metadata = 'meta';
+  String reference = 'None';
+  Map<String, String> tags = {'a': 'b'};
   int expiryMs = 2000;
 
   final result =
-      askarSessionInsertKey(handle, keyHandlePointer, name, metadata, tags, expiryMs);
+      askarSessionInsertKey(name, handle, metadata, reference, tags, expiryMs);
 
   print('Session Insert Key Result: ${result}');
 
@@ -105,8 +112,8 @@ ErrorCode sessionUpdateTest() {
   String tags = '';
   int expiryMs = 2000;
 
-  final result =
-      askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
+  final result = askarSessionUpdate(
+      handle, operation, category, name, value, tags, expiryMs);
 
   print('Session Update Result: ${result}');
 

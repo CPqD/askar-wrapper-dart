@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'askar_native_functions.dart';
+import 'dart:convert';
 
 String askarVersion() {
   Pointer<Utf8> resultPointer = nativeAskarVersion();
@@ -392,7 +393,8 @@ void askarKeyFree(LocalKeyHandle handle) {
   nativeAskarKeyFree(handle);
 }
 
-ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
+ErrorCode askarKeyFromJwk(
+    Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
   final result = nativeAskarKeyFromJwk(jwk, out);
   return intToErrorCode(result);
 }
@@ -497,7 +499,8 @@ ErrorCode askarKeyGenerate(
   return intToErrorCode(result);
 }
 
-ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
+ErrorCode askarKeyGetAlgorithm(
+    LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
   final result = nativeAskarKeyGetAlgorithm(handle, out);
   return intToErrorCode(result);
 }
@@ -854,22 +857,24 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String name,
-    String metadata, String tags, int expiryMs) {
+ErrorCode askarSessionInsertKey(String name, int handle, String metadata,
+    String reference, Map<String, String> tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
-  final tagsPointer = tags.toNativeUtf8();
+  final referencePointer = reference.toNativeUtf8();
 
   final cb = nativeLibCallbacks
       .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
   final cbId = -1;
+  final tagsJsonString = jsonEncode(tags);
+  final tagsJsonPointer = tagsJsonString.toNativeUtf8();
 
   final result = nativeAskarSessionInsertKey(
-    handle,
-    keyHandle,
     namePointer,
+    handle,
     metadataPointer,
-    tagsPointer,
+    referencePointer,
+    tagsJsonPointer,
     expiryMs,
     cb,
     cbId,
@@ -877,7 +882,7 @@ ErrorCode askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String nam
 
   calloc.free(namePointer);
   calloc.free(metadataPointer);
-  calloc.free(tagsPointer);
+  calloc.free(referencePointer);
 
   return intToErrorCode(result);
 }
@@ -930,7 +935,8 @@ ErrorCode askarSessionStart(int handle, String profile, int asTransaction) {
   final profilePointer = profile.toNativeUtf8();
 
   final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
+      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>(
+          'cb_with_handle');
   final cbId = -1;
 
   final result = nativeAskarSessionStart(
@@ -1137,7 +1143,8 @@ ErrorCode askarStoreOpen(
   final profilePointer = profile.toNativeUtf8();
 
   final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
+      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>(
+          'cb_with_handle');
   final cbId = -1;
 
   final result = nativeAskarStoreOpen(
@@ -1170,7 +1177,8 @@ ErrorCode askarStoreProvision(
   final profilePointer = profile.toNativeUtf8();
 
   final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle');
+      .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>(
+          'cb_with_handle');
   final cbId = -1;
 
   final result = nativeAskarStoreProvision(
