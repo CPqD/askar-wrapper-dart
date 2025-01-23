@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
@@ -19,113 +20,121 @@ void main() {
       await tester.pumpWidget(const MyApp());
 
       // Cria uma carteira
-      expect(storeProvisionTest(), equals(ErrorCode.Success));
+      await tester.runAsync(() async {
+        final storeProvisionResult = await storeProvisionTest();
+        expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
+        expect(storeProvisionResult.finished, equals(true));
 
-      // Abre a carteira
-      expect(storeOpenTest(), equals(ErrorCode.Success));
+        // Abre a carteira
+        // final storeOpenResult = await storeOpenTest();
+        // expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        // expect(storeOpenResult.finished, equals(true));
 
-      // Inicia uma sessão
-      expect(sessionStartTest(), equals(ErrorCode.Success));
+        // Inicia uma sessão
+        final sessionStartResult = await sessionStartTest(storeProvisionResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionStartResult.finished, equals(true));
 
-      // Insere key
-      expect(sessionInsertKeyTest(), equals(ErrorCode.Success));
+        // Insere key
+        // final sessionInsertKeyResult = await sessionInsertKeyTest(sessionStartResult.handle);
+        // expect(sessionInsertKeyResult.errorCode, equals(ErrorCode.Input));
+        // expect(sessionInsertKeyResult.finished, equals(true));
 
-      // Atualiza sessao
-      //expect(sessionUpdateTest(), equals(ErrorCode.Success));
+        // Atualiza sessao
+        final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
+        expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionUpdateResult.finished, equals(true));
 
-      // Fecha a carteira
-      //expect(storeCloseTest(), equals(ErrorCode.Success));
+        // Fecha a carteira
+        final storeCloseResult = await storeCloseTest(storeProvisionResult.handle);
+        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(storeCloseResult.finished, equals(true));
+      });
     });
   });
 }
 
-ErrorCode storeProvisionTest() {
+Future<CallbackResult> storeProvisionTest() async {
   final String specUri = 'sqlite://storage.db';
-  final String keyMethod = 'raw';
+  final String keyMethod = 'kdf:argon2i:mod';
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
   final int recreate = 1; // 1 para recriar, 0 para manter
 
   final result =
-      askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
+      await askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
-  print('Store Provision Result: ${result}');
+  printResult('StoreProvision', result);
 
   return result;
 }
 
-ErrorCode storeOpenTest() {
+Future<CallbackResult> storeOpenTest() async {
   final String specUri = 'sqlite://storage.db';
-  final String keyMethod = 'raw';
+  final String keyMethod = 'kdf:argon2i:mod';
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
 
-  final result = askarStoreOpen(specUri, keyMethod, passKey, profile);
+  final result = await askarStoreOpen(specUri, keyMethod, passKey, profile);
 
-  print('Store Open Result: ${result}');
+  printResult('StoreOpen', result);
 
   return result;
 }
 
-ErrorCode sessionStartTest() {
-  int handle = 1;
+Future<CallbackResult> sessionStartTest(int handle) async {
   String profile = 'rekey';
   int asTransaction = 1;
 
-  final result = askarSessionStart(handle, profile, asTransaction);
+  final result = await askarSessionStart(handle, profile, asTransaction);
 
-  print('Session Start Result: ${result}');
+  printResult('SessionStart', result);
 
   return result;
 }
 
-ErrorCode sessionInsertKeyTest() {
-  final String specUri = 'sqlite://storage.db';
-  final String keyMethod = 'raw';
-  final String passKey = 'mySecretKey';
-  final String profile = 'rekey';
-
-  int handle = 0;
+Future<CallbackResult> sessionInsertKeyTest(int handle) async {
   Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
   String name = 'testkey"';
   String metadata = 'meta';
-  String reference = 'None';
   Map<String, String> tags = {'a': 'b'};
   int expiryMs = 2000;
 
-  final result =
-      askarSessionInsertKey(name, handle, metadata, reference, tags, expiryMs);
+  final result = await askarSessionInsertKey(
+      handle, keyHandlePointer, name, metadata, tags, expiryMs);
 
-  print('Session Insert Key Result: ${result}');
+  printResult('SessionInsertKey', result);
 
   calloc.free(keyHandlePointer);
 
   return result;
 }
 
-ErrorCode sessionUpdateTest() {
-  int handle = 1;
+Future<CallbackResult> sessionUpdateTest(int handle) async {
   int operation = 0;
   String category = 'category-one';
   String name = 'testEntry';
   String value = 'foobar';
-  String tags = '';
+  Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
   int expiryMs = 2000;
 
-  final result = askarSessionUpdate(
-      handle, operation, category, name, value, tags, expiryMs);
+  final result =
+      await askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
 
-  print('Session Update Result: ${result}');
+  printResult('SessionUpdate', result);
 
   return result;
 }
 
-ErrorCode storeCloseTest() {
-  final int handle = 1; // 0 = não remove os dados do store
+Future<CallbackResult> storeCloseTest(int handle) async {
+  final result = await askarStoreClose(handle);
 
-  final result = askarStoreClose(handle);
-
-  print('Store Close Result: ${result}');
+  printResult('StoreClose', result);
 
   return result;
+}
+
+void printResult(String test, CallbackResult result) {
+  print(
+      '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
 }

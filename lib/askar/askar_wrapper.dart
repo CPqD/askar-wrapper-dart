@@ -1,8 +1,13 @@
-import 'dart:ffi';
-import 'package:ffi/ffi.dart';
-import 'package:import_so_libaskar/askar/askar_error_code.dart';
-import 'askar_native_functions.dart';
+import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
+
+import 'package:ffi/ffi.dart';
+import 'package:import_so_libaskar/askar/askar_callbacks.dart';
+import 'package:import_so_libaskar/askar/askar_error_code.dart';
+
+import 'askar_native_functions.dart';
 
 String askarVersion() {
   Pointer<Utf8> resultPointer = nativeAskarVersion();
@@ -393,8 +398,7 @@ void askarKeyFree(LocalKeyHandle handle) {
   nativeAskarKeyFree(handle);
 }
 
-ErrorCode askarKeyFromJwk(
-    Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
+ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
   final result = nativeAskarKeyFromJwk(jwk, out);
   return intToErrorCode(result);
 }
@@ -499,8 +503,7 @@ ErrorCode askarKeyGenerate(
   return intToErrorCode(result);
 }
 
-ErrorCode askarKeyGetAlgorithm(
-    LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
+ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
   final result = nativeAskarKeyGetAlgorithm(handle, out);
   return intToErrorCode(result);
 }
@@ -857,34 +860,32 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionInsertKey(String name, int handle, String metadata,
-    String reference, Map<String, String> tags, int expiryMs) {
+Future<CallbackResult> askarSessionInsertKey(int handle, LocalKeyHandle keyHandle,
+    String name, String metadata, Map<String, String> tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
-  final referencePointer = reference.toNativeUtf8();
+  final tagsJsonPointer = jsonEncode(tags).toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
-  final tagsJsonString = jsonEncode(tags);
-  final tagsJsonPointer = tagsJsonString.toNativeUtf8();
+  void cleanup() {
+    calloc.free(namePointer);
+    calloc.free(metadataPointer);
+    calloc.free(tagsJsonPointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionInsertKey(
-    namePointer,
     handle,
+    keyHandle,
+    namePointer,
     metadataPointer,
-    referencePointer,
     tagsJsonPointer,
     expiryMs,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(namePointer);
-  calloc.free(metadataPointer);
-  calloc.free(referencePointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
 ErrorCode askarSessionRemoveAll(
@@ -931,77 +932,87 @@ ErrorCode askarSessionRemoveKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionStart(int handle, String profile, int asTransaction) {
+Future<CallbackResult> askarSessionStart(int handle, String profile, int asTransaction) {
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>(
-          'cb_with_handle');
-  final cbId = -1;
+  void cleanup() {
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionStart(
     handle,
     profilePointer,
     asTransaction,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(profilePointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
-ErrorCode askarSessionUpdate(
+Future<CallbackResult> askarSessionUpdate(
   int handle,
   int operation,
   String category,
   String name,
   String value,
-  String tags,
+  Map<String, String> tags,
   int expiryMs,
 ) {
+  String jsonString = jsonEncode(tags);
+
   final categoryPointer = category.toNativeUtf8();
   final namePointer = name.toNativeUtf8();
-  final tagsPointer = tags.toNativeUtf8();
+  final tagsPointer = jsonString.toNativeUtf8();
+  final byteBufferPointer = stringToByteBuffer(value);
 
-  final valueByteBuffer = stringToByteBuffer(value);
+  // Uso da variável byteBuffer
+  ByteBuffer byteBuffer = byteBufferPointer.ref;
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
+  void cleanup() {
+    calloc.free(categoryPointer);
+    calloc.free(namePointer);
+    calloc.free(byteBufferPointer.ref.data);
+    calloc.free(byteBufferPointer);
+    calloc.free(tagsPointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionUpdate(
     handle,
     operation,
     categoryPointer,
     namePointer,
-    valueByteBuffer,
+    byteBuffer,
     tagsPointer,
     expiryMs,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(categoryPointer);
-  calloc.free(namePointer);
-  calloc.free(valueByteBuffer.ref.data);
-  calloc.free(valueByteBuffer);
-  calloc.free(tagsPointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
 Pointer<ByteBuffer> stringToByteBuffer(String value) {
-  final units = value.codeUnits;
-  final Pointer<Uint8> dataPointer = calloc<Uint8>(units.length);
+  // Converter a string para bytes
+  List<int> bytes = utf8.encode(value);
 
-  for (int i = 0; i < units.length; i++) {
-    dataPointer[i] = units[i];
+  // Alocar memória para os bytes na FFI
+  Pointer<Uint8> dataPointer = calloc<Uint8>(bytes.length);
+
+// Copiar os bytes para a memória alocada
+  for (int i = 0; i < bytes.length; i++) {
+    dataPointer[i] = bytes[i];
   }
 
-  final Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
-  byteBufferPointer.ref.len = units.length;
+  // Alocar memória para o ByteBuffer
+  Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
+
+  // Preencher os campos da estrutura
+  byteBufferPointer.ref.len = bytes.length;
   byteBufferPointer.ref.data = dataPointer;
 
   return byteBufferPointer;
@@ -1037,13 +1048,13 @@ ErrorCode askarSessionUpdateKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreClose(int handle) {
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
+Future<CallbackResult> askarStoreClose(int handle) {
+  final callback = newCallbackWithoutHandle(() => {});
 
-  final result = nativeAskarStoreClose(handle, cb, cbId);
-  return intToErrorCode(result);
+  final result =
+      nativeAskarStoreClose(handle, callback.nativeCallable.nativeFunction, callback.id);
+
+  return callback.handleResult(result);
 }
 
 ErrorCode askarStoreCopy(
@@ -1131,7 +1142,7 @@ ErrorCode askarStoreListProfiles(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreOpen(
+Future<CallbackResult> askarStoreOpen(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1142,29 +1153,39 @@ ErrorCode askarStoreOpen(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>(
-          'cb_with_handle');
-  final cbId = -1;
+  void cleanup() {
+    calloc.free(specUriPointer);
+    calloc.free(keyMethodPointer);
+    calloc.free(passKeyPointer);
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarStoreOpen(
     specUriPointer,
     keyMethodPointer,
     passKeyPointer,
     profilePointer,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(specUriPointer);
-  calloc.free(keyMethodPointer);
-  calloc.free(passKeyPointer);
-  calloc.free(profilePointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
-ErrorCode askarStoreProvision(
+base class CallbackParams extends Struct {
+  @Int64()
+  external int cb_id;
+
+  @Int32()
+  external int err;
+
+  @Int64()
+  external int handle;
+}
+
+Future<CallbackResult> askarStoreProvision(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1176,10 +1197,14 @@ ErrorCode askarStoreProvision(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>(
-          'cb_with_handle');
-  final cbId = -1;
+  void cleanup() {
+    calloc.free(specUriPointer);
+    calloc.free(keyMethodPointer);
+    calloc.free(passKeyPointer);
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarStoreProvision(
     specUriPointer,
@@ -1187,16 +1212,11 @@ ErrorCode askarStoreProvision(
     passKeyPointer,
     profilePointer,
     recreate,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(specUriPointer);
-  calloc.free(keyMethodPointer);
-  calloc.free(passKeyPointer);
-  calloc.free(profilePointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
 ErrorCode askarStoreRekey(
