@@ -69,7 +69,10 @@ void main() {
         expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
         expect(sessionStartResult.finished, equals(true));
 
-        final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
+        String value = 'foobar';
+
+        final sessionUpdateResult =
+            await sessionUpdateTest(sessionStartResult.handle, value);
         expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
         expect(sessionUpdateResult.finished, equals(true));
 
@@ -77,6 +80,11 @@ void main() {
         expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
         expect(sessionFetchResult.finished, equals(true));
         expect(sessionFetchResult.handle, isNot(equals(0)));
+
+        final entryListGetValueResult =
+            entryListGetValueTest(sessionFetchResult.handle, 0);
+        expect(entryListGetValueResult.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetValueResult.value, equals(value));
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
         expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
@@ -142,11 +150,10 @@ Future<CallbackResult> sessionInsertKeyTest(int handle) async {
   return result;
 }
 
-Future<CallbackResult> sessionUpdateTest(int handle) async {
+Future<CallbackResult> sessionUpdateTest(int handle, String value) async {
   int operation = 0;
   String category = 'category-one';
   String name = 'testEntry';
-  String value = 'foobar';
   Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
   int expiryMs = 2000;
 
@@ -166,6 +173,14 @@ Future<CallbackResult> sessionFetchTest(int handle) async {
   final result = await askarSessionFetch(handle, category, name, forUpdate);
 
   printResult('SessionFetch', result);
+
+  return result;
+}
+
+AskarStringResult entryListGetValueTest(int entryListHandle, int index) {
+  final result = askarEntryListGetValue(entryListHandle, index);
+
+  printAskarStringResult('EntryListGetValue', result);
 
   return result;
 }
@@ -193,4 +208,8 @@ void printResult(String test, CallbackResult result) {
     print(
         '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
   }
+}
+
+void printAskarStringResult(String test, AskarStringResult result) {
+  print('$test Result: (${result.errorCode}, Value: \"${result.value}\")\n');
 }

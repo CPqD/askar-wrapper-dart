@@ -1,13 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
-import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 
 import 'askar_native_functions.dart';
+import 'askar_utils.dart';
+
+final class AskarStringResult {
+  final ErrorCode errorCode;
+  final String value;
+
+  AskarStringResult(this.errorCode, this.value);
+}
 
 String askarVersion() {
   Pointer<Utf8> resultPointer = nativeAskarVersion();
@@ -88,10 +95,21 @@ ErrorCode askarEntryListGetTags(
   return intToErrorCode(result);
 }
 
-ErrorCode askarEntryListGetValue(
-    EntryListHandle handle, int index, Pointer<SecretBuffer> value) {
-  final result = nativeAskarEntryListGetValue(handle, index, value);
-  return intToErrorCode(result);
+AskarStringResult askarEntryListGetValue(int entryListHandle, int index) {
+  Pointer<SecretBuffer> secretBufferPointer = calloc<SecretBuffer>();
+
+  final funcResult =
+      nativeAskarEntryListGetValue(entryListHandle, index, secretBufferPointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  if (errorCode != ErrorCode.Success) {
+    return AskarStringResult(errorCode, "");
+  }
+
+  final value = secretBufferToString(secretBufferPointer);
+
+  return AskarStringResult(errorCode, value);
 }
 
 ErrorCode askarStringListCount(StringListHandle handle, int count) {
@@ -1007,28 +1025,6 @@ Future<CallbackResult> askarSessionUpdate(
   );
 
   return callback.handleResult(result);
-}
-
-Pointer<ByteBuffer> stringToByteBuffer(String value) {
-  // Converter a string para bytes
-  List<int> bytes = utf8.encode(value);
-
-  // Alocar memória para os bytes na FFI
-  Pointer<Uint8> dataPointer = calloc<Uint8>(bytes.length);
-
-// Copiar os bytes para a memória alocada
-  for (int i = 0; i < bytes.length; i++) {
-    dataPointer[i] = bytes[i];
-  }
-
-  // Alocar memória para o ByteBuffer
-  Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
-
-  // Preencher os campos da estrutura
-  byteBufferPointer.ref.len = bytes.length;
-  byteBufferPointer.ref.data = dataPointer;
-
-  return byteBufferPointer;
 }
 
 ErrorCode askarSessionUpdateKey(

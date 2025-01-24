@@ -196,13 +196,13 @@ final int Function(
     .asFunction();
 
 typedef AskarEntryListGetValueNative = Int32 Function(
-  EntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<SecretBuffer> value,
 );
 
 final int Function(
-  EntryListHandle handle,
+  int handle,
   int index,
   Pointer<SecretBuffer> value,
 ) nativeAskarEntryListGetValue = nativeLib
