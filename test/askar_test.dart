@@ -10,50 +10,77 @@ import 'package:import_so_libaskar/main.dart';
 
 void main() {
   group('Askar Tests', () {
-    test('Askar Version - Retorna versão do Askar', () {
+    test('Askar Version', () {
       final result = askarVersion();
       expect(result, equals('0.3.2'));
     });
 
-    testWidgets('Askar Store', (WidgetTester tester) async {
-      // Faz build do app.
+    testWidgets('Store Provision', (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
 
-      // Cria uma carteira
       await tester.runAsync(() async {
         final storeProvisionResult = await storeProvisionTest();
         expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
         expect(storeProvisionResult.finished, equals(true));
 
-        // Abre a carteira
-        // final storeOpenResult = await storeOpenTest();
-        // expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
-        // expect(storeOpenResult.finished, equals(true));
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.finished, equals(true));
 
-        // Inicia uma sessão
-        final sessionStartResult = await sessionStartTest(storeProvisionResult.handle);
+        final storeCloseResult = await storeCloseTest(storeOpenResult.handle);
+        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(storeCloseResult.finished, equals(true));
+      });
+    });
+
+    testWidgets('Attempt to read from an unexisting category',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.finished, equals(true));
+
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
         expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
         expect(sessionStartResult.finished, equals(true));
 
-        // Insere key
-        // final sessionInsertKeyResult = await sessionInsertKeyTest(sessionStartResult.handle);
-        // expect(sessionInsertKeyResult.errorCode, equals(ErrorCode.Input));
-        // expect(sessionInsertKeyResult.finished, equals(true));
-
-        // Atualiza sessao
-        final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
-        expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
-        expect(sessionUpdateResult.finished, equals(true));
-        
-        // Le sessao
         final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
         expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
         expect(sessionFetchResult.finished, equals(true));
+        expect(sessionFetchResult.handle, equals(0));
 
-        // Fecha a carteira
-        final storeCloseResult = await storeCloseTest(storeProvisionResult.handle);
-        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
-        expect(storeCloseResult.finished, equals(true));
+        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionCloseResult.finished, equals(true));
+      });
+    });
+
+    testWidgets('Writing and reading', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.finished, equals(true));
+
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionStartResult.finished, equals(true));
+
+        final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
+        expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionUpdateResult.finished, equals(true));
+
+        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionFetchResult.finished, equals(true));
+        expect(sessionFetchResult.handle, isNot(equals(0)));
+
+        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionCloseResult.finished, equals(true));
       });
     });
   });
@@ -139,6 +166,14 @@ Future<CallbackResult> sessionFetchTest(int handle) async {
   final result = await askarSessionFetch(handle, category, name, forUpdate);
 
   printResult('SessionFetch', result);
+
+  return result;
+}
+
+Future<CallbackResult> sessionCloseTest(int handle) async {
+  final result = await askarSessionClose(handle, true);
+
+  printResult('StoreClose', result);
 
   return result;
 }

@@ -718,14 +718,18 @@ ErrorCode askarScanStart(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionClose(
+Future<CallbackResult> askarSessionClose(
   int handle,
-  int commit,
-  Pointer<NativeFunction<AskarSessionCloseCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarSessionClose(handle, commit, cb, cbId);
-  return intToErrorCode(result);
+  bool commit,
+) async {
+  int commitAsNumber = commit ? 1 : 0;
+
+  final callback = newCallbackWithoutHandle(() => {});
+
+  final result = nativeAskarSessionClose(
+      handle, commitAsNumber, callback.nativeCallable.nativeFunction, callback.id);
+
+  return await callback.handleResult(result);
 }
 
 ErrorCode askarSessionCount(
