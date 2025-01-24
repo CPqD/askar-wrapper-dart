@@ -84,10 +84,21 @@ void askarEntryListFree(EntryListHandle handle) {
   nativeAskarEntryListFree(handle);
 }
 
-ErrorCode askarEntryListGetCategory(
-    EntryListHandle handle, int index, Pointer<Pointer<Utf8>> category) {
-  final result = nativeAskarEntryListGetCategory(handle, index, category);
-  return intToErrorCode(result);
+AskarStringResult askarEntryListGetCategory(int entryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final funcResult =
+      nativeAskarEntryListGetCategory(entryListHandle, index, utf8PtPointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  final String value =
+      (errorCode == ErrorCode.Success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarStringResult(errorCode, value);
 }
 
 AskarStringResult askarEntryListGetName(int entryListHandle, int index) {

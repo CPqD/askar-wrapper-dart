@@ -153,13 +153,13 @@ final void Function(EntryListHandle handle) nativeAskarEntryListFree = nativeLib
     .asFunction();
 
 typedef AskarEntryListGetCategoryNative = Int32 Function(
-  EntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> category,
 );
 
 final int Function(
-  EntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> category,
 ) nativeAskarEntryListGetCategory = nativeLib

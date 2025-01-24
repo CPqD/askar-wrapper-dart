@@ -71,10 +71,11 @@ void main() {
 
         String value = 'foobar';
         String name = 'testEntry';
+        String category = 'category-one';
         Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-        final sessionUpdateResult =
-            await sessionUpdateTest(sessionStartResult.handle, value, tags, name);
+        final sessionUpdateResult = await sessionUpdateTest(
+            sessionStartResult.handle, value, tags, name, category);
         expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
         expect(sessionUpdateResult.finished, equals(true));
 
@@ -94,6 +95,11 @@ void main() {
         final entryListGetNameRes = entryListGetNameTest(sessionFetchResult.handle, 0);
         expect(entryListGetNameRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetNameRes.value, equals(name));
+
+        final entryListGetCategoryRes =
+            entryListGetCategoryTest(sessionFetchResult.handle, 0);
+        expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetCategoryRes.value, equals(category));
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
         expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
@@ -158,10 +164,9 @@ Future<CallbackResult> sessionInsertKeyTest(int handle, Map<String, String> tags
   return result;
 }
 
-Future<CallbackResult> sessionUpdateTest(
-    int handle, String value, Map<String, String> tags, String name) async {
+Future<CallbackResult> sessionUpdateTest(int handle, String value,
+    Map<String, String> tags, String name, String category) async {
   int operation = 0;
-  String category = 'category-one';
 
   int expiryMs = 2000;
 
@@ -205,6 +210,14 @@ AskarStringResult entryListGetNameTest(int entryListHandle, int index) {
   final result = askarEntryListGetName(entryListHandle, index);
 
   printAskarStringResult('askarEntryListGetName', result);
+
+  return result;
+}
+
+AskarStringResult entryListGetCategoryTest(int entryListHandle, int index) {
+  final result = askarEntryListGetCategory(entryListHandle, index);
+
+  printAskarStringResult('askarEntryListGetCategory', result);
 
   return result;
 }
