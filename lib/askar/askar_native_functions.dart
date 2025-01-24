@@ -168,13 +168,13 @@ final int Function(
     .asFunction();
 
 typedef AskarEntryListGetNameNative = Int32 Function(
-  EntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> name,
 );
 
 final int Function(
-  EntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> name,
 ) nativeAskarEntryListGetName = nativeLib

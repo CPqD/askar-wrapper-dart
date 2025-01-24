@@ -90,10 +90,20 @@ ErrorCode askarEntryListGetCategory(
   return intToErrorCode(result);
 }
 
-ErrorCode askarEntryListGetName(
-    EntryListHandle handle, int index, Pointer<Pointer<Utf8>> name) {
-  final result = nativeAskarEntryListGetName(handle, index, name);
-  return intToErrorCode(result);
+AskarStringResult askarEntryListGetName(int entryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final funcResult = nativeAskarEntryListGetName(entryListHandle, index, utf8PtPointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  final String value =
+      (errorCode == ErrorCode.Success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarStringResult(errorCode, value);
 }
 
 AskarMapResult askarEntryListGetTags(int entryListHandle, int index) {

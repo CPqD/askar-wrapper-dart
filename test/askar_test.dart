@@ -70,10 +70,11 @@ void main() {
         expect(sessionStartResult.finished, equals(true));
 
         String value = 'foobar';
+        String name = 'testEntry';
         Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
         final sessionUpdateResult =
-            await sessionUpdateTest(sessionStartResult.handle, value, tags);
+            await sessionUpdateTest(sessionStartResult.handle, value, tags, name);
         expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
         expect(sessionUpdateResult.finished, equals(true));
 
@@ -89,6 +90,10 @@ void main() {
         final entryListGetTagsRes = entryListGetTagsTest(sessionFetchResult.handle, 0);
         expect(entryListGetTagsRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetTagsRes.value, equals(tags));
+
+        final entryListGetNameRes = entryListGetNameTest(sessionFetchResult.handle, 0);
+        expect(entryListGetNameRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetNameRes.value, equals(name));
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
         expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
@@ -154,10 +159,10 @@ Future<CallbackResult> sessionInsertKeyTest(int handle, Map<String, String> tags
 }
 
 Future<CallbackResult> sessionUpdateTest(
-    int handle, String value, Map<String, String> tags) async {
+    int handle, String value, Map<String, String> tags, String name) async {
   int operation = 0;
   String category = 'category-one';
-  String name = 'testEntry';
+
   int expiryMs = 2000;
 
   final result =
@@ -192,6 +197,14 @@ AskarMapResult entryListGetTagsTest(int entryListHandle, int index) {
   final result = askarEntryListGetTags(entryListHandle, index);
 
   printAskarMapResult('EntryListGetTags', result);
+
+  return result;
+}
+
+AskarStringResult entryListGetNameTest(int entryListHandle, int index) {
+  final result = askarEntryListGetName(entryListHandle, index);
+
+  printAskarStringResult('askarEntryListGetName', result);
 
   return result;
 }
