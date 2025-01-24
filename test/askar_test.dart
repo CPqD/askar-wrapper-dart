@@ -44,6 +44,11 @@ void main() {
         final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
         expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
         expect(sessionUpdateResult.finished, equals(true));
+        
+        // Le sessao
+        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionFetchResult.finished, equals(true));
 
         // Fecha a carteira
         final storeCloseResult = await storeCloseTest(storeProvisionResult.handle);
@@ -126,6 +131,18 @@ Future<CallbackResult> sessionUpdateTest(int handle) async {
   return result;
 }
 
+Future<CallbackResult> sessionFetchTest(int handle) async {
+  String category = 'category-one';
+  String name = 'testEntry';
+  int forUpdate = 0;
+
+  final result = await askarSessionFetch(handle, category, name, forUpdate);
+
+  printResult('SessionFetch', result);
+
+  return result;
+}
+
 Future<CallbackResult> storeCloseTest(int handle) async {
   final result = await askarStoreClose(handle);
 
@@ -135,6 +152,10 @@ Future<CallbackResult> storeCloseTest(int handle) async {
 }
 
 void printResult(String test, CallbackResult result) {
-  print(
-      '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
+  if (result.handle == -1) {
+    print('$test Result: (${result.errorCode}, Finished: ${result.finished})\n');
+  } else {
+    print(
+        '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
+  }
 }

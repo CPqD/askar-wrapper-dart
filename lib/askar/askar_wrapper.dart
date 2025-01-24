@@ -752,30 +752,39 @@ ErrorCode askarSessionCount(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionFetch(
+Future<CallbackResult> askarSessionFetch(
   int handle,
   String category,
   String name,
   int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchCallback>> cb,
-  int cbId,
-) {
+) async {
   final categoryPointer = category.toNativeUtf8();
   final namePointer = name.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(categoryPointer);
+    calloc.free(namePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetch(
     handle,
     categoryPointer,
     namePointer,
     forUpdate,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(categoryPointer);
-  calloc.free(namePointer);
+  final callbackResult = await callback.handleResult(result);
 
-  return intToErrorCode(result);
+  if (callbackResult.errorCode == ErrorCode.Success && callbackResult.handle == 0) {
+    print(
+        "Invalid handle. This means that the function call succeeded but none was found.");
+  }
+
+  return callbackResult;
 }
 
 ErrorCode askarSessionFetchAll(

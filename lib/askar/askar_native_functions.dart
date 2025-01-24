@@ -42,7 +42,7 @@ base class OptionFlushCallbackStruct extends Struct {
 }
 
 base class ArcHandleFfiEntryList extends Struct {
-  external Pointer<Void> _0;
+  external Pointer<FfiEntryList> _0;
 }
 
 base class ArcHandleFfiStringList extends Struct {
@@ -57,6 +57,8 @@ base class ArcHandleKeyEntryList extends Struct {
   external Pointer<Void> _0;
 }
 
+final class FfiResultList_Entry extends Opaque {}
+
 typedef CallbackId = Int64;
 
 typedef ScanHandle = IntPtr;
@@ -66,6 +68,8 @@ typedef SessionHandle = IntPtr;
 typedef EntryListHandle = Pointer<ArcHandleFfiEntryList>;
 typedef LocalKeyHandle = Pointer<ArcHandleLocalKey>;
 typedef KeyEntryListHandle = Pointer<ArcHandleKeyEntryList>;
+
+typedef FfiEntryList = FfiResultList_Entry;
 
 typedef LogCallback = Void Function(
     Pointer<Void> context,
@@ -915,9 +919,9 @@ final int Function(
     .asFunction();
 
 typedef AskarSessionFetchCallback = Void Function(
-  Int64 cb_id,
+  CallbackId cb_id,
   Int32 err,
-  EntryListHandle results,
+  IntPtr results,
 );
 
 typedef AskarSessionFetchNative = Int32 Function(

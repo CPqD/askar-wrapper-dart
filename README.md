@@ -14,12 +14,6 @@ flutter test
 flutter pub get
 ```
 
-## Gerar `libcallback.so`:
+## Referencias
 
-```bash
-g++ -shared -o android/app/src/main/libaries_askar/askar_callbacks.so -fPIC etc/askar_callbacks.cpp
-```
-
-## Rodar novos testes
-
-dart tests/teste_open.dart
+- [Funções Nativas Askar](etc/libaries_askar.h)
