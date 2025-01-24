@@ -146,9 +146,9 @@ final int Function(EntryListHandle handle, Pointer<Int32> count)
         .lookup<NativeFunction<AskarEntryListCountNative>>('askar_entry_list_count')
         .asFunction();
 
-typedef AskarEntryListFreeNative = Void Function(EntryListHandle handle);
+typedef AskarEntryListFreeNative = Void Function(IntPtr handle);
 
-final void Function(EntryListHandle handle) nativeAskarEntryListFree = nativeLib
+final void Function(int handle) nativeAskarEntryListFree = nativeLib
     .lookup<NativeFunction<AskarEntryListFreeNative>>('askar_entry_list_free')
     .asFunction();
 

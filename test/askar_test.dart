@@ -84,22 +84,25 @@ void main() {
         expect(sessionFetchResult.finished, equals(true));
         expect(sessionFetchResult.handle, isNot(equals(0)));
 
-        final entryListGetValueRes = entryListGetValueTest(sessionFetchResult.handle, 0);
+        final entryListHandle = sessionFetchResult.handle;
+
+        final entryListGetValueRes = entryListGetValueTest(entryListHandle, 0);
         expect(entryListGetValueRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetValueRes.value, equals(value));
 
-        final entryListGetTagsRes = entryListGetTagsTest(sessionFetchResult.handle, 0);
+        final entryListGetTagsRes = entryListGetTagsTest(entryListHandle, 0);
         expect(entryListGetTagsRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetTagsRes.value, equals(tags));
 
-        final entryListGetNameRes = entryListGetNameTest(sessionFetchResult.handle, 0);
+        final entryListGetNameRes = entryListGetNameTest(entryListHandle, 0);
         expect(entryListGetNameRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetNameRes.value, equals(name));
 
-        final entryListGetCategoryRes =
-            entryListGetCategoryTest(sessionFetchResult.handle, 0);
+        final entryListGetCategoryRes = entryListGetCategoryTest(entryListHandle, 0);
         expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.Success));
         expect(entryListGetCategoryRes.value, equals(category));
+
+        askarEntryListFree(entryListHandle);
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
         expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));

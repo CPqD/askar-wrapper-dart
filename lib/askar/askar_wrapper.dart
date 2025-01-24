@@ -80,7 +80,7 @@ ErrorCode askarEntryListCount(EntryListHandle handle, int count) {
   return intToErrorCode(result);
 }
 
-void askarEntryListFree(EntryListHandle handle) {
+void askarEntryListFree(int handle) {
   nativeAskarEntryListFree(handle);
 }
 
