@@ -70,9 +70,10 @@ void main() {
         expect(sessionStartResult.finished, equals(true));
 
         String value = 'foobar';
+        Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
         final sessionUpdateResult =
-            await sessionUpdateTest(sessionStartResult.handle, value);
+            await sessionUpdateTest(sessionStartResult.handle, value, tags);
         expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
         expect(sessionUpdateResult.finished, equals(true));
 
@@ -81,10 +82,13 @@ void main() {
         expect(sessionFetchResult.finished, equals(true));
         expect(sessionFetchResult.handle, isNot(equals(0)));
 
-        final entryListGetValueResult =
-            entryListGetValueTest(sessionFetchResult.handle, 0);
-        expect(entryListGetValueResult.errorCode, equals(ErrorCode.Success));
-        expect(entryListGetValueResult.value, equals(value));
+        final entryListGetValueRes = entryListGetValueTest(sessionFetchResult.handle, 0);
+        expect(entryListGetValueRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetValueRes.value, equals(value));
+
+        final entryListGetTagsRes = entryListGetTagsTest(sessionFetchResult.handle, 0);
+        expect(entryListGetTagsRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetTagsRes.value, equals(tags));
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
         expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
@@ -133,11 +137,10 @@ Future<CallbackResult> sessionStartTest(int handle) async {
   return result;
 }
 
-Future<CallbackResult> sessionInsertKeyTest(int handle) async {
+Future<CallbackResult> sessionInsertKeyTest(int handle, Map<String, String> tags) async {
   Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
   String name = 'testkey"';
   String metadata = 'meta';
-  Map<String, String> tags = {'a': 'b'};
   int expiryMs = 2000;
 
   final result = await askarSessionInsertKey(
@@ -150,11 +153,11 @@ Future<CallbackResult> sessionInsertKeyTest(int handle) async {
   return result;
 }
 
-Future<CallbackResult> sessionUpdateTest(int handle, String value) async {
+Future<CallbackResult> sessionUpdateTest(
+    int handle, String value, Map<String, String> tags) async {
   int operation = 0;
   String category = 'category-one';
   String name = 'testEntry';
-  Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
   int expiryMs = 2000;
 
   final result =
@@ -185,6 +188,14 @@ AskarStringResult entryListGetValueTest(int entryListHandle, int index) {
   return result;
 }
 
+AskarMapResult entryListGetTagsTest(int entryListHandle, int index) {
+  final result = askarEntryListGetTags(entryListHandle, index);
+
+  printAskarMapResult('EntryListGetTags', result);
+
+  return result;
+}
+
 Future<CallbackResult> sessionCloseTest(int handle) async {
   final result = await askarSessionClose(handle, true);
 
@@ -211,5 +222,9 @@ void printResult(String test, CallbackResult result) {
 }
 
 void printAskarStringResult(String test, AskarStringResult result) {
+  print('$test Result: (${result.errorCode}, Value: \"${result.value}\")\n');
+}
+
+void printAskarMapResult(String test, AskarMapResult result) {
   print('$test Result: (${result.errorCode}, Value: \"${result.value}\")\n');
 }

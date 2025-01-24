@@ -16,6 +16,13 @@ final class AskarStringResult {
   AskarStringResult(this.errorCode, this.value);
 }
 
+final class AskarMapResult {
+  final ErrorCode errorCode;
+  final Map value;
+
+  AskarMapResult(this.errorCode, this.value);
+}
+
 String askarVersion() {
   Pointer<Utf8> resultPointer = nativeAskarVersion();
   return resultPointer.toDartString();
@@ -89,10 +96,25 @@ ErrorCode askarEntryListGetName(
   return intToErrorCode(result);
 }
 
-ErrorCode askarEntryListGetTags(
-    EntryListHandle handle, int index, Pointer<Pointer<Utf8>> tags) {
-  final result = nativeAskarEntryListGetTags(handle, index, tags);
-  return intToErrorCode(result);
+AskarMapResult askarEntryListGetTags(int entryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PointerPointer = calloc<Pointer<Utf8>>();
+
+  final funcResult =
+      nativeAskarEntryListGetTags(entryListHandle, index, utf8PointerPointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  Map value = {};
+
+  if (errorCode == ErrorCode.Success) {
+    String mapString = utf8PointerPointer.value.toDartString();
+    value = jsonDecode(mapString);
+  }
+
+  calloc.free(utf8PointerPointer.value);
+  calloc.free(utf8PointerPointer);
+
+  return AskarMapResult(errorCode, value);
 }
 
 AskarStringResult askarEntryListGetValue(int entryListHandle, int index) {
@@ -103,11 +125,11 @@ AskarStringResult askarEntryListGetValue(int entryListHandle, int index) {
 
   final errorCode = intToErrorCode(funcResult);
 
-  if (errorCode != ErrorCode.Success) {
-    return AskarStringResult(errorCode, "");
-  }
+  final String value =
+      (errorCode == ErrorCode.Success) ? secretBufferToString(secretBufferPointer) : "";
 
-  final value = secretBufferToString(secretBufferPointer);
+  calloc.free(secretBufferPointer.ref.data);
+  calloc.free(secretBufferPointer);
 
   return AskarStringResult(errorCode, value);
 }
