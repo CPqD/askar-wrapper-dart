@@ -29,5 +29,5 @@ String secretBufferToString(Pointer<SecretBuffer> byteBufferPointer) {
 
   List<int> bytes = dataPointer.asTypedList(length);
 
-  return utf8.decode(bytes);
+  return utf8.decode(bytes, allowMalformed: true);
 }

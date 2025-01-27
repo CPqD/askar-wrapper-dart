@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
-import 'package:import_so_libaskar/askar/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 
 base class CallbackResult {
@@ -21,7 +21,7 @@ base class Callback<T extends Function> {
   Callback(this.nativeCallable, this.completer, this.id, this.cleanupPointers);
 
   Future<CallbackResult> handleResult(int initialResult) {
-    final initialErrorCode = intToErrorCode(initialResult);
+    final initialErrorCode = ErrorCode.fromInt(initialResult);
 
     if (initialErrorCode != ErrorCode.success) {
       completer.complete(CallbackResult(initialErrorCode, -1, false));
@@ -66,7 +66,7 @@ CallbackWithHandle newCallbackWithHandle(void Function() cleanup) {
   late final NativeCallable<CbFuncWithHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(intToErrorCode(errorCode), handle, true));
+    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
     cleanup();
     nativeCallable.close();
   }
@@ -84,7 +84,7 @@ CallbackWithoutHandle newCallbackWithoutHandle(void Function() cleanup) {
   late final NativeCallable<CbFuncWithoutHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode) {
-    completer.complete(CallbackResult(intToErrorCode(errorCode), -1, true));
+    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), -1, true));
     cleanup();
     nativeCallable.close();
   }

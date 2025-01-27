@@ -5,7 +5,10 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
-import 'package:import_so_libaskar/askar/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
+import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 
 import 'askar_native_functions.dart';
 import 'askar_utils.dart';
@@ -38,7 +41,7 @@ String askarVersion() {
 
 ErrorCode askarGetCurrentError(Pointer<Pointer<Utf8>> errorJsonPointer) {
   final result = nativeAskarGetCurrentError(errorJsonPointer);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 void askarBufferFree(Pointer<SecretBuffer> buffer) {
@@ -64,17 +67,17 @@ ErrorCode askarSetCustomLogger(
     maxLevel,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarSetDefaultLogger() {
   final result = nativeAskarSetDefaultLogger();
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarSetMaxLogLevel(int maxLevel) {
   final result = nativeAskarSetMaxLogLevel(maxLevel);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarEntryListCount(EntryListHandle handle, int count) {
@@ -85,7 +88,7 @@ ErrorCode askarEntryListCount(EntryListHandle handle, int count) {
 
   calloc.free(countPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 void askarEntryListFree(int handle) {
@@ -98,7 +101,7 @@ AskarStringResult askarEntryListGetCategory(int entryListHandle, int index) {
   final funcResult =
       nativeAskarEntryListGetCategory(entryListHandle, index, utf8PtPointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   final String value =
       (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
@@ -114,7 +117,7 @@ AskarStringResult askarEntryListGetName(int entryListHandle, int index) {
 
   final funcResult = nativeAskarEntryListGetName(entryListHandle, index, utf8PtPointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   final String value =
       (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
@@ -131,7 +134,7 @@ AskarMapResult askarEntryListGetTags(int entryListHandle, int index) {
   final funcResult =
       nativeAskarEntryListGetTags(entryListHandle, index, utf8PointerPointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   Map value = {};
 
@@ -152,7 +155,7 @@ AskarStringResult askarEntryListGetValue(int entryListHandle, int index) {
   final funcResult =
       nativeAskarEntryListGetValue(entryListHandle, index, secretBufferPointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   final String value =
       (errorCode == ErrorCode.success) ? secretBufferToString(secretBufferPointer) : "";
@@ -169,7 +172,7 @@ ErrorCode askarStringListCount(StringListHandle handle, int count) {
 
   final result = nativeAskarStringListCount(handle, countPointer);
 
-  final errorCode = intToErrorCode(result);
+  final errorCode = ErrorCode.fromInt(result);
   count = countPointer.value;
 
   calloc.free(countPointer);
@@ -184,7 +187,7 @@ void askarStringListFree(StringListHandle handle) {
 ErrorCode askarStringListGetItem(
     StringListHandle handle, int index, Pointer<Pointer<Utf8>> item) {
   final result = nativeAskarStringListGetItem(handle, index, item);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyAeadDecrypt(
@@ -204,7 +207,7 @@ ErrorCode askarKeyAeadDecrypt(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyAeadEncrypt(
@@ -222,7 +225,7 @@ ErrorCode askarKeyAeadEncrypt(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyAeadGetPadding(
@@ -236,7 +239,7 @@ ErrorCode askarKeyAeadGetPadding(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyAeadGetParams(
@@ -248,7 +251,7 @@ ErrorCode askarKeyAeadGetParams(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyAeadRandomNonce(
@@ -260,7 +263,7 @@ ErrorCode askarKeyAeadRandomNonce(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyConvert(
@@ -278,7 +281,7 @@ ErrorCode askarKeyConvert(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyCryptoBox(
@@ -296,7 +299,7 @@ ErrorCode askarKeyCryptoBox(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyCryptoBoxOpen(
@@ -314,7 +317,7 @@ ErrorCode askarKeyCryptoBoxOpen(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyCryptoBoxRandomNonce(
@@ -324,7 +327,7 @@ ErrorCode askarKeyCryptoBoxRandomNonce(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyCryptoBoxSeal(
@@ -338,7 +341,7 @@ ErrorCode askarKeyCryptoBoxSeal(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyCryptoBoxSealOpen(
@@ -352,7 +355,7 @@ ErrorCode askarKeyCryptoBoxSealOpen(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyDeriveEcdh1pu(
@@ -384,7 +387,7 @@ ErrorCode askarKeyDeriveEcdh1pu(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyDeriveEcdhEs(
@@ -412,7 +415,7 @@ ErrorCode askarKeyDeriveEcdhEs(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyEntryListCount(KeyEntryListHandle handle, int count) {
@@ -421,7 +424,7 @@ ErrorCode askarKeyEntryListCount(KeyEntryListHandle handle, int count) {
 
   final result = nativeAskarKeyEntryListCount(handle, countPointer);
 
-  final errorCode = intToErrorCode(result);
+  final errorCode = ErrorCode.fromInt(result);
   count = countPointer.value;
 
   calloc.free(countPointer);
@@ -436,7 +439,7 @@ void askarKeyEntryListFree(KeyEntryListHandle handle) {
 ErrorCode askarKeyEntryListGetAlgorithm(
     KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> alg) {
   final result = nativeAskarKeyEntryListGetAlgorithm(handle, index, alg);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 AskarStringResult askarKeyEntryListGetMetadata(int keyEntryListHandle, int index) {
@@ -445,7 +448,7 @@ AskarStringResult askarKeyEntryListGetMetadata(int keyEntryListHandle, int index
   final funcResult =
       nativeAskarKeyEntryListGetMetadata(keyEntryListHandle, index, utf8PtPointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   final String value =
       (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
@@ -459,19 +462,19 @@ AskarStringResult askarKeyEntryListGetMetadata(int keyEntryListHandle, int index
 ErrorCode askarKeyEntryListGetName(
     KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> name) {
   final result = nativeAskarKeyEntryListGetName(handle, index, name);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyEntryListGetTags(
     KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> tags) {
   final result = nativeAskarKeyEntryListGetTags(handle, index, tags);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyEntryListLoadLocal(
     KeyEntryListHandle handle, int index, Pointer<LocalKeyHandle> out) {
   final result = nativeAskarKeyEntryListLoadLocal(handle, index, out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 void askarKeyFree(LocalKeyHandle handle) {
@@ -480,7 +483,7 @@ void askarKeyFree(LocalKeyHandle handle) {
 
 ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
   final result = nativeAskarKeyFromJwk(jwk, out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyFromKeyExchange(
@@ -500,7 +503,7 @@ ErrorCode askarKeyFromKeyExchange(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyFromPublicBytes(
@@ -518,7 +521,7 @@ ErrorCode askarKeyFromPublicBytes(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyFromSecretBytes(
@@ -536,7 +539,7 @@ ErrorCode askarKeyFromSecretBytes(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyFromSeed(
@@ -558,19 +561,21 @@ ErrorCode askarKeyFromSeed(
   calloc.free(algPointer);
   calloc.free(methodPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
-AskarIntResult askarKeyGenerate(String alg, String keyBackend, int ephemeral) {
+AskarIntResult askarKeyGenerate(KeyAlgorithm alg, KeyBackend keyBackend, bool ephemeral) {
   Pointer<Int64> localKeyHandlePointer = calloc<Int64>();
 
-  final algPointer = alg.toNativeUtf8();
-  final keyBackendPointer = keyBackend.toNativeUtf8();
+  final algPointer = alg.value.toNativeUtf8();
+  final keyBackendPointer = keyBackend.value.toNativeUtf8();
+
+  int ephemeralAsInt = ephemeral ? 1 : 0;
 
   final funcResult = nativeAskarKeyGenerate(
-      algPointer, keyBackendPointer, ephemeral, localKeyHandlePointer);
+      algPointer, keyBackendPointer, ephemeralAsInt, localKeyHandlePointer);
 
-  final errorCode = intToErrorCode(funcResult);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
   final int localKeyHandle =
       (errorCode == ErrorCode.success) ? localKeyHandlePointer.value.toInt() : -1;
@@ -584,12 +589,12 @@ AskarIntResult askarKeyGenerate(String alg, String keyBackend, int ephemeral) {
 
 ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
   final result = nativeAskarKeyGetAlgorithm(handle, out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetEphemeral(LocalKeyHandle handle, Pointer<Int8> out) {
   final result = nativeAskarKeyGetEphemeral(handle, out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetJwkPublic(
@@ -607,7 +612,7 @@ ErrorCode askarKeyGetJwkPublic(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetJwkSecret(
@@ -619,7 +624,7 @@ ErrorCode askarKeyGetJwkSecret(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetJwkThumbprint(
@@ -637,7 +642,7 @@ ErrorCode askarKeyGetJwkThumbprint(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetPublicBytes(
@@ -649,7 +654,7 @@ ErrorCode askarKeyGetPublicBytes(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetSecretBytes(
@@ -661,27 +666,41 @@ ErrorCode askarKeyGetSecretBytes(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeySignMessage(
-  LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  String sigType,
-  Pointer<SecretBuffer> out,
+AskarStringResult askarKeySignMessage(
+  int localKeyHandle,
+  String message,
+  SignatureAlgorithm sigType,
 ) {
-  final sigTypePointer = sigType.toNativeUtf8();
+  Pointer<SecretBuffer> secretBufferPointer = calloc<SecretBuffer>();
 
-  final result = nativeAskarKeySignMessage(
-    handle,
-    message,
+  final sigTypePointer = sigType.value.toNativeUtf8();
+  final byteBufferPointer = stringToByteBuffer(message);
+
+  // Uso da variável byteBuffer
+  ByteBuffer byteBuffer = byteBufferPointer.ref;
+
+  final funcResult = nativeAskarKeySignMessage(
+    localKeyHandle,
+    byteBuffer,
     sigTypePointer,
-    out,
+    secretBufferPointer,
   );
 
-  calloc.free(sigTypePointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return intToErrorCode(result);
+  final String value =
+      (errorCode == ErrorCode.success) ? secretBufferToString(secretBufferPointer) : "";
+
+  calloc.free(sigTypePointer);
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+  calloc.free(secretBufferPointer.ref.data);
+  calloc.free(secretBufferPointer);
+
+  return AskarStringResult(errorCode, value);
 }
 
 ErrorCode askarKeyUnwrapKey(
@@ -705,7 +724,7 @@ ErrorCode askarKeyUnwrapKey(
 
   calloc.free(algPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyVerifySignature(
@@ -727,7 +746,7 @@ ErrorCode askarKeyVerifySignature(
 
   calloc.free(sigTypePointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyWrapKey(
@@ -743,17 +762,17 @@ ErrorCode askarKeyWrapKey(
     out,
   );
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarKeyGetSupportedBackends(Pointer<StringListHandle> out) {
   final result = nativeAskarKeyGetSupportedBackends(out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarScanFree(int handle) {
   final result = nativeAskarScanFree(handle);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarScanNext(
@@ -762,7 +781,7 @@ ErrorCode askarScanNext(
   int cbId,
 ) {
   final result = nativeAskarScanNext(handle, cb, cbId);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarScanStart(
@@ -794,7 +813,7 @@ ErrorCode askarScanStart(
   calloc.free(categoryPointer);
   calloc.free(tagFilterPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarSessionClose(
@@ -832,7 +851,7 @@ ErrorCode askarSessionCount(
   calloc.free(categoryPointer);
   calloc.free(tagFilterPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarSessionFetch(
@@ -897,7 +916,7 @@ ErrorCode askarSessionFetchAll(
   calloc.free(categoryPointer);
   calloc.free(tagFilterPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarSessionFetchAllKeys(
@@ -929,7 +948,7 @@ ErrorCode askarSessionFetchAllKeys(
   calloc.free(thumbprintPointer);
   calloc.free(tagFilterPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarSessionFetchKey(
@@ -1002,7 +1021,7 @@ ErrorCode askarSessionRemoveAll(
   calloc.free(categoryPointer);
   calloc.free(tagFilterPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarSessionRemoveKey(
@@ -1022,7 +1041,7 @@ ErrorCode askarSessionRemoveKey(
 
   calloc.free(namePointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarSessionStart(int handle, String profile, int asTransaction) {
@@ -1116,7 +1135,7 @@ ErrorCode askarSessionUpdateKey(
   calloc.free(metadataPointer);
   calloc.free(tagsPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarStoreClose(int handle) {
@@ -1155,7 +1174,7 @@ ErrorCode askarStoreCopy(
   calloc.free(keyMethodPointer);
   calloc.free(passKeyPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreCreateProfile(
@@ -1175,7 +1194,7 @@ ErrorCode askarStoreCreateProfile(
 
   calloc.free(profilePointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreGenerateRawKey(
@@ -1183,7 +1202,7 @@ ErrorCode askarStoreGenerateRawKey(
   Pointer<Pointer<Utf8>> out,
 ) {
   final result = nativeAskarStoreGenerateRawKey(seed, out);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreGetDefaultProfile(
@@ -1192,7 +1211,7 @@ ErrorCode askarStoreGetDefaultProfile(
   int cbId,
 ) {
   final result = nativeAskarStoreGetDefaultProfile(handle, cb, cbId);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreGetProfileName(
@@ -1201,7 +1220,7 @@ ErrorCode askarStoreGetProfileName(
   int cbId,
 ) {
   final result = nativeAskarStoreGetProfileName(handle, cb, cbId);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreListProfiles(
@@ -1210,7 +1229,7 @@ ErrorCode askarStoreListProfiles(
   int cbId,
 ) {
   final result = nativeAskarStoreListProfiles(handle, cb, cbId);
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 Future<CallbackResult> askarStoreOpen(
@@ -1300,7 +1319,7 @@ ErrorCode askarStoreRekey(
   calloc.free(keyMethodPointer);
   calloc.free(passKeyPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreRemove(
@@ -1318,7 +1337,7 @@ ErrorCode askarStoreRemove(
 
   calloc.free(specUriPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreRemoveProfile(
@@ -1338,7 +1357,7 @@ ErrorCode askarStoreRemoveProfile(
 
   calloc.free(profilePointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreSetDefaultProfile(
@@ -1358,7 +1377,7 @@ ErrorCode askarStoreSetDefaultProfile(
 
   calloc.free(profilePointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarMigrateIndySdk(
@@ -1388,5 +1407,5 @@ ErrorCode askarMigrateIndySdk(
   calloc.free(walletKeyPointer);
   calloc.free(kdfLevelPointer);
 
-  return intToErrorCode(result);
+  return ErrorCode.fromInt(result);
 }

@@ -2,8 +2,11 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
-import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
+import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
+import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 import 'package:import_so_libaskar/main.dart';
 
 void main() {
@@ -17,17 +20,11 @@ void main() {
       await tester.pumpWidget(const MyApp());
 
       await tester.runAsync(() async {
-        final storeProvisionResult = await storeProvisionTest();
-        expect(storeProvisionResult.errorCode, equals(ErrorCode.success));
-        expect(storeProvisionResult.finished, equals(true));
+        await storeProvisionTest();
 
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-        expect(storeOpenResult.finished, equals(true));
 
-        final storeCloseResult = await storeCloseTest(storeOpenResult.handle);
-        expect(storeCloseResult.errorCode, equals(ErrorCode.success));
-        expect(storeCloseResult.finished, equals(true));
+        await storeCloseTest(storeOpenResult.handle);
       });
     });
 
@@ -37,21 +34,12 @@ void main() {
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-        expect(storeOpenResult.finished, equals(true));
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
-        expect(sessionStartResult.finished, equals(true));
 
-        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
-        expect(sessionFetchResult.finished, equals(true));
-        expect(sessionFetchResult.handle, equals(0));
+        await sessionFetchTest(sessionStartResult.handle, false);
 
-        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
-        expect(sessionCloseResult.finished, equals(true));
+        await sessionCloseTest(sessionStartResult.handle);
       });
     });
 
@@ -60,51 +48,29 @@ void main() {
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-        expect(storeOpenResult.finished, equals(true));
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
-        expect(sessionStartResult.finished, equals(true));
 
         String value = 'foobar';
         String name = 'testEntry';
         String category = 'category-one';
         Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-        final sessionUpdateResult = await sessionUpdateTest(
-            sessionStartResult.handle, value, tags, name, category);
-        expect(sessionUpdateResult.errorCode, equals(ErrorCode.success));
-        expect(sessionUpdateResult.finished, equals(true));
+        await sessionUpdateTest(sessionStartResult.handle, value, tags, name, category);
 
-        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
-        expect(sessionFetchResult.finished, equals(true));
-        expect(sessionFetchResult.handle, isNot(equals(0)));
+        final sessionFetchResult =
+            await sessionFetchTest(sessionStartResult.handle, true);
 
         final entryListHandle = sessionFetchResult.handle;
 
-        final entryListGetValueRes = entryListGetValueTest(entryListHandle, 0);
-        expect(entryListGetValueRes.errorCode, equals(ErrorCode.success));
-        expect(entryListGetValueRes.value, equals(value));
-
-        final entryListGetTagsRes = entryListGetTagsTest(entryListHandle, 0);
-        expect(entryListGetTagsRes.errorCode, equals(ErrorCode.success));
-        expect(entryListGetTagsRes.value, equals(tags));
-
-        final entryListGetNameRes = entryListGetNameTest(entryListHandle, 0);
-        expect(entryListGetNameRes.errorCode, equals(ErrorCode.success));
-        expect(entryListGetNameRes.value, equals(name));
-
-        final entryListGetCategoryRes = entryListGetCategoryTest(entryListHandle, 0);
-        expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.success));
-        expect(entryListGetCategoryRes.value, equals(category));
+        entryListGetValueTest(entryListHandle, 0, value);
+        entryListGetTagsTest(entryListHandle, 0, tags);
+        entryListGetNameTest(entryListHandle, 0, name);
+        entryListGetCategoryTest(entryListHandle, 0, category);
 
         askarEntryListFree(entryListHandle);
 
-        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
-        expect(sessionCloseResult.finished, equals(true));
+        await sessionCloseTest(sessionStartResult.handle);
       });
     });
     testWidgets('Inserting and reading Key', (WidgetTester tester) async {
@@ -112,12 +78,8 @@ void main() {
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-        expect(storeOpenResult.finished, equals(true));
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
-        expect(sessionStartResult.finished, equals(true));
 
         final sessionHandle = sessionStartResult.handle;
 
@@ -125,30 +87,38 @@ void main() {
         String metadata = 'meta';
         Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-        final keyGenerateResult = keyGenerateTest();
-        expect(keyGenerateResult.errorCode, equals(ErrorCode.success));
-        expect(keyGenerateResult.value, greaterThan(0));
+        final keyGenerateResult =
+            keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
 
         final localKeyHandle = keyGenerateResult.value;
 
-        final sessionInsertResult = await sessionInsertKeyTest(
-            sessionHandle, localKeyHandle, name, metadata, tags);
-        expect(sessionInsertResult.errorCode, equals(ErrorCode.success));
-        expect(sessionInsertResult.finished, equals(true));
+        await sessionInsertKeyTest(sessionHandle, localKeyHandle, name, metadata, tags);
 
         final sessionFetchKeyResult = await sessionFetchKeyTest(sessionHandle, name, 0);
-        expect(sessionFetchKeyResult.errorCode, equals(ErrorCode.success));
-        expect(sessionFetchKeyResult.finished, equals(true));
-        expect(sessionFetchKeyResult.handle, greaterThan(0));
 
-        final keyEntryListMetadataRes =
-            keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0);
-        expect(keyEntryListMetadataRes.errorCode, equals(ErrorCode.success));
-        expect(keyEntryListMetadataRes.value, equals(metadata));
+        keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0, metadata);
 
-        final sessionCloseResult = await sessionCloseTest(sessionHandle);
-        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
-        expect(sessionCloseResult.finished, equals(true));
+        await sessionCloseTest(sessionHandle);
+      });
+    });
+    testWidgets('Sign Message and Verify Signature ', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+
+        final keyGenerateResult =
+            keyGenerateTest(KeyAlgorithm.ecSecp384r1, KeyBackend.software);
+
+        final sessionHandle = sessionStartResult.handle;
+        final localKeyHandle = keyGenerateResult.value;
+
+        String message = "message";
+
+        keySignMessageTest(localKeyHandle, message, SignatureAlgorithm.eS384);
+
+        await sessionCloseTest(sessionHandle);
       });
     });
   });
@@ -166,6 +136,9 @@ Future<CallbackResult> storeProvisionTest() async {
 
   printResult('StoreProvision', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
@@ -179,6 +152,9 @@ Future<CallbackResult> storeOpenTest() async {
 
   printResult('StoreOpen', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
@@ -190,17 +166,19 @@ Future<CallbackResult> sessionStartTest(int handle) async {
 
   printResult('SessionStart', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
-AskarIntResult keyGenerateTest() {
-  String alg = "ed25519";
-  String keyBackend = "0";
-  int ephemeral = 0;
-
-  final result = askarKeyGenerate(alg, keyBackend, ephemeral);
+AskarIntResult keyGenerateTest(KeyAlgorithm algorithm, KeyBackend keyBackend) {
+  final result = askarKeyGenerate(algorithm, keyBackend, true);
 
   printAskarIntResult('KeyGenerate', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
 
   return result;
 }
@@ -214,6 +192,9 @@ Future<CallbackResult> sessionInsertKeyTest(int sessionHandle, int localKeyHandl
 
   printResult('SessionInsertKey', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
@@ -223,13 +204,21 @@ Future<CallbackResult> sessionFetchKeyTest(
 
   printResult('SessionFetchKey', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.handle, greaterThan(0));
+
   return result;
 }
 
-AskarStringResult keyEntryListGetMetadataTest(int keyEntryListHandle, int index) {
+AskarStringResult keyEntryListGetMetadataTest(
+    int keyEntryListHandle, int index, String expectedMetadata) {
   final result = askarKeyEntryListGetMetadata(keyEntryListHandle, index);
 
   printAskarStringResult('KeyEntryListGetMetadata', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedMetadata));
 
   return result;
 }
@@ -245,10 +234,13 @@ Future<CallbackResult> sessionUpdateTest(int handle, String value,
 
   printResult('SessionUpdate', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
-Future<CallbackResult> sessionFetchTest(int handle) async {
+Future<CallbackResult> sessionFetchTest(int handle, bool checkValid) async {
   String category = 'category-one';
   String name = 'testEntry';
   int forUpdate = 0;
@@ -257,37 +249,74 @@ Future<CallbackResult> sessionFetchTest(int handle) async {
 
   printResult('SessionFetch', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
+  // É inválido quando result.handle == 0
+  if (checkValid) {
+    expect(result.handle, isNot(0));
+  } else {
+    expect(result.handle, equals(0));
+  }
+
   return result;
 }
 
-AskarStringResult entryListGetValueTest(int entryListHandle, int index) {
+AskarStringResult entryListGetValueTest(
+    int entryListHandle, int index, String expectedValue) {
   final result = askarEntryListGetValue(entryListHandle, index);
 
   printAskarStringResult('EntryListGetValue', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedValue));
+
   return result;
 }
 
-AskarMapResult entryListGetTagsTest(int entryListHandle, int index) {
+AskarMapResult entryListGetTagsTest(int entryListHandle, int index, Map expectedTags) {
   final result = askarEntryListGetTags(entryListHandle, index);
 
   printAskarMapResult('EntryListGetTags', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedTags));
+
   return result;
 }
 
-AskarStringResult entryListGetNameTest(int entryListHandle, int index) {
+AskarStringResult entryListGetNameTest(
+    int entryListHandle, int index, String expectedName) {
   final result = askarEntryListGetName(entryListHandle, index);
 
   printAskarStringResult('askarEntryListGetName', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedName));
+
   return result;
 }
 
-AskarStringResult entryListGetCategoryTest(int entryListHandle, int index) {
+AskarStringResult entryListGetCategoryTest(
+    int entryListHandle, int index, String expectedCategory) {
   final result = askarEntryListGetCategory(entryListHandle, index);
 
   printAskarStringResult('askarEntryListGetCategory', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedCategory));
+
+  return result;
+}
+
+AskarStringResult keySignMessageTest(
+    int localKeyHandle, String message, SignatureAlgorithm sigType) {
+  final result = askarKeySignMessage(localKeyHandle, message, sigType);
+
+  printAskarStringResult('KeySignMessage', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, isNot(message));
 
   return result;
 }
@@ -297,6 +326,9 @@ Future<CallbackResult> sessionCloseTest(int handle) async {
 
   printResult('StoreClose', result);
 
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
   return result;
 }
 
@@ -304,6 +336,9 @@ Future<CallbackResult> storeCloseTest(int handle) async {
   final result = await askarStoreClose(handle);
 
   printResult('StoreClose', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
 
   return result;
 }
