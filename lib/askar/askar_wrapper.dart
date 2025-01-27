@@ -24,6 +24,13 @@ final class AskarMapResult {
   AskarMapResult(this.errorCode, this.value);
 }
 
+final class AskarIntResult {
+  final ErrorCode errorCode;
+  final int value;
+
+  AskarIntResult(this.errorCode, this.value);
+}
+
 String askarVersion() {
   Pointer<Utf8> resultPointer = nativeAskarVersion();
   return resultPointer.toDartString();
@@ -543,26 +550,25 @@ ErrorCode askarKeyFromSeed(
   return intToErrorCode(result);
 }
 
-ErrorCode askarKeyGenerate(
-  String alg,
-  String keyBackend,
-  int ephemeral,
-  Pointer<LocalKeyHandle> out,
-) {
+AskarIntResult askarKeyGenerate(String alg, String keyBackend, int ephemeral) {
+  Pointer<Int64> localKeyHandlePointer = calloc<Int64>();
+
   final algPointer = alg.toNativeUtf8();
   final keyBackendPointer = keyBackend.toNativeUtf8();
 
-  final result = nativeAskarKeyGenerate(
-    algPointer,
-    keyBackendPointer,
-    ephemeral,
-    out,
-  );
+  final funcResult = nativeAskarKeyGenerate(
+      algPointer, keyBackendPointer, ephemeral, localKeyHandlePointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  final int localKeyHandle =
+      (errorCode == ErrorCode.success) ? localKeyHandlePointer.value.toInt() : -1;
 
   calloc.free(algPointer);
   calloc.free(keyBackendPointer);
+  calloc.free(localKeyHandlePointer);
 
-  return intToErrorCode(result);
+  return AskarIntResult(errorCode, localKeyHandle);
 }
 
 ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
@@ -937,7 +943,7 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-Future<CallbackResult> askarSessionInsertKey(int handle, LocalKeyHandle keyHandle,
+Future<CallbackResult> askarSessionInsertKey(int sessionHandle, int localKeyHandle,
     String name, String metadata, Map<String, String> tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
@@ -952,8 +958,8 @@ Future<CallbackResult> askarSessionInsertKey(int handle, LocalKeyHandle keyHandl
   final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionInsertKey(
-    handle,
-    keyHandle,
+    sessionHandle,
+    localKeyHandle,
     namePointer,
     metadataPointer,
     tagsJsonPointer,

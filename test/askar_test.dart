@@ -1,12 +1,8 @@
 // ignore_for_file: avoid_print
 
-import 'dart:ffi';
-
-import 'package:ffi/ffi.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
-import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 import 'package:import_so_libaskar/main.dart';
 
@@ -59,7 +55,7 @@ void main() {
       });
     });
 
-    testWidgets('Writing and reading', (WidgetTester tester) async {
+    testWidgets('Writing and reading from session', (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
 
       await tester.runAsync(() async {
@@ -111,6 +107,35 @@ void main() {
         expect(sessionCloseResult.finished, equals(true));
       });
     });
+    testWidgets('Inserting and reading Key', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
+        expect(storeOpenResult.finished, equals(true));
+
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
+        expect(sessionStartResult.finished, equals(true));
+
+        String name = 'testEntry2';
+        String metadata = 'meta';
+        Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+
+        final keyGenerateResult = keyGenerateTest();
+        expect(keyGenerateResult.errorCode, equals(ErrorCode.success));
+
+        final sessionInsertResult = await sessionInsertKeyTest(
+            sessionStartResult.handle, keyGenerateResult.value, name, metadata, tags);
+        expect(sessionInsertResult.errorCode, equals(ErrorCode.success));
+        expect(sessionInsertResult.finished, equals(true));
+
+        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
+        expect(sessionCloseResult.finished, equals(true));
+      });
+    });
   });
 }
 
@@ -153,18 +178,26 @@ Future<CallbackResult> sessionStartTest(int handle) async {
   return result;
 }
 
-Future<CallbackResult> sessionInsertKeyTest(int handle, Map<String, String> tags) async {
-  Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
-  String name = 'testkey"';
-  String metadata = 'meta';
+AskarIntResult keyGenerateTest() {
+  String alg = "ed25519";
+  String keyBackend = "0";
+  int ephemeral = 0;
+
+  final result = askarKeyGenerate(alg, keyBackend, ephemeral);
+
+  printAskarIntResult('KeyGenerate', result);
+
+  return result;
+}
+
+Future<CallbackResult> sessionInsertKeyTest(int sessionHandle, int localKeyHandle,
+    String name, String metadata, Map<String, String> tags) async {
   int expiryMs = 2000;
 
   final result = await askarSessionInsertKey(
-      handle, keyHandlePointer, name, metadata, tags, expiryMs);
+      sessionHandle, localKeyHandle, name, metadata, tags, expiryMs);
 
   printResult('SessionInsertKey', result);
-
-  calloc.free(keyHandlePointer);
 
   return result;
 }
@@ -258,4 +291,8 @@ void printAskarStringResult(String test, AskarStringResult result) {
 
 void printAskarMapResult(String test, AskarMapResult result) {
   print('$test Result: (${result.errorCode}, Value: "${result.value}")\n');
+}
+
+void printAskarIntResult(String test, AskarIntResult result) {
+  print('$test Result: (${result.errorCode}, Value: ${result.value})\n');
 }

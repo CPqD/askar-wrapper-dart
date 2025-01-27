@@ -669,14 +669,14 @@ typedef AskarKeyGenerateNative = Int32 Function(
   Pointer<Utf8> alg,
   Pointer<Utf8> key_backend,
   Int8 ephemeral,
-  Pointer<LocalKeyHandle> out,
+  Pointer<Int64> out,
 );
 
 final int Function(
   Pointer<Utf8> alg,
   Pointer<Utf8> key_backend,
   int ephemeral,
-  Pointer<LocalKeyHandle> out,
+  Pointer<Int64> out,
 ) nativeAskarKeyGenerate = nativeLib
     .lookup<NativeFunction<AskarKeyGenerateNative>>('askar_key_generate')
     .asFunction();
@@ -1080,8 +1080,8 @@ typedef AskarSessionInsertKeyCallback = Void Function(
 );
 
 typedef AskarSessionInsertKeyNative = Int32 Function(
-  SessionHandle handle,
-  LocalKeyHandle key_handle,
+  IntPtr handle,
+  IntPtr key_handle,
   Pointer<Utf8> name,
   Pointer<Utf8> metadata,
   Pointer<Utf8> tags,
@@ -1092,7 +1092,7 @@ typedef AskarSessionInsertKeyNative = Int32 Function(
 
 final int Function(
   int handle,
-  LocalKeyHandle key_handle,
+  int key_handle,
   Pointer<Utf8> name,
   Pointer<Utf8> metadata,
   Pointer<Utf8> tags,
