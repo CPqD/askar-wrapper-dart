@@ -31,82 +31,82 @@ void main() {
       });
     });
 
-    // testWidgets('Attempt to read from an unexisting category',
-    //     (WidgetTester tester) async {
-    //   await tester.pumpWidget(const MyApp());
+    testWidgets('Attempt to read from an unexisting category',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
 
-    //   await tester.runAsync(() async {
-    //     final storeOpenResult = await storeOpenTest();
-    //     expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-    //     expect(storeOpenResult.finished, equals(true));
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
+        expect(storeOpenResult.finished, equals(true));
 
-    //     final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-    //     expect(sessionStartResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionStartResult.finished, equals(true));
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
+        expect(sessionStartResult.finished, equals(true));
 
-    //     final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-    //     expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionFetchResult.finished, equals(true));
-    //     expect(sessionFetchResult.handle, equals(0));
+        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
+        expect(sessionFetchResult.finished, equals(true));
+        expect(sessionFetchResult.handle, equals(0));
 
-    //     final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-    //     expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionCloseResult.finished, equals(true));
-    //   });
-    // });
+        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
+        expect(sessionCloseResult.finished, equals(true));
+      });
+    });
 
-    // testWidgets('Writing and reading from session', (WidgetTester tester) async {
-    //   await tester.pumpWidget(const MyApp());
+    testWidgets('Writing and reading from session', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
 
-    //   await tester.runAsync(() async {
-    //     final storeOpenResult = await storeOpenTest();
-    //     expect(storeOpenResult.errorCode, equals(ErrorCode.success));
-    //     expect(storeOpenResult.finished, equals(true));
+      await tester.runAsync(() async {
+        final storeOpenResult = await storeOpenTest();
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
+        expect(storeOpenResult.finished, equals(true));
 
-    //     final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-    //     expect(sessionStartResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionStartResult.finished, equals(true));
+        final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
+        expect(sessionStartResult.finished, equals(true));
 
-    //     String value = 'foobar';
-    //     String name = 'testEntry';
-    //     String category = 'category-one';
-    //     Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+        String value = 'foobar';
+        String name = 'testEntry';
+        String category = 'category-one';
+        Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-    //     final sessionUpdateResult = await sessionUpdateTest(
-    //         sessionStartResult.handle, value, tags, name, category);
-    //     expect(sessionUpdateResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionUpdateResult.finished, equals(true));
+        final sessionUpdateResult = await sessionUpdateTest(
+            sessionStartResult.handle, value, tags, name, category);
+        expect(sessionUpdateResult.errorCode, equals(ErrorCode.success));
+        expect(sessionUpdateResult.finished, equals(true));
 
-    //     final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-    //     expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionFetchResult.finished, equals(true));
-    //     expect(sessionFetchResult.handle, isNot(equals(0)));
+        final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
+        expect(sessionFetchResult.finished, equals(true));
+        expect(sessionFetchResult.handle, isNot(equals(0)));
 
-    //     final entryListHandle = sessionFetchResult.handle;
+        final entryListHandle = sessionFetchResult.handle;
 
-    //     final entryListGetValueRes = entryListGetValueTest(entryListHandle, 0);
-    //     expect(entryListGetValueRes.errorCode, equals(ErrorCode.success));
-    //     expect(entryListGetValueRes.value, equals(value));
+        final entryListGetValueRes = entryListGetValueTest(entryListHandle, 0);
+        expect(entryListGetValueRes.errorCode, equals(ErrorCode.success));
+        expect(entryListGetValueRes.value, equals(value));
 
-    //     final entryListGetTagsRes = entryListGetTagsTest(entryListHandle, 0);
-    //     expect(entryListGetTagsRes.errorCode, equals(ErrorCode.success));
-    //     expect(entryListGetTagsRes.value, equals(tags));
+        final entryListGetTagsRes = entryListGetTagsTest(entryListHandle, 0);
+        expect(entryListGetTagsRes.errorCode, equals(ErrorCode.success));
+        expect(entryListGetTagsRes.value, equals(tags));
 
-    //     final entryListGetNameRes = entryListGetNameTest(entryListHandle, 0);
-    //     expect(entryListGetNameRes.errorCode, equals(ErrorCode.success));
-    //     expect(entryListGetNameRes.value, equals(name));
+        final entryListGetNameRes = entryListGetNameTest(entryListHandle, 0);
+        expect(entryListGetNameRes.errorCode, equals(ErrorCode.success));
+        expect(entryListGetNameRes.value, equals(name));
 
-    //     final entryListGetCategoryRes = entryListGetCategoryTest(entryListHandle, 0);
-    //     expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.success));
-    //     expect(entryListGetCategoryRes.value, equals(category));
+        final entryListGetCategoryRes = entryListGetCategoryTest(entryListHandle, 0);
+        expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.success));
+        expect(entryListGetCategoryRes.value, equals(category));
 
-    //     askarEntryListFree(entryListHandle);
+        askarEntryListFree(entryListHandle);
 
-    //     final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-    //     expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
-    //     expect(sessionCloseResult.finished, equals(true));
-    //   });
-    // });
+        final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
+        expect(sessionCloseResult.finished, equals(true));
+      });
+    });
     testWidgets('Inserting and reading Key', (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
 
@@ -141,7 +141,8 @@ void main() {
         expect(sessionFetchKeyResult.finished, equals(true));
         expect(sessionFetchKeyResult.handle, greaterThan(0));
 
-        final keyEntryListMetadataRes = keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0);
+        final keyEntryListMetadataRes =
+            keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0);
         expect(keyEntryListMetadataRes.errorCode, equals(ErrorCode.success));
         expect(keyEntryListMetadataRes.value, equals(metadata));
 
