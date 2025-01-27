@@ -1,0 +1,1667 @@
+Timestamp: 2025-01-15T19:24:52.263Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",64,0,1]
+
+Timestamp: 2025-01-15T19:24:52.263Z
+Function: nativeAriesAskar.askar_store_open
+Arguments: ["postgres://posgres:senha_banco@localhost/multi-agent","kdf:argon2i:mod","multi-agent",{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:24:52.269Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",240,0,1]
+
+Timestamp: 2025-01-15T19:24:52.271Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:24:52.275Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",255,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:24:52.276Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [1,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:24:52.278Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[80,43,178,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.280Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,144,26,178,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.282Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.284Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[240,101,218,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.286Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:24:52.288Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [1,0]
+
+Timestamp: 2025-01-15T19:24:52.375Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",510,0,2]
+
+Timestamp: 2025-01-15T19:24:52.377Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:24:52.380Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",527,0,{"type":"Buffer","data":[21]}]
+
+Timestamp: 2025-01-15T19:24:52.383Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [2,"MediatorRoutingRecord","MEDIATOR_ROUTING_RECORD",0]
+
+Timestamp: 2025-01-15T19:24:52.386Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[21]},0,{"type":"Buffer","data":[96,135,192,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.391Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[21]},0,{"type":"Buffer","data":[198,0,0,0,0,0,0,0,16,51,191,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.394Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[21]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.397Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[21]},0,{"type":"Buffer","data":[144,129,63,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:24:52.401Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[21]}]
+
+Timestamp: 2025-01-15T19:24:52.404Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [2,0]
+
+Timestamp: 2025-01-15T19:24:52.422Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",554,0,1]
+
+Timestamp: 2025-01-15T19:24:52.425Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"multi-agent","MediationRecord","{\"default\":\"1\"}",0,-1]
+
+Timestamp: 2025-01-15T19:24:52.431Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",569,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:24:52.433Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [1]
+
+Timestamp: 2025-01-15T19:24:52.436Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [1]
+
+Timestamp: 2025-01-15T19:25:20.147Z
+Function: nativeAriesAskar.askar_store_generate_raw_key
+Arguments: [{"type":"Buffer","data":[]},{"type":"Buffer","data":[80,6,124,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.149Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",616,0,3]
+
+Timestamp: 2025-01-15T19:25:20.152Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:20.155Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [3,0,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",{"len":347,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"label\":\"faber\",\"storageVersion\":\"0.5\"}",-1]
+
+Timestamp: 2025-01-15T19:25:20.171Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [3,0]
+
+Timestamp: 2025-01-15T19:25:20.178Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",654,0,4]
+
+Timestamp: 2025-01-15T19:25:20.181Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:20.185Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",669,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:20.189Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [4,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:20.192Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[0,144,71,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.195Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,16,213,41,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.198Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[0,17,150,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.201Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[80,94,183,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.204Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:20.207Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [4,0]
+
+Timestamp: 2025-01-15T19:25:20.231Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",709,6,0]
+
+Timestamp: 2025-01-15T19:25:20.234Z
+Function: nativeAriesAskar.askar_get_current_error
+Arguments: [{"type":"Buffer","data":[224,244,155,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.244Z
+Function: promisifyWithResponse
+Arguments: [null,"string",727,0,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e"]
+
+Timestamp: 2025-01-15T19:25:20.248Z
+Function: nativeAriesAskar.askar_store_create_profile
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e"]
+
+Timestamp: 2025-01-15T19:25:20.256Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",741,0,5]
+
+Timestamp: 2025-01-15T19:25:20.260Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:20.263Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [5,0]
+
+Timestamp: 2025-01-15T19:25:20.272Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",769,0,6]
+
+Timestamp: 2025-01-15T19:25:20.275Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:20.279Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",782,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:25:20.283Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [6,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:20.286Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [6,0]
+
+Timestamp: 2025-01-15T19:25:20.292Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",805,0,7]
+
+Timestamp: 2025-01-15T19:25:20.295Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:20.299Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [7,0,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",{"len":160,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{}",-1]
+
+Timestamp: 2025-01-15T19:25:20.304Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [7,0]
+
+Timestamp: 2025-01-15T19:25:20.316Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",845,0,8]
+
+Timestamp: 2025-01-15T19:25:20.320Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:20.324Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",862,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:20.328Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [8,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:20.331Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[16,179,118,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.335Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,16,249,203,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.338Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.341Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[96,218,85,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:20.345Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:20.348Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [8,0]
+
+Timestamp: 2025-01-15T19:25:25.496Z
+Function: nativeAriesAskar.askar_store_generate_raw_key
+Arguments: [{"type":"Buffer","data":[]},{"type":"Buffer","data":[176,174,110,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.500Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",951,0,9]
+
+Timestamp: 2025-01-15T19:25:25.508Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:25.517Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [9,0,"TenantRecord","da18bce8-cbb3-4569-9f66-78d0c546bc77",{"len":347,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"label\":\"alice\",\"storageVersion\":\"0.5\"}",-1]
+
+Timestamp: 2025-01-15T19:25:25.529Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [9,0]
+
+Timestamp: 2025-01-15T19:25:25.543Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",989,0,10]
+
+Timestamp: 2025-01-15T19:25:25.549Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:25.559Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1004,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:25.566Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [10,"TenantRecord","da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:25:25.573Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[32,120,221,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.580Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,80,80,113,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.589Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[240,4,32,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.596Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[176,226,208,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.603Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:25.609Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [10,0]
+
+Timestamp: 2025-01-15T19:25:25.640Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1044,6,0]
+
+Timestamp: 2025-01-15T19:25:25.645Z
+Function: nativeAriesAskar.askar_get_current_error
+Arguments: [{"type":"Buffer","data":[0,16,160,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.657Z
+Function: promisifyWithResponse
+Arguments: [null,"string",1062,0,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77"]
+
+Timestamp: 2025-01-15T19:25:25.662Z
+Function: nativeAriesAskar.askar_store_create_profile
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77"]
+
+Timestamp: 2025-01-15T19:25:25.670Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1076,0,11]
+
+Timestamp: 2025-01-15T19:25:25.675Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:25:25.679Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [11,0]
+
+Timestamp: 2025-01-15T19:25:25.687Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1104,0,12]
+
+Timestamp: 2025-01-15T19:25:25.691Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:25:25.696Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1117,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:25:25.700Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [12,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:25.704Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [12,0]
+
+Timestamp: 2025-01-15T19:25:25.713Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1140,0,13]
+
+Timestamp: 2025-01-15T19:25:25.720Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:25:25.725Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [13,0,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",{"len":160,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{}",-1]
+
+Timestamp: 2025-01-15T19:25:25.731Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [13,0]
+
+Timestamp: 2025-01-15T19:25:25.746Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1180,0,14]
+
+Timestamp: 2025-01-15T19:25:25.753Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:25:25.760Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1197,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:25.765Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [14,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:25.773Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[16,85,201,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.778Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,32,23,200,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.784Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.790Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,188,201,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:25.795Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:25.800Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [14,0]
+
+Timestamp: 2025-01-15T19:25:32.370Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1267,0,15]
+
+Timestamp: 2025-01-15T19:25:32.371Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:32.380Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1288,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:32.386Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [15,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:32.394Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[144,249,92,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.401Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,160,219,215,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.408Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[16,39,205,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.414Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[160,243,204,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.423Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:32.430Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [15,0]
+
+Timestamp: 2025-01-15T19:25:32.463Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1328,0,16]
+
+Timestamp: 2025-01-15T19:25:32.472Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:32.479Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [16,0]
+
+Timestamp: 2025-01-15T19:25:32.498Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1364,0,17]
+
+Timestamp: 2025-01-15T19:25:32.505Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:32.511Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1381,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:32.517Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [17,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:32.524Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,167,98,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.530Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,80,197,187,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.537Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.542Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,113,96,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.547Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:32.553Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [17,0]
+
+Timestamp: 2025-01-15T19:25:32.567Z
+Function: nativeAriesAskar.askar_key_from_secret_bytes
+Arguments: ["k256",{"len":32,"data":{"type":"Buffer","data":[143,42,85,148,144,56,169,97]}},{"type":"Buffer","data":[32,210,216,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.572Z
+Function: nativeAriesAskar.askar_key_get_public_bytes
+Arguments: [{"type":"Buffer","data":[224]},{"type":"Buffer","data":[33,0,0,0,0,0,0,0,0,23,78,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:32.578Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1412,0,18]
+
+Timestamp: 2025-01-15T19:25:32.583Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:32.589Z
+Function: nativeAriesAskar.askar_session_insert_key
+Arguments: [18,{"type":"Buffer","data":[224]},"c7TELwL6sr6So2JGhDu3xLT5hUQ8fRh66DSDn7ESYEUR",{"type":"Buffer","data":[]},{"type":"Buffer","data":[]},-1]
+
+Timestamp: 2025-01-15T19:25:32.601Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [18,0]
+
+Timestamp: 2025-01-15T19:25:32.608Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[224]}]
+
+Timestamp: 2025-01-15T19:25:58.326Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1506,0,19]
+
+Timestamp: 2025-01-15T19:25:58.326Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:25:58.332Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1527,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:58.337Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [19,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:58.342Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[64,1,62,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.347Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,96,19,33,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.352Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[16,164,33,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.357Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[32,181,97,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.363Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:25:58.368Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [19,0]
+
+Timestamp: 2025-01-15T19:25:58.387Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1567,0,20]
+
+Timestamp: 2025-01-15T19:25:58.392Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:58.397Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [20,0]
+
+Timestamp: 2025-01-15T19:25:58.412Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1603,0,21]
+
+Timestamp: 2025-01-15T19:25:58.416Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:58.422Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1620,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:58.427Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [21,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:25:58.434Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[128,205,94,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.439Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,224,11,217,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.444Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.449Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[96,152,105,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.454Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:25:58.459Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [21,0]
+
+Timestamp: 2025-01-15T19:25:58.507Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",1865,0,22]
+
+Timestamp: 2025-01-15T19:25:58.507Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:25:58.513Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",1880,0,{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:25:58.518Z
+Function: nativeAriesAskar.askar_session_fetch_key
+Arguments: [22,"c7TELwL6sr6So2JGhDu3xLT5hUQ8fRh66DSDn7ESYEUR",0]
+
+Timestamp: 2025-01-15T19:25:58.523Z
+Function: nativeAriesAskar.askar_key_entry_list_count
+Arguments: [{"type":"Buffer","data":[216]},{"type":"Buffer","data":[0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.528Z
+Function: nativeAriesAskar.askar_key_entry_list_get_algorithm
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[160,247,130,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.533Z
+Function: nativeAriesAskar.askar_key_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[80,42,177,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.538Z
+Function: nativeAriesAskar.askar_key_entry_list_get_metadata
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.543Z
+Function: nativeAriesAskar.askar_key_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.548Z
+Function: nativeAriesAskar.askar_key_entry_list_load_local
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[96,128,142,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.553Z
+Function: nativeAriesAskar.askar_key_entry_list_free
+Arguments: [{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:25:58.558Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [22,0]
+
+Timestamp: 2025-01-15T19:25:58.563Z
+Function: nativeAriesAskar.askar_key_get_secret_bytes
+Arguments: [{"type":"Buffer","data":[192]},{"type":"Buffer","data":[32,0,0,0,0,0,0,0,192,176,141,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:25:58.604Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[192]}]
+
+Timestamp: 2025-01-15T19:26:06.173Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",9942,0,23]
+
+Timestamp: 2025-01-15T19:26:06.179Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:06.185Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [23,0,"AnonCredsSchemaRecord","2daecee2-4dce-4463-bb92-6aa26144c19c",{"len":396,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"schemaId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/SCHEMA/schema-20250115192558279/1.0\",\"issuerId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73\",\"schemaName\":\"schema-20250115192558279\",\"schemaVersion\":\"1.0\",\"methodName\":\"ethr\"}",-1]
+
+Timestamp: 2025-01-15T19:26:06.195Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [23,0]
+
+Timestamp: 2025-01-15T19:26:06.225Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",10028,0,24]
+
+Timestamp: 2025-01-15T19:26:06.231Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:06.238Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",10049,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:06.244Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [24,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:06.250Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[96,86,220,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.256Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,176,4,231,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.261Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[208,11,228,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.267Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[128,247,232,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.273Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:06.278Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [24,0]
+
+Timestamp: 2025-01-15T19:26:06.297Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",10089,0,25]
+
+Timestamp: 2025-01-15T19:26:06.303Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:06.308Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [25,0]
+
+Timestamp: 2025-01-15T19:26:06.325Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",10125,0,26]
+
+Timestamp: 2025-01-15T19:26:06.331Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:06.338Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",10142,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:06.344Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [26,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:26:06.350Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,71,218,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.357Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,80,55,3,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.362Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.368Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[96,50,226,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:06.374Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:06.380Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [26,0]
+
+Timestamp: 2025-01-15T19:26:07.854Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",10795,0,27]
+
+Timestamp: 2025-01-15T19:26:07.854Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:07.860Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",10810,0,{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:07.866Z
+Function: nativeAriesAskar.askar_session_fetch_key
+Arguments: [27,"c7TELwL6sr6So2JGhDu3xLT5hUQ8fRh66DSDn7ESYEUR",0]
+
+Timestamp: 2025-01-15T19:26:07.871Z
+Function: nativeAriesAskar.askar_key_entry_list_count
+Arguments: [{"type":"Buffer","data":[216]},{"type":"Buffer","data":[0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.876Z
+Function: nativeAriesAskar.askar_key_entry_list_get_algorithm
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[240,229,240,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.882Z
+Function: nativeAriesAskar.askar_key_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[176,247,240,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.887Z
+Function: nativeAriesAskar.askar_key_entry_list_get_metadata
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.893Z
+Function: nativeAriesAskar.askar_key_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.898Z
+Function: nativeAriesAskar.askar_key_entry_list_load_local
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[176,210,241,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.904Z
+Function: nativeAriesAskar.askar_key_entry_list_free
+Arguments: [{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:07.910Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [27,0]
+
+Timestamp: 2025-01-15T19:26:07.916Z
+Function: nativeAriesAskar.askar_key_get_secret_bytes
+Arguments: [{"type":"Buffer","data":[144]},{"type":"Buffer","data":[32,0,0,0,0,0,0,0,224,193,240,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:07.923Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[144]}]
+
+Timestamp: 2025-01-15T19:26:16.197Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19676,0,28]
+
+Timestamp: 2025-01-15T19:26:16.197Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:16.203Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [28,0,"AnonCredsCredentialDefinitionPrivateRecord","7a93cca5-e811-46a8-9c29-7bb757ef60f2",{"len":1118,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\"}",-1]
+
+Timestamp: 2025-01-15T19:26:16.213Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [28,0]
+
+Timestamp: 2025-01-15T19:26:16.220Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19714,0,29]
+
+Timestamp: 2025-01-15T19:26:16.226Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:16.231Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [29,0,"AnonCredsKeyCorrectnessProofRecord","4047aaa8-ccb4-4ca0-8ba3-ff82eb7f77d0",{"len":3235,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\"}",-1]
+
+Timestamp: 2025-01-15T19:26:16.240Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [29,0]
+
+Timestamp: 2025-01-15T19:26:16.249Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19750,0,30]
+
+Timestamp: 2025-01-15T19:26:16.254Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:16.260Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [30,0,"AnonCredsCredentialDefinitionRecord","00565b95-9d01-4402-ad86-fe61e60d9ab1",{"len":8206,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\",\"schemaId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/SCHEMA/schema-20250115192558279/1.0\",\"issuerId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73\",\"tag\":\"definition\",\"methodName\":\"ethr\"}",-1]
+
+Timestamp: 2025-01-15T19:26:16.268Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [30,0]
+
+Timestamp: 2025-01-15T19:26:27.307Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19843,0,31]
+
+Timestamp: 2025-01-15T19:26:27.307Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:27.314Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",19864,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:27.319Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [31,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:27.324Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[80,139,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.330Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,240,253,215,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.335Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[48,206,156,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.341Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[64,97,175,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.346Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:27.352Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [31,0]
+
+Timestamp: 2025-01-15T19:26:27.369Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19904,0,32]
+
+Timestamp: 2025-01-15T19:26:27.374Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:27.379Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [32,0]
+
+Timestamp: 2025-01-15T19:26:27.395Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",19940,0,33]
+
+Timestamp: 2025-01-15T19:26:27.400Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:27.406Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",19957,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:27.413Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [33,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:26:27.420Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[128,70,12,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.425Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,48,110,216,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.431Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.436Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[176,165,215,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.441Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:27.446Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [33,0]
+
+Timestamp: 2025-01-15T19:26:27.605Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",20492,0,34]
+
+Timestamp: 2025-01-15T19:26:27.605Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:27.612Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",20507,0,{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:27.618Z
+Function: nativeAriesAskar.askar_session_fetch_key
+Arguments: [34,"c7TELwL6sr6So2JGhDu3xLT5hUQ8fRh66DSDn7ESYEUR",0]
+
+Timestamp: 2025-01-15T19:26:27.625Z
+Function: nativeAriesAskar.askar_key_entry_list_count
+Arguments: [{"type":"Buffer","data":[216]},{"type":"Buffer","data":[0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.631Z
+Function: nativeAriesAskar.askar_key_entry_list_get_algorithm
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[160,214,243,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.637Z
+Function: nativeAriesAskar.askar_key_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[16,214,129,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.642Z
+Function: nativeAriesAskar.askar_key_entry_list_get_metadata
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.648Z
+Function: nativeAriesAskar.askar_key_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.654Z
+Function: nativeAriesAskar.askar_key_entry_list_load_local
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[32,207,250,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.660Z
+Function: nativeAriesAskar.askar_key_entry_list_free
+Arguments: [{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:27.666Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [34,0]
+
+Timestamp: 2025-01-15T19:26:27.672Z
+Function: nativeAriesAskar.askar_key_get_secret_bytes
+Arguments: [{"type":"Buffer","data":[144]},{"type":"Buffer","data":[32,0,0,0,0,0,0,0,240,203,253,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:27.679Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[144]}]
+
+Timestamp: 2025-01-15T19:26:36.059Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",29575,0,35]
+
+Timestamp: 2025-01-15T19:26:36.065Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:36.073Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [35,0,"AnonCredsRevocationRegistryDefinitionRecord","64743834-806f-46fe-bb2d-51856a4f3e40",{"len":1824,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"revocationRegistryDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/REV_REG_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition/revocation-20250115192627272\",\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\"}",-1]
+
+Timestamp: 2025-01-15T19:26:36.083Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [35,0]
+
+Timestamp: 2025-01-15T19:26:36.093Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",29613,0,36]
+
+Timestamp: 2025-01-15T19:26:36.100Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:36.106Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [36,0,"AnonCredsRevocationRegistryDefinitionPrivateRecord","8b0ae4dc-a59e-44e3-8914-8a274208b749",{"len":648,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"revocationRegistryDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/REV_REG_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition/revocation-20250115192627272\",\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\",\"state\":\"active\"}",-1]
+
+Timestamp: 2025-01-15T19:26:36.115Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [36,0]
+
+Timestamp: 2025-01-15T19:26:36.139Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",29896,0,2]
+
+Timestamp: 2025-01-15T19:26:36.139Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e","AnonCredsCredentialDefinitionRecord","{\"$or\":[{\"credentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\"},{\"unqualifiedCredentialDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/CLAIM_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition\"}]}",0,-1]
+
+Timestamp: 2025-01-15T19:26:36.147Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",29911,0,{"type":"Buffer","data":[1]}]
+
+Timestamp: 2025-01-15T19:26:36.152Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [2]
+
+Timestamp: 2025-01-15T19:26:36.158Z
+Function: nativeAriesAskar.askar_entry_list_count
+Arguments: [{"type":"Buffer","data":[1]},{"type":"Buffer","data":[1,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.164Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[48,125,196,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.169Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[14,32,0,0,0,0,0,0,32,48,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.176Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[240,104,196,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.182Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[192,92,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.195Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",29918,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:26:36.204Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [2]
+
+Timestamp: 2025-01-15T19:26:36.211Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [2]
+
+Timestamp: 2025-01-15T19:26:36.218Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",29932,0,3]
+
+Timestamp: 2025-01-15T19:26:36.223Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e","AnonCredsRevocationRegistryDefinitionPrivateRecord","{\"revocationRegistryDefinitionId\":\"did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73/anoncreds/v0/REV_REG_DEF/did:ethr:0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73:schema-20250115192558279:1.0/definition/revocation-20250115192627272\"}",0,-1]
+
+Timestamp: 2025-01-15T19:26:36.231Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",29946,0,{"type":"Buffer","data":[1]}]
+
+Timestamp: 2025-01-15T19:26:36.236Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [3]
+
+Timestamp: 2025-01-15T19:26:36.243Z
+Function: nativeAriesAskar.askar_entry_list_count
+Arguments: [{"type":"Buffer","data":[1]},{"type":"Buffer","data":[1,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.249Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[80,8,246,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.259Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[136,2,0,0,0,0,0,0,160,237,169,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.264Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[0,165,249,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.270Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[1]},0,{"type":"Buffer","data":[128,92,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.276Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",29953,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:26:36.283Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [3]
+
+Timestamp: 2025-01-15T19:26:36.289Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [3]
+
+Timestamp: 2025-01-15T19:26:36.377Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",30572,0,37]
+
+Timestamp: 2025-01-15T19:26:36.377Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:36.385Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",30587,0,{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:36.391Z
+Function: nativeAriesAskar.askar_session_fetch_key
+Arguments: [37,"c7TELwL6sr6So2JGhDu3xLT5hUQ8fRh66DSDn7ESYEUR",0]
+
+Timestamp: 2025-01-15T19:26:36.399Z
+Function: nativeAriesAskar.askar_key_entry_list_count
+Arguments: [{"type":"Buffer","data":[216]},{"type":"Buffer","data":[0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.405Z
+Function: nativeAriesAskar.askar_key_entry_list_get_algorithm
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[112,185,58,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.411Z
+Function: nativeAriesAskar.askar_key_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[128,2,23,9,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.417Z
+Function: nativeAriesAskar.askar_key_entry_list_get_metadata
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.423Z
+Function: nativeAriesAskar.askar_key_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.429Z
+Function: nativeAriesAskar.askar_key_entry_list_load_local
+Arguments: [{"type":"Buffer","data":[216]},0,{"type":"Buffer","data":[176,159,222,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.435Z
+Function: nativeAriesAskar.askar_key_entry_list_free
+Arguments: [{"type":"Buffer","data":[216]}]
+
+Timestamp: 2025-01-15T19:26:36.440Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [37,0]
+
+Timestamp: 2025-01-15T19:26:36.446Z
+Function: nativeAriesAskar.askar_key_get_secret_bytes
+Arguments: [{"type":"Buffer","data":[192]},{"type":"Buffer","data":[32,0,0,0,0,0,0,0,96,25,33,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:36.453Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[192]}]
+
+Timestamp: 2025-01-15T19:26:55.415Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",40918,0,38]
+
+Timestamp: 2025-01-15T19:26:55.421Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:55.428Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",40939,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:55.434Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [38,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.441Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[240,130,218,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.447Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,192,166,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.453Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[80,193,220,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.459Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[0,35,35,9,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.465Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:55.471Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [38,0]
+
+Timestamp: 2025-01-15T19:26:55.487Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",40979,0,39]
+
+Timestamp: 2025-01-15T19:26:55.493Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.499Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [39,0]
+
+Timestamp: 2025-01-15T19:26:55.512Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41015,0,40]
+
+Timestamp: 2025-01-15T19:26:55.519Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.526Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41032,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:55.532Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [40,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:26:55.538Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[112,167,23,9,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.544Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,16,30,16,9,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.550Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.556Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[192,132,189,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.562Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:55.568Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [40,0]
+
+Timestamp: 2025-01-15T19:26:55.582Z
+Function: nativeAriesAskar.askar_key_generate
+Arguments: ["ed25519",0,{"type":"Buffer","data":[16,0,198,8,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.589Z
+Function: nativeAriesAskar.askar_key_get_public_bytes
+Arguments: [{"type":"Buffer","data":[16]},{"type":"Buffer","data":[32,0,0,0,0,0,0,0,64,29,210,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.596Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41063,0,41]
+
+Timestamp: 2025-01-15T19:26:55.602Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.609Z
+Function: nativeAriesAskar.askar_session_insert_key
+Arguments: [41,{"type":"Buffer","data":[16]},"9dXTkoL5nJigzmuU2AYP9YAVjeLukFiCDMHPDv3DKoTE",{"type":"Buffer","data":[]},{"type":"Buffer","data":[]},-1]
+
+Timestamp: 2025-01-15T19:26:55.620Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [41,0]
+
+Timestamp: 2025-01-15T19:26:55.626Z
+Function: nativeAriesAskar.askar_key_free
+Arguments: [{"type":"Buffer","data":[16]}]
+
+Timestamp: 2025-01-15T19:26:55.634Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41104,0,4]
+
+Timestamp: 2025-01-15T19:26:55.640Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e","MediationRecord","{\"default\":\"1\"}",0,-1]
+
+Timestamp: 2025-01-15T19:26:55.648Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41118,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:26:55.654Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [4]
+
+Timestamp: 2025-01-15T19:26:55.663Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [4]
+
+Timestamp: 2025-01-15T19:26:55.678Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41132,0,42]
+
+Timestamp: 2025-01-15T19:26:55.688Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:55.694Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41150,0,43]
+
+Timestamp: 2025-01-15T19:26:55.701Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.707Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [43,0,"OutOfBandRecord","c94eea04-84df-4dee-9592-b8deb18bbd3b",{"len":800,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"recipientKeyFingerprints:z6Mko5nWM3aX7rDA7GkAhjWDzdiVZDcmA8xYuNCK4C1EF2Ec\":\"1\",\"role\":\"sender\",\"state\":\"await-response\",\"invitationId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\",\"threadId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\"}",-1]
+
+Timestamp: 2025-01-15T19:26:55.714Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41163,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:55.721Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [42,"TenantRecord","b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e",0]
+
+Timestamp: 2025-01-15T19:26:55.729Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[16,245,206,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.736Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,48,124,236,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.743Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[192,2,13,9,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.749Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[128,42,241,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:55.758Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:55.764Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [42,0]
+
+Timestamp: 2025-01-15T19:26:55.771Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [43,0]
+
+Timestamp: 2025-01-15T19:26:55.797Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41207,0,44]
+
+Timestamp: 2025-01-15T19:26:55.806Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:55.813Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [44,0,"TenantRoutingRecord","b0864d30-82d8-4cee-8a32-768d42ea781f",{"len":275,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"tenantId\":\"b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e\",\"recipientKeyFingerprint\":\"z6Mko5nWM3aX7rDA7GkAhjWDzdiVZDcmA8xYuNCK4C1EF2Ec\"}",-1]
+
+Timestamp: 2025-01-15T19:26:55.823Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [44,0]
+
+Timestamp: 2025-01-15T19:26:59.065Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41299,0,45]
+
+Timestamp: 2025-01-15T19:26:59.071Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"multi-agent",0]
+
+Timestamp: 2025-01-15T19:26:59.079Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41320,0,{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:59.085Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [45,"TenantRecord","da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.092Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[16,237,220,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.099Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[91,1,0,0,0,0,0,0,144,219,3,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.105Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[224,59,250,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.111Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[12]},0,{"type":"Buffer","data":[160,199,232,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.118Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[12]}]
+
+Timestamp: 2025-01-15T19:26:59.124Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [45,0]
+
+Timestamp: 2025-01-15T19:26:59.143Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41360,0,46]
+
+Timestamp: 2025-01-15T19:26:59.143Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.150Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [46,0]
+
+Timestamp: 2025-01-15T19:26:59.165Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41396,0,47]
+
+Timestamp: 2025-01-15T19:26:59.175Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.183Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41413,0,{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:59.189Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [47,"StorageVersionRecord","STORAGE_VERSION_RECORD_ID",0]
+
+Timestamp: 2025-01-15T19:26:59.196Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[224,76,42,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.202Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[160,0,0,0,0,0,0,0,224,49,246,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.209Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[0,0,0,0,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.216Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[20]},0,{"type":"Buffer","data":[192,204,237,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.222Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[20]}]
+
+Timestamp: 2025-01-15T19:26:59.228Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [47,0]
+
+Timestamp: 2025-01-15T19:26:59.242Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41452,0,5]
+
+Timestamp: 2025-01-15T19:26:59.248Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77","OutOfBandRecord","{\"invitationId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\",\"role\":\"receiver\"}",0,-1]
+
+Timestamp: 2025-01-15T19:26:59.256Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41466,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:26:59.263Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [5]
+
+Timestamp: 2025-01-15T19:26:59.269Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [5]
+
+Timestamp: 2025-01-15T19:26:59.277Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41478,0,48]
+
+Timestamp: 2025-01-15T19:26:59.284Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.290Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [48,0,"OutOfBandRecord","ec205e35-1861-4580-a679-084ff7000f6c",{"len":796,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"recipientKeyFingerprints:z6Mko5nWM3aX7rDA7GkAhjWDzdiVZDcmA8xYuNCK4C1EF2Ec\":\"1\",\"role\":\"receiver\",\"state\":\"initial\",\"invitationId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\",\"threadId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\"}",-1]
+
+Timestamp: 2025-01-15T19:26:59.304Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [48,0]
+
+Timestamp: 2025-01-15T19:26:59.312Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41516,0,49]
+
+Timestamp: 2025-01-15T19:26:59.318Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.325Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41530,0,{"type":"Buffer","data":[15]}]
+
+Timestamp: 2025-01-15T19:26:59.331Z
+Function: nativeAriesAskar.askar_session_fetch
+Arguments: [49,"OutOfBandRecord","ec205e35-1861-4580-a679-084ff7000f6c",0]
+
+Timestamp: 2025-01-15T19:26:59.338Z
+Function: nativeAriesAskar.askar_entry_list_get_name
+Arguments: [{"type":"Buffer","data":[15]},0,{"type":"Buffer","data":[48,81,209,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.344Z
+Function: nativeAriesAskar.askar_entry_list_get_value
+Arguments: [{"type":"Buffer","data":[15]},0,{"type":"Buffer","data":[28,3,0,0,0,0,0,0,208,108,11,7,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.351Z
+Function: nativeAriesAskar.askar_entry_list_get_tags
+Arguments: [{"type":"Buffer","data":[15]},0,{"type":"Buffer","data":[112,221,252,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.357Z
+Function: nativeAriesAskar.askar_entry_list_get_category
+Arguments: [{"type":"Buffer","data":[15]},0,{"type":"Buffer","data":[96,51,226,6,0,0,0,0]}]
+
+Timestamp: 2025-01-15T19:26:59.363Z
+Function: nativeAriesAskar.askar_entry_list_free
+Arguments: [{"type":"Buffer","data":[15]}]
+
+Timestamp: 2025-01-15T19:26:59.369Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [49,0]
+
+Timestamp: 2025-01-15T19:26:59.392Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41556,0,6]
+
+Timestamp: 2025-01-15T19:26:59.399Z
+Function: nativeAriesAskar.askar_scan_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77","ConnectionRecord","{\"invitationDid\":\"did:peer:2.SeyJzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxIiwidCI6ImRpZC1jb21tdW5pY2F0aW9uIiwicHJpb3JpdHkiOjAsInJlY2lwaWVudEtleXMiOlsiZGlkOmtleTp6Nk1rbzVuV00zYVg3ckRBN0drQWhqV0R6ZGlWWkRjbUE4eFl1TkNLNEMxRUYyRWMjejZNa281bldNM2FYN3JEQTdHa0FoaldEemRpVlpEY21BOHhZdU5DSzRDMUVGMkVjIl0sInIiOltdfQ\"}",0,-1]
+
+Timestamp: 2025-01-15T19:26:59.407Z
+Function: promisifyWithResponse
+Arguments: [null,"pointer",41570,0,{"type":"Buffer","data":[]}]
+
+Timestamp: 2025-01-15T19:26:59.413Z
+Function: nativeAriesAskar.askar_scan_next
+Arguments: [6]
+
+Timestamp: 2025-01-15T19:26:59.420Z
+Function: nativeAriesAskar.askar_scan_free
+Arguments: [6]
+
+Timestamp: 2025-01-15T19:26:59.429Z
+Function: promisifyWithResponse
+Arguments: [null,"size_t",41582,0,50]
+
+Timestamp: 2025-01-15T19:26:59.435Z
+Function: nativeAriesAskar.askar_session_start
+Arguments: [1,"tenant-da18bce8-cbb3-4569-9f66-78d0c546bc77",0]
+
+Timestamp: 2025-01-15T19:26:59.442Z
+Function: nativeAriesAskar.askar_session_update
+Arguments: [50,1,"OutOfBandRecord","ec205e35-1861-4580-a679-084ff7000f6c",{"len":945,"data":{"type":"Buffer","data":[123,34,95,116,97,103,115,34]}},"{\"invitationId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\",\"recipientKeyFingerprints:z6Mko5nWM3aX7rDA7GkAhjWDzdiVZDcmA8xYuNCK4C1EF2Ec\":\"1\",\"role\":\"receiver\",\"state\":\"prepare-response\",\"threadId\":\"36272ad7-4df2-4864-b10c-3ee15654683d\"}",-1]
+
+Timestamp: 2025-01-15T19:26:59.452Z
+Function: nativeAriesAskar.askar_session_close
+Arguments: [50,0]
+
+Timestamp: 2025-01-15T19:26:59.464Z
+Function: nativeAriesAskar.askar_key_generate
+Arguments: ["ed25519",0,{"type":"Buffer","data":[112,100,100,8,0,0,0,0]

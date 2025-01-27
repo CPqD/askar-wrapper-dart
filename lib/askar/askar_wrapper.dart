@@ -439,10 +439,21 @@ ErrorCode askarKeyEntryListGetAlgorithm(
   return intToErrorCode(result);
 }
 
-ErrorCode askarKeyEntryListGetMetadata(
-    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> metadata) {
-  final result = nativeAskarKeyEntryListGetMetadata(handle, index, metadata);
-  return intToErrorCode(result);
+AskarStringResult askarKeyEntryListGetMetadata(int keyEntryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final funcResult =
+      nativeAskarKeyEntryListGetMetadata(keyEntryListHandle, index, utf8PtPointer);
+
+  final errorCode = intToErrorCode(funcResult);
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarStringResult(errorCode, value);
 }
 
 ErrorCode askarKeyEntryListGetName(
@@ -921,26 +932,25 @@ ErrorCode askarSessionFetchAllKeys(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionFetchKey(
-  int handle,
-  String name,
-  int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchKeyCallback>> cb,
-  int cbId,
-) {
+Future<CallbackResult> askarSessionFetchKey(
+    int handle, String name, int forUpdate) async {
   final namePointer = name.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(namePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchKey(
     handle,
     namePointer,
     forUpdate,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(namePointer);
-
-  return intToErrorCode(result);
+  return callback.handleResult(result);
 }
 
 Future<CallbackResult> askarSessionInsertKey(int sessionHandle, int localKeyHandle,

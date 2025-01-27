@@ -525,13 +525,13 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyEntryListGetMetadataNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> metadata,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> metadata,
 ) nativeAskarKeyEntryListGetMetadata = nativeLib
@@ -1052,7 +1052,7 @@ final int Function(
 typedef AskarSessionFetchKeyCallback = Void Function(
   Int64 cb_id,
   Int32 err,
-  KeyEntryListHandle results,
+  IntPtr results,
 );
 
 typedef AskarSessionFetchKeyNative = Int32 Function(
