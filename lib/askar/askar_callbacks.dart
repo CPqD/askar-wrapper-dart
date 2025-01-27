@@ -23,8 +23,7 @@ base class Callback<T extends Function> {
   Future<CallbackResult> handleResult(int initialResult) {
     final initialErrorCode = intToErrorCode(initialResult);
 
-    if (initialErrorCode != ErrorCode.Success) {
-      print('Falhou de início');
+    if (initialErrorCode != ErrorCode.success) {
       completer.complete(CallbackResult(initialErrorCode, -1, false));
 
       this.cleanupPointers();

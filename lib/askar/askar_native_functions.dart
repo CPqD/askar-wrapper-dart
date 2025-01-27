@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
@@ -42,22 +44,26 @@ base class OptionFlushCallbackStruct extends Struct {
 }
 
 base class ArcHandleFfiEntryList extends Struct {
+  // ignore: unused_field
   external Pointer<FfiEntryList> _0;
 }
 
 base class ArcHandleFfiStringList extends Struct {
+  // ignore: unused_field
   external Pointer<Void> _0;
 }
 
 base class ArcHandleLocalKey extends Struct {
+  // ignore: unused_field
   external Pointer<Void> _0;
 }
 
 base class ArcHandleKeyEntryList extends Struct {
+  // ignore: unused_field
   external Pointer<Void> _0;
 }
 
-final class FfiResultList_Entry extends Opaque {}
+final class FfiResultListEntry extends Opaque {}
 
 typedef CallbackId = Int64;
 
@@ -69,7 +75,7 @@ typedef EntryListHandle = Pointer<ArcHandleFfiEntryList>;
 typedef LocalKeyHandle = Pointer<ArcHandleLocalKey>;
 typedef KeyEntryListHandle = Pointer<ArcHandleKeyEntryList>;
 
-typedef FfiEntryList = FfiResultList_Entry;
+typedef FfiEntryList = FfiResultListEntry;
 
 typedef LogCallback = Void Function(
     Pointer<Void> context,

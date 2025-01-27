@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:flutter/foundation.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 
@@ -93,7 +94,7 @@ AskarStringResult askarEntryListGetCategory(int entryListHandle, int index) {
   final errorCode = intToErrorCode(funcResult);
 
   final String value =
-      (errorCode == ErrorCode.Success) ? utf8PtPointer.value.toDartString() : "";
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -109,7 +110,7 @@ AskarStringResult askarEntryListGetName(int entryListHandle, int index) {
   final errorCode = intToErrorCode(funcResult);
 
   final String value =
-      (errorCode == ErrorCode.Success) ? utf8PtPointer.value.toDartString() : "";
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -127,7 +128,7 @@ AskarMapResult askarEntryListGetTags(int entryListHandle, int index) {
 
   Map value = {};
 
-  if (errorCode == ErrorCode.Success) {
+  if (errorCode == ErrorCode.success) {
     String mapString = utf8PointerPointer.value.toDartString();
     value = jsonDecode(mapString);
   }
@@ -147,7 +148,7 @@ AskarStringResult askarEntryListGetValue(int entryListHandle, int index) {
   final errorCode = intToErrorCode(funcResult);
 
   final String value =
-      (errorCode == ErrorCode.Success) ? secretBufferToString(secretBufferPointer) : "";
+      (errorCode == ErrorCode.success) ? secretBufferToString(secretBufferPointer) : "";
 
   calloc.free(secretBufferPointer.ref.data);
   calloc.free(secretBufferPointer);
@@ -844,9 +845,11 @@ Future<CallbackResult> askarSessionFetch(
 
   final callbackResult = await callback.handleResult(result);
 
-  if (callbackResult.errorCode == ErrorCode.Success && callbackResult.handle == 0) {
-    print(
-        "Invalid handle. This means that the function call succeeded but none was found.");
+  if (callbackResult.errorCode == ErrorCode.success && callbackResult.handle == 0) {
+    if (kDebugMode) {
+      print(
+          "Invalid handle. This means that the function call succeeded but none was found.");
+    }
   }
 
   return callbackResult;
@@ -1224,17 +1227,6 @@ Future<CallbackResult> askarStoreOpen(
   );
 
   return callback.handleResult(result);
-}
-
-base class CallbackParams extends Struct {
-  @Int64()
-  external int cb_id;
-
-  @Int32()
-  external int err;
-
-  @Int64()
-  external int handle;
 }
 
 Future<CallbackResult> askarStoreProvision(

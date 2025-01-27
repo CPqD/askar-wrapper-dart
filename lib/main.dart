@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 
 void main() {
-  print('Askar Version: ${askarVersion()}');
-
   runApp(const MyApp());
 }
 

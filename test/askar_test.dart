@@ -1,11 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/main.dart';
 
 void main() {
@@ -20,15 +22,15 @@ void main() {
 
       await tester.runAsync(() async {
         final storeProvisionResult = await storeProvisionTest();
-        expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
+        expect(storeProvisionResult.errorCode, equals(ErrorCode.success));
         expect(storeProvisionResult.finished, equals(true));
 
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
         expect(storeOpenResult.finished, equals(true));
 
         final storeCloseResult = await storeCloseTest(storeOpenResult.handle);
-        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(storeCloseResult.errorCode, equals(ErrorCode.success));
         expect(storeCloseResult.finished, equals(true));
       });
     });
@@ -39,20 +41,20 @@ void main() {
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
         expect(storeOpenResult.finished, equals(true));
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-        expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
         expect(sessionStartResult.finished, equals(true));
 
         final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-        expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
         expect(sessionFetchResult.finished, equals(true));
         expect(sessionFetchResult.handle, equals(0));
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-        expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
         expect(sessionCloseResult.finished, equals(true));
       });
     });
@@ -62,11 +64,11 @@ void main() {
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
-        expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+        expect(storeOpenResult.errorCode, equals(ErrorCode.success));
         expect(storeOpenResult.finished, equals(true));
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-        expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionStartResult.errorCode, equals(ErrorCode.success));
         expect(sessionStartResult.finished, equals(true));
 
         String value = 'foobar';
@@ -76,36 +78,36 @@ void main() {
 
         final sessionUpdateResult = await sessionUpdateTest(
             sessionStartResult.handle, value, tags, name, category);
-        expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionUpdateResult.errorCode, equals(ErrorCode.success));
         expect(sessionUpdateResult.finished, equals(true));
 
         final sessionFetchResult = await sessionFetchTest(sessionStartResult.handle);
-        expect(sessionFetchResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionFetchResult.errorCode, equals(ErrorCode.success));
         expect(sessionFetchResult.finished, equals(true));
         expect(sessionFetchResult.handle, isNot(equals(0)));
 
         final entryListHandle = sessionFetchResult.handle;
 
         final entryListGetValueRes = entryListGetValueTest(entryListHandle, 0);
-        expect(entryListGetValueRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetValueRes.errorCode, equals(ErrorCode.success));
         expect(entryListGetValueRes.value, equals(value));
 
         final entryListGetTagsRes = entryListGetTagsTest(entryListHandle, 0);
-        expect(entryListGetTagsRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetTagsRes.errorCode, equals(ErrorCode.success));
         expect(entryListGetTagsRes.value, equals(tags));
 
         final entryListGetNameRes = entryListGetNameTest(entryListHandle, 0);
-        expect(entryListGetNameRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetNameRes.errorCode, equals(ErrorCode.success));
         expect(entryListGetNameRes.value, equals(name));
 
         final entryListGetCategoryRes = entryListGetCategoryTest(entryListHandle, 0);
-        expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.Success));
+        expect(entryListGetCategoryRes.errorCode, equals(ErrorCode.success));
         expect(entryListGetCategoryRes.value, equals(category));
 
         askarEntryListFree(entryListHandle);
 
         final sessionCloseResult = await sessionCloseTest(sessionStartResult.handle);
-        expect(sessionCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionCloseResult.errorCode, equals(ErrorCode.success));
         expect(sessionCloseResult.finished, equals(true));
       });
     });
@@ -251,9 +253,9 @@ void printResult(String test, CallbackResult result) {
 }
 
 void printAskarStringResult(String test, AskarStringResult result) {
-  print('$test Result: (${result.errorCode}, Value: \"${result.value}\")\n');
+  print('$test Result: (${result.errorCode}, Value: "${result.value}")\n');
 }
 
 void printAskarMapResult(String test, AskarMapResult result) {
-  print('$test Result: (${result.errorCode}, Value: \"${result.value}\")\n');
+  print('$test Result: (${result.errorCode}, Value: "${result.value}")\n');
 }
