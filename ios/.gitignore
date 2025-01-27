@@ -11,6 +11,8 @@
 **/DerivedData/
 Icon?
 **/Pods/
+**/Build/
+**/aries_askar.xcframework/
 **/.symlinks/
 profile
 xcuserdata
