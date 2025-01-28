@@ -17,12 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _version = '';
-
-  void getVersion() {
-    setState(() {
-      _version = askarVersion();
-    });
-  }
+  String _storeProvisionResult = '';
 
   Future<CallbackResult> storeProvision() async {
     final String specUri = Platform.isIOS
@@ -42,29 +37,55 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                getVersion();
-              },
-              child: Text('Buscar Versão do Askar'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _version = '';
+                    });
+                    setState(() {
+                      _version = askarVersion();
+                    });
+                  },
+                  child: Text('Versão do Askar'),
+                ),
+                Text(
+                  _version,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
             ),
-            Text(
-              _version,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final callback = await storeProvision();
-                print(callback.errorCode);
-              },
-              child: Text('Chamar storeProvision'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      _storeProvisionResult = "";
+                    });
+                    final callback = await storeProvision();
+                    setState(() {
+                      _storeProvisionResult = "${callback.errorCode}";
+                    });
+                  },
+                  child: Text('StoreProvision'),
+                ),
+                Text(
+                  _storeProvisionResult,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
             ),
           ],
         ),
