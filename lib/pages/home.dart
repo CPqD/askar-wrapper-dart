@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../askar/askar_callbacks.dart';
@@ -28,13 +29,12 @@ class _HomePageState extends State<HomePage> {
     final String specUri = Platform.isIOS
         ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
         : 'sqlite://storage.db';
-    final String keyMethod = 'kdf:argon2i:mod';
     final String passKey = 'mySecretKey';
     final String profile = 'rekey';
-    final int recreate = 1; // 1 para recriar, 0 para manter
+    final bool recreate = false;
 
     final result = await askarStoreProvision(
-        specUri, keyMethod, passKey, profile, recreate);
+        specUri, StoreKeyMethod.argon2IMod, passKey, profile, recreate);
     return result;
   }
 

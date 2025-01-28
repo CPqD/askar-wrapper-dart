@@ -35,3 +35,18 @@ Uint8List secretBufferToBytesList(SecretBuffer secretBuffer) {
 
   return dataPointer.asTypedList(length);
 }
+
+bool intToBool(int value) {
+  switch (value) {
+    case 0:
+      return false;
+    case 1:
+      return true;
+    default:
+      throw ArgumentError('Invalid bool value: $value');
+  }
+}
+
+int boolToInt(bool value) {
+  return value ? 1 : 0;
+}
