@@ -42,16 +42,7 @@ void main() {
 
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
 
-        bool throwsException = false;
-
-        try {
-          await sessionFetchTest(sessionStartResult.handle, false);
-        } catch (e) {
-          print(e.toString());
-          throwsException = true;
-        }
-
-        expect(throwsException, equals(true));
+        await sessionFetchTest(sessionStartResult.handle, false);
 
         await sessionCloseTest(sessionStartResult.handle);
       });
@@ -70,7 +61,8 @@ void main() {
         String category = 'category-one';
         Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-        await sessionUpdateTest(sessionStartResult.handle, EntryOperation.insert, value, tags, name, category);
+        await sessionUpdateTest(sessionStartResult.handle, EntryOperation.insert, value,
+            tags, name, category);
 
         final sessionFetchResult =
             await sessionFetchTest(sessionStartResult.handle, true);
@@ -112,6 +104,15 @@ void main() {
             await sessionFetchKeyTest(sessionHandle, name, false);
 
         keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0, metadata);
+
+        askarKeyEntryListFree(sessionFetchKeyResult.handle);
+        askarKeyFree(localKeyHandle);
+
+        await expectLater(
+            () => keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0, metadata),
+            throwsA(isA<Exception>()),
+            reason:
+                "Trying to read from keyEntryList after freeing should cause an exception");
 
         await sessionCloseTest(sessionHandle);
       });
@@ -270,19 +271,21 @@ Future<CallbackResult> sessionFetchTest(int handle, bool checkValid) async {
   String name = 'testEntry';
   bool forUpdate = false;
 
-  final result = await askarSessionFetch(handle, category, name, forUpdate);
+  CallbackResult result = CallbackResult(ErrorCode.custom, -1, false);
 
-  printResult('SessionFetch', result);
-
-  expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
-
-  // É inválido quando result.handle == 0
   if (checkValid) {
+    result = await askarSessionFetch(handle, category, name, forUpdate);
+    expect(result.errorCode, equals(ErrorCode.success));
+    expect(result.finished, equals(true));
     expect(result.handle, isNot(0));
   } else {
-    expect(result.handle, equals(0));
+    await expectLater(
+      () async => {result = await askarSessionFetch(handle, category, name, forUpdate)},
+      throwsA(isA<Exception>()),
+    );
   }
+
+  printResult('SessionFetch', result);
 
   return result;
 }

@@ -1,3 +1,5 @@
+## Askar Functions
+
 - [x] askar_version: () => string;
 
 - [x] askar_get_current_error: (args_0: Buffer) => number; **(required)**
@@ -58,7 +60,7 @@
 
 - [ ] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
-- [ ] askar_key_entry_list_free: (args_0: Buffer) => unknown; **(required)**
+- [x] askar_key_entry_list_free: (args_0: Buffer) => unknown; **(required)**
 
 - [ ] askar_key_entry_list_get_algorithm: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
@@ -70,7 +72,7 @@
 
 - [ ] askar_key_entry_list_load_local: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
-- [ ] askar_key_free: (args_0: Buffer) => unknown; **(required)**
+- [x] askar_key_free: (args_0: Buffer) => unknown; **(required)**
 
 - [ ] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
 
@@ -108,7 +110,7 @@
 
 - [ ] askar_key_get_supported_backends: (args_0: Buffer) => number;
 
-- [ ] askar_scan_free: (args_0: number) => number; **(required)**
+- [x] askar_scan_free: (args_0: number) => number; **(required)**
 
 - [ ] askar_scan_next: (args_0: number, args_1: Buffer, args_2: number) => number; **(required)**
 

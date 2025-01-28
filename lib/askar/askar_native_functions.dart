@@ -479,9 +479,9 @@ final int Function(
     .lookup<NativeFunction<AskarKeyEntryListCountNative>>('askar_key_entry_list_count')
     .asFunction();
 
-typedef AskarKeyEntryListFreeNative = Void Function(KeyEntryListHandle handle);
+typedef AskarKeyEntryListFreeNative = Void Function(IntPtr handle);
 
-final void Function(KeyEntryListHandle handle) nativeAskarKeyEntryListFree = nativeLib
+final void Function(int handle) nativeAskarKeyEntryListFree = nativeLib
     .lookup<NativeFunction<AskarKeyEntryListFreeNative>>('askar_key_entry_list_free')
     .asFunction();
 
@@ -560,9 +560,9 @@ final int Function(
         'askar_key_entry_list_load_local')
     .asFunction();
 
-typedef AskarKeyFreeNative = Void Function(LocalKeyHandle handle);
+typedef AskarKeyFreeNative = Void Function(IntPtr localKeyHandle);
 
-final void Function(LocalKeyHandle handle) nativeAskarKeyFree =
+final void Function(int localKeyHandle) nativeAskarKeyFree =
     nativeLib.lookup<NativeFunction<AskarKeyFreeNative>>('askar_key_free').asFunction();
 
 typedef AskarKeyFromJwkNative = Int32 Function(
@@ -824,11 +824,11 @@ final int Function(
     .asFunction();
 
 typedef AskarScanFreeNative = Int32 Function(
-  ScanHandle handle,
+  ScanHandle scanHandle,
 );
 
 final int Function(
-  int handle,
+  int scanHandle,
 ) nativeAskarScanFree =
     nativeLib.lookup<NativeFunction<AskarScanFreeNative>>('askar_scan_free').asFunction();
 

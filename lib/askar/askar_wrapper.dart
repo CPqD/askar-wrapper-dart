@@ -432,7 +432,7 @@ ErrorCode askarKeyEntryListCount(KeyEntryListHandle handle, int count) {
   return errorCode;
 }
 
-void askarKeyEntryListFree(KeyEntryListHandle handle) {
+void askarKeyEntryListFree(int handle) {
   nativeAskarKeyEntryListFree(handle);
 }
 
@@ -477,8 +477,8 @@ ErrorCode askarKeyEntryListLoadLocal(
   return ErrorCode.fromInt(result);
 }
 
-void askarKeyFree(LocalKeyHandle handle) {
-  nativeAskarKeyFree(handle);
+void askarKeyFree(int localKeyHandle) {
+  nativeAskarKeyFree(localKeyHandle);
 }
 
 ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
@@ -780,8 +780,8 @@ ErrorCode askarKeyGetSupportedBackends(Pointer<StringListHandle> out) {
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarScanFree(int handle) {
-  final result = nativeAskarScanFree(handle);
+ErrorCode askarScanFree(int scanHandle) {
+  final result = nativeAskarScanFree(scanHandle);
   return ErrorCode.fromInt(result);
 }
 
