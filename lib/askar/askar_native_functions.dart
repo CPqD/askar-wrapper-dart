@@ -779,17 +779,17 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyVerifySignatureNative = Int32 Function(
-  LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> signature,
+  IntPtr handle,
+  ByteBuffer message,
+  ByteBuffer signature,
   Pointer<Utf8> sig_type,
   Pointer<Int8> out,
 );
 
 final int Function(
-  LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> signature,
+  int handle,
+  ByteBuffer message,
+  ByteBuffer signature,
   Pointer<Utf8> sig_type,
   Pointer<Int8> out,
 ) nativeAskarKeyVerifySignature = nativeLib

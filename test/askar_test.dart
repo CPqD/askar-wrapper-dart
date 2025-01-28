@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
@@ -101,22 +104,33 @@ void main() {
         await sessionCloseTest(sessionHandle);
       });
     });
-    testWidgets('Sign Message and Verify Signature ', (WidgetTester tester) async {
+    testWidgets('Sign Message and Verify Signature', (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
 
       await tester.runAsync(() async {
         final storeOpenResult = await storeOpenTest();
+
         final sessionStartResult = await sessionStartTest(storeOpenResult.handle);
+        final sessionHandle = sessionStartResult.handle;
 
         final keyGenerateResult =
-            keyGenerateTest(KeyAlgorithm.ecSecp384r1, KeyBackend.software);
+            keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
 
-        final sessionHandle = sessionStartResult.handle;
         final localKeyHandle = keyGenerateResult.value;
 
-        String message = "message";
+        final message = utf8.encode("This is a message!");
+        final otherMessage = utf8.encode("This is another message!");
 
-        keySignMessageTest(localKeyHandle, message, SignatureAlgorithm.eS384);
+        final signAlgorithm = SignatureAlgorithm.edDSA;
+        final expectSuccess = true;
+
+        final signResult = keySignMessageTest(localKeyHandle, message, signAlgorithm);
+
+        keyVerifySignatureTest(
+            localKeyHandle, message, signResult.value, signAlgorithm, expectSuccess);
+
+        keyVerifySignatureTest(localKeyHandle, otherMessage, signResult.value,
+            signAlgorithm, !expectSuccess);
 
         await sessionCloseTest(sessionHandle);
       });
@@ -173,7 +187,9 @@ Future<CallbackResult> sessionStartTest(int handle) async {
 }
 
 AskarIntResult keyGenerateTest(KeyAlgorithm algorithm, KeyBackend keyBackend) {
-  final result = askarKeyGenerate(algorithm, keyBackend, true);
+  bool ephemeral = false;
+
+  final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
 
   printAskarIntResult('KeyGenerate', result);
 
@@ -289,7 +305,7 @@ AskarStringResult entryListGetNameTest(
     int entryListHandle, int index, String expectedName) {
   final result = askarEntryListGetName(entryListHandle, index);
 
-  printAskarStringResult('askarEntryListGetName', result);
+  printAskarStringResult('EntryListGetName', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expectedName));
@@ -301,7 +317,7 @@ AskarStringResult entryListGetCategoryTest(
     int entryListHandle, int index, String expectedCategory) {
   final result = askarEntryListGetCategory(entryListHandle, index);
 
-  printAskarStringResult('askarEntryListGetCategory', result);
+  printAskarStringResult('EntryListGetCategory', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expectedCategory));
@@ -309,11 +325,11 @@ AskarStringResult entryListGetCategoryTest(
   return result;
 }
 
-AskarStringResult keySignMessageTest(
-    int localKeyHandle, String message, SignatureAlgorithm sigType) {
+AskarResult<Uint8List> keySignMessageTest(
+    int localKeyHandle, Uint8List message, SignatureAlgorithm sigType) {
   final result = askarKeySignMessage(localKeyHandle, message, sigType);
 
-  printAskarStringResult('KeySignMessage', result);
+  printAskarResult('KeySignMessage', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, isNot(message));
@@ -321,10 +337,22 @@ AskarStringResult keySignMessageTest(
   return result;
 }
 
+AskarBoolResult keyVerifySignatureTest(int localKeyHandle, Uint8List message,
+    Uint8List signature, SignatureAlgorithm sigType, bool expectSuccess) {
+  final result = askarKeyVerifySignature(localKeyHandle, message, signature, sigType);
+
+  printAskarBoolResult('KeyVerifySignature', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectSuccess));
+
+  return result;
+}
+
 Future<CallbackResult> sessionCloseTest(int handle) async {
   final result = await askarSessionClose(handle, true);
 
-  printResult('StoreClose', result);
+  printResult('SessionClose', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -352,6 +380,10 @@ void printResult(String test, CallbackResult result) {
   }
 }
 
+void printAskarResult(String test, AskarResult result) {
+  print('$test Result: (${result.errorCode}, Value: ${result.value})\n');
+}
+
 void printAskarStringResult(String test, AskarStringResult result) {
   print('$test Result: (${result.errorCode}, Value: "${result.value}")\n');
 }
@@ -361,5 +393,9 @@ void printAskarMapResult(String test, AskarMapResult result) {
 }
 
 void printAskarIntResult(String test, AskarIntResult result) {
+  print('$test Result: (${result.errorCode}, Value: ${result.value})\n');
+}
+
+void printAskarBoolResult(String test, AskarBoolResult result) {
   print('$test Result: (${result.errorCode}, Value: ${result.value})\n');
 }

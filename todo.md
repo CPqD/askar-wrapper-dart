@@ -1,6 +1,6 @@
 - [x] askar_version: () => string;
 
-- [ ] askar_get_current_error: (args_0: Buffer) => number;
+- [x] askar_get_current_error: (args_0: Buffer) => number;
 
 - [ ] askar_buffer_free: (args_0: Buffer) => unknown;
 
@@ -98,11 +98,11 @@
 
 - [ ] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
+- [x] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 
 - [ ] askar_key_unwrap_key: (args_0: Buffer, args_1: string, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
 
-- [ ] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
+- [x] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
 
 - [ ] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
