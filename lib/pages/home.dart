@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
+import 'package:import_so_libaskar/pages/execute_page.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../askar/askar_callbacks.dart';
 import '../askar/askar_wrapper.dart';
+import '../global.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -17,20 +17,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _version = '';
-  String _storeProvisionResult = '';
+  List<MenuItem> menuItems = [
+    MenuItem('Store Provision'),
+    MenuItem('Ler Categoria inexistente'),
+    MenuItem('Escrevendo e lendo da sessão'),
+    MenuItem('Inserindo e lendo uma chave'),
+    MenuItem('Assinar Mensagem e verificar Assinatura'),
+  ];
 
-  Future<CallbackResult> storeProvision() async {
-    final String specUri = Platform.isIOS
+  @override
+  initState() {
+    super.initState();
+    setStorate();
+  }
+
+  setStorate() async {
+    specUri = Platform.isIOS
         ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
         : 'sqlite://storage.db';
-    final String passKey = 'mySecretKey';
-    final String profile = 'rekey';
-    final bool recreate = false;
-
-    final result = await askarStoreProvision(
-        specUri, StoreKeyMethod.argon2IMod, passKey, profile, recreate);
-    return result;
   }
 
   @override
@@ -38,7 +42,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,51 +53,41 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _version = '';
-                    });
-                    setState(() {
-                      _version = askarVersion();
-                    });
-                  },
-                  child: Text('Versão do Askar'),
-                ),
-                Text(
-                  _version,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Askar Version ${askarVersion()}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      _storeProvisionResult = "";
-                    });
-                    final callback = await storeProvision();
-                    setState(() {
-                      _storeProvisionResult = "${callback.errorCode}";
-                    });
-                  },
-                  child: Text('StoreProvision'),
-                ),
-                Text(
-                  _storeProvisionResult,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: menuItems.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(menuItems[index].title),
+                        onTap: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ExecutePage(
+                                      title: menuItems[index].title,
+                                      index: index,
+                                    )),
+                          );
+                        },
+                      );
+                    }))
           ],
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+class MenuItem {
+  final String title;
+
+  MenuItem(this.title);
 }
