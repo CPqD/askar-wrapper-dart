@@ -118,7 +118,7 @@
 
 - [x] askar_session_close: (args_0: number, args_1: number, args_2: Buffer, args_3: number) => number; **(required)**
 
-- [ ] askar_session_count: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_count: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
 - [x] askar_session_fetch: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: Buffer, args_5: number) => number; **(required)**
 
@@ -132,7 +132,7 @@
 
 - [ ] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
 - [x] askar_session_start: (args_0: number, args_1: string, args_2: number, args_3: Buffer, args_4: number) => number; **(required)**
 
