@@ -43,12 +43,24 @@ final class CallbackWithHandle extends Callback<CbFuncWithHandle> {
       : super(nativeCallable, completer, callbackId, cleanupPointers);
 }
 
+final class CallbackWithInt64 extends Callback<CbFuncWithInt64> {
+  @override
+  final NativeCallable<CbFuncWithInt64> nativeCallable;
+
+  CallbackWithInt64(this.nativeCallable, Completer<CallbackResult> completer,
+      int callbackId, void Function() cleanupPointers)
+      : super(nativeCallable, completer, callbackId, cleanupPointers);
+}
+
 final class CallbackWithoutHandle extends Callback<CbFuncWithoutHandle> {
   @override
   final NativeCallable<CbFuncWithoutHandle> nativeCallable;
 
-  CallbackWithoutHandle(this.nativeCallable, Completer<CallbackResult> completer,
-      int callbackId, void Function() cleanupPointers)
+  CallbackWithoutHandle(
+      this.nativeCallable,
+      Completer<CallbackResult> completer,
+      int callbackId,
+      void Function() cleanupPointers)
       : super(nativeCallable, completer, callbackId, cleanupPointers);
 }
 
@@ -66,14 +78,36 @@ CallbackWithHandle newCallbackWithHandle(void Function() cleanup) {
   late final NativeCallable<CbFuncWithHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
+    completer
+        .complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
     cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithHandle>.listener(callback);
 
-  return CallbackWithHandle(nativeCallable, completer, nextCallbackId(), cleanup);
+  return CallbackWithHandle(
+      nativeCallable, completer, nextCallbackId(), cleanup);
+}
+
+typedef CbFuncWithInt64 = Void Function(CallbackId, Int32, Int64);
+
+CallbackWithInt64 newCallbackWithInt64(void Function() cleanup) {
+  final completer = Completer<CallbackResult>();
+
+  late final NativeCallable<CbFuncWithInt64> nativeCallable;
+
+  void callback(int callbackId, int errorCode, int handle) {
+    completer
+        .complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
+    cleanup();
+    nativeCallable.close();
+  }
+
+  nativeCallable = NativeCallable<CbFuncWithInt64>.listener(callback);
+
+  return CallbackWithInt64(
+      nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
 typedef CbFuncWithoutHandle = Void Function(CallbackId, Int32);
@@ -91,5 +125,6 @@ CallbackWithoutHandle newCallbackWithoutHandle(void Function() cleanup) {
 
   nativeCallable = NativeCallable<CbFuncWithoutHandle>.listener(callback);
 
-  return CallbackWithoutHandle(nativeCallable, completer, nextCallbackId(), cleanup);
+  return CallbackWithoutHandle(
+      nativeCallable, completer, nextCallbackId(), cleanup);
 }
