@@ -992,7 +992,7 @@ Future<CallbackResult> askarSessionFetchKey(
     callback.id,
   );
 
-  return callback.handleResult(result);
+  return await callback.handleResult(result);
 }
 
 Future<CallbackResult> askarSessionInsertKey(int sessionHandle,
@@ -1066,7 +1066,7 @@ Future<CallbackResult> askarSessionRemoveKey(
     callback.id,
   );
 
-  return callback.handleResult(result);
+  return await callback.handleResult(result);
 }
 
 Future<CallbackResult> askarSessionStart(

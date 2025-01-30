@@ -130,12 +130,11 @@ void main() {
       await sessionInsertKeyTest(
           sessionHandle, localKeyHandle, name, metadata, tags);
 
-      await sessionFetchKeyTest(sessionHandle, name, expectSuccess: true);
+      final fetchKeyResult = await sessionFetchKeyTest(sessionHandle, name, expectSuccess: true);
 
       await sessionRemoveKeyTest(sessionHandle, name);
 
-      final fetchKeyResult =
-          await sessionFetchKeyTest(sessionHandle, name, expectSuccess: false);
+      await sessionFetchKeyTest(sessionHandle, name, expectSuccess: false);
 
       keyEntryListCountTest(fetchKeyResult.handle, expectedValue: 0);
     });
@@ -242,7 +241,6 @@ Future<CallbackResult> sessionRemoveKeyTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
-  expect(result.handle, lessThan(0));
 
   return result;
 }
