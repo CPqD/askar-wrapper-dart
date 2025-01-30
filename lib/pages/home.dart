@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     MenuItem('Escrevendo e lendo da sessão'),
     MenuItem('Inserindo e lendo uma chave'),
     MenuItem('Assinar Mensagem e verificar Assinatura'),
+    MenuItem('Inserindo, Recuperando e removendo chave'),
   ];
 
   @override
@@ -64,18 +65,20 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                     itemCount: menuItems.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(menuItems[index].title),
-                        onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ExecutePage(
-                                      title: menuItems[index].title,
-                                      index: index,
-                                    )),
-                          );
-                        },
+                      return Card(
+                        child: ListTile(
+                          title: Text(menuItems[index].title),
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ExecutePage(
+                                        title: menuItems[index].title,
+                                        index: index,
+                                      )),
+                            );
+                          },
+                        ),
                       );
                     }))
           ],

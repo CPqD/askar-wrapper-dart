@@ -33,6 +33,7 @@ class _ExecutePageState extends State<ExecutePage> {
       writeAndRead,
       insertAndReadKey,
       signMessageAndVerify,
+      insertAndRemoveKey,
     ];
     _functions[widget.index]();
   }
@@ -75,16 +76,14 @@ class _ExecutePageState extends State<ExecutePage> {
     final res =
         await askarStoreProvision(specUri!, method, passKey, profile, recreate);
     result = '$result Provision: ${res.errorCode}\n';
-    setState(() {});
-
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final storeOpenResult =
         await askarStoreOpen(specUri!, method, passKey, profile);
     result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
+
     askarStoreClose(storeOpenResult.handle);
     result = '$result CloseStore';
     setState(() {});
@@ -99,29 +98,25 @@ class _ExecutePageState extends State<ExecutePage> {
     final storeOpenResult =
         await askarStoreOpen(specUri!, method, passKey, profile);
     result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final sessionStartResult =
         await askarSessionStart(storeOpenResult.handle, profile, asTransaction);
     result = '$result SessionStart: ${sessionStartResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     try {
       final sessionFetchResult = await askarSessionFetch(
           sessionStartResult.handle, category, name, forUpdate);
       result = '$result SessionFetch: ${sessionFetchResult.errorCode}\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     } catch (e) {
       result = '$result SessionFetch: $e\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     }
 
     await Future.delayed(Duration(milliseconds: 500));
@@ -142,16 +137,15 @@ class _ExecutePageState extends State<ExecutePage> {
     final storeOpenResult =
         await askarStoreOpen(specUri!, method, passKey, profile);
     result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final sessionStartResult =
         await askarSessionStart(storeOpenResult.handle, profile, asTransaction);
     result = '$result SessionStart: ${sessionStartResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
+
     final sessionUpdateResult = await askarSessionUpdate(
         sessionStartResult.handle,
         EntryOperation.insert,
@@ -162,15 +156,15 @@ class _ExecutePageState extends State<ExecutePage> {
         2000);
 
     result = '$result SessionUpdatet: ${sessionUpdateResult.errorCode}\n';
-    setState(() {});
+
+    await delay();
 
     try {
       final sessionFetchResult = await askarSessionFetch(
           sessionStartResult.handle, category, name, forUpdate);
       result = '$result SessionFetch: ${sessionFetchResult.errorCode}\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
 
       final entryListHandle = sessionFetchResult.handle;
 
@@ -182,12 +176,11 @@ class _ExecutePageState extends State<ExecutePage> {
       result =
           '$result SessionFetch: Value $valueResult, Tags $tagsResult, Name $nameResult, Category $categoryResult\n';
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     } catch (e) {
       result = '$result SessionFetch: $e\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     }
 
     final sessinCloseResult =
@@ -206,16 +199,14 @@ class _ExecutePageState extends State<ExecutePage> {
     final storeOpenResult =
         await askarStoreOpen(specUri!, method, passKey, profile);
     result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final sessionStartResult =
         await askarSessionStart(storeOpenResult.handle, profile, asTransaction);
     result = '$result SessionStart: ${sessionStartResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final keyGenerateResult =
         keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
@@ -226,30 +217,26 @@ class _ExecutePageState extends State<ExecutePage> {
         sessionStartResult.handle, localKeyHandle, name, metadata, tags, 2000);
 
     result = '$result sessionInsertKey: ${sessionInsertKey.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     try {
       final sessionFetchKeyResult = await askarSessionFetchKey(
           sessionStartResult.handle, name, forUpdate);
       result = '$result SessionFetchKey: ${sessionFetchKeyResult.errorCode}\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
 
       final askarKeyEntryListResult =
           askarKeyEntryListGetMetadata(sessionFetchKeyResult.handle, 0);
       result =
           '$result KeyEntryListGetMetadata: ${askarKeyEntryListResult.errorCode} Valor: ${askarKeyEntryListResult.value}\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     } catch (e) {
       result = '$result SessionFetchKey: $e\n';
-      setState(() {});
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await delay();
     }
 
     final sessinCloseResult =
@@ -266,16 +253,14 @@ class _ExecutePageState extends State<ExecutePage> {
     final storeOpenResult =
         await askarStoreOpen(specUri!, method, passKey, profile);
     result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final sessionStartResult =
         await askarSessionStart(storeOpenResult.handle, profile, asTransaction);
     result = '$result SessionStart: ${sessionStartResult.errorCode}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
 
     final keyGenerateResult =
         keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
@@ -286,17 +271,70 @@ class _ExecutePageState extends State<ExecutePage> {
         askarKeySignMessage(localKeyHandle, message, signAlgorithm);
     result =
         '$result KeySignMessage: ${signResult.errorCode} ${signResult.value}\n';
-    setState(() {});
-    await Future.delayed(Duration(milliseconds: 500));
+
+    await delay();
 
     final keyVeryfyResult = askarKeyVerifySignature(
         localKeyHandle, message, signResult.value, signAlgorithm);
 
     result =
         '$result KeyVerifySignature: ${keyVeryfyResult.errorCode} ${keyVeryfyResult.value}\n';
-    setState(() {});
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await delay();
+
+    final sessinCloseResult =
+        await askarSessionClose(sessionStartResult.handle, true);
+    result = '$result SessionClose: ${sessinCloseResult.errorCode}\n';
+    setState(() {});
+  }
+
+  insertAndRemoveKey() async {
+    bool asTransaction = true;
+    String name = 'testEntry3';
+    bool forUpdate = true;
+    Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+    String metadata = 'meta';
+    final storeOpenResult =
+        await askarStoreOpen(specUri!, method, passKey, profile);
+    result = '$result StoreOpen: ${storeOpenResult.errorCode}\n';
+
+    await delay();
+
+    final sessionStartResult =
+        await askarSessionStart(storeOpenResult.handle, profile, asTransaction);
+    result = '$result SessionStart: ${sessionStartResult.errorCode}\n';
+
+    await delay();
+
+    final keyGenerateResult =
+        keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
+
+    final localKeyHandle = keyGenerateResult.value;
+
+    final sessionInsertKey = await askarSessionInsertKey(
+        sessionStartResult.handle, localKeyHandle, name, metadata, tags, 2000);
+
+    result = '$result sessionInsertKey: ${sessionInsertKey.errorCode}\n';
+
+    await delay();
+
+    try {
+      final sessionFetchKeyResult = await askarSessionFetchKey(
+          sessionStartResult.handle, name, forUpdate);
+      result = '$result SessionFetchKey: ${sessionFetchKeyResult.errorCode}\n';
+
+      await delay();
+
+      final sessionRemoveKey =
+          await askarSessionRemoveKey(sessionStartResult.handle, name);
+      result = '$result SessionRemoveKey: ${sessionRemoveKey.errorCode}\n';
+
+      await delay();
+    } catch (e) {
+      result = '$result SessionFetchKey: $e\n';
+
+      await delay();
+    }
 
     final sessinCloseResult =
         await askarSessionClose(sessionStartResult.handle, true);
@@ -310,5 +348,10 @@ class _ExecutePageState extends State<ExecutePage> {
     final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
 
     return result;
+  }
+
+  Future<void> delay() async {
+    setState(() {});
+    await Future.delayed(Duration(milliseconds: 500));
   }
 }
