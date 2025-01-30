@@ -29,11 +29,11 @@ class _HomePageState extends State<HomePage> {
   @override
   initState() {
     super.initState();
-    setStorate();
+    setStorage();
   }
 
-  setStorate() async {
-    specUri = Platform.isIOS
+  setStorage() async {
+    specUri = (Platform.isIOS || Platform.isAndroid)
         ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
         : 'sqlite://storage.db';
   }
