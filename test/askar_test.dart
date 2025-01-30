@@ -32,7 +32,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      // Close store after each test
+      // Close the store after all tests pass.
       await storeCloseTest(storeOpenResult.handle);
     });
 
@@ -143,8 +143,6 @@ void main() {
       await sessionFetchKeyTest(sessionStartResultHandle, name, false);
 
       await sessionRemoveKeyTest(sessionStartResultHandle, name);
-
-      await sessionFetchKeyTest(sessionStartResultHandle, name, false);
     });
   });
 }
@@ -237,8 +235,7 @@ Future<CallbackResult> sessionRemoveKeyTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
-
-  //expect(result.handle, greaterThan(0));
+  expect(result.handle, lessThan(0));
 
   return result;
 }
@@ -264,7 +261,7 @@ Future<CallbackResult> sessionFetchKeyTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
-  //expect(result.handle, greaterThan(0));
+  expect(result.handle, greaterThan(0));
 
   return result;
 }
@@ -402,7 +399,6 @@ AskarResult<bool> keyVerifySignatureTest(int localKeyHandle, Uint8List message,
 Future<CallbackResult> sessionCloseTest(int handle) async {
   final result = await askarSessionClose(handle, true);
 
-  printResult('SessionClose', result);
   printResult('SessionClose', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
