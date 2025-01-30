@@ -7,12 +7,12 @@ mkdir -p $TARGET_DIR
 
 # Download the tar.gz file
 echo "Downloading $ASKAR_URL..."
-curl -L $ASKAR_URL -o library-ios-android.tar.gz
+curl -L "$ASKAR_URL" -o "$TARGET_DIR/library-ios-android.tar.gz"
 
 # Extract the contents to a temporary directory
 TEMP_DIR=$(mktemp -d)
 echo "Extracting contents..."
-tar -xzf library-ios-android.tar.gz -C $TEMP_DIR
+tar -xzf "$TARGET_DIR/library-ios-android.tar.gz" -C $TEMP_DIR
 
 # Move the mobile/android directory to the target directory
 echo "Moving mobile/android to $TARGET_DIR..."
@@ -20,6 +20,6 @@ mv $TEMP_DIR/mobile/android/* $TARGET_DIR
 
 # Clean up the temporary directory and the downloaded tar.gz file
 rm -rf $TEMP_DIR
-rm library-ios-android.tar.gz
+rm "$TARGET_DIR/library-ios-android.tar.gz"
 
 echo "Done!"
