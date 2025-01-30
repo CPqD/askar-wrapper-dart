@@ -58,7 +58,7 @@
 
 - [ ] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
 
-- [ ] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
+- [x] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
 - [x] askar_key_entry_list_free: (args_0: Buffer) => unknown; **(required)**
 

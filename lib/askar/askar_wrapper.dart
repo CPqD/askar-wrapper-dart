@@ -34,8 +34,9 @@ AskarResult<String> askarGetCurrentError() {
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final String value =
-      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+  final String value = (errorCode == ErrorCode.success)
+      ? utf8PtPointer.value.toDartString()
+      : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -90,8 +91,8 @@ ErrorCode askarEntryListCount(EntryListHandle handle, int count) {
   return ErrorCode.fromInt(result);
 }
 
-void askarEntryListFree(int handle) {
-  nativeAskarEntryListFree(handle);
+void askarEntryListFree(int entryListHandle) {
+  nativeAskarEntryListFree(entryListHandle);
 }
 
 AskarResult<String> askarEntryListGetCategory(int entryListHandle, int index) {
@@ -102,8 +103,9 @@ AskarResult<String> askarEntryListGetCategory(int entryListHandle, int index) {
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final String value =
-      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+  final String value = (errorCode == ErrorCode.success)
+      ? utf8PtPointer.value.toDartString()
+      : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -114,12 +116,14 @@ AskarResult<String> askarEntryListGetCategory(int entryListHandle, int index) {
 AskarResult<String> askarEntryListGetName(int entryListHandle, int index) {
   Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
-  final funcResult = nativeAskarEntryListGetName(entryListHandle, index, utf8PtPointer);
+  final funcResult =
+      nativeAskarEntryListGetName(entryListHandle, index, utf8PtPointer);
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final String value =
-      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+  final String value = (errorCode == ErrorCode.success)
+      ? utf8PtPointer.value.toDartString()
+      : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -418,22 +422,23 @@ ErrorCode askarKeyDeriveEcdhEs(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyEntryListCount(KeyEntryListHandle handle, int count) {
-  final countPointer = calloc<Int32>();
-  countPointer.value = count;
+AskarResult<int> askarKeyEntryListCount(int keyEntryListHandle) {
+  Pointer<Int32> countPointer = calloc<Int32>();
 
-  final result = nativeAskarKeyEntryListCount(handle, countPointer);
+  final funcResult =
+      nativeAskarKeyEntryListCount(keyEntryListHandle, countPointer);
 
-  final errorCode = ErrorCode.fromInt(result);
-  count = countPointer.value;
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  int count = countPointer.value;
 
   calloc.free(countPointer);
 
-  return errorCode;
+  return AskarResult<int>(errorCode, count);
 }
 
-void askarKeyEntryListFree(int handle) {
-  nativeAskarKeyEntryListFree(handle);
+void askarKeyEntryListFree(int keyEntryListHandle) {
+  nativeAskarKeyEntryListFree(keyEntryListHandle);
 }
 
 ErrorCode askarKeyEntryListGetAlgorithm(
@@ -442,16 +447,18 @@ ErrorCode askarKeyEntryListGetAlgorithm(
   return ErrorCode.fromInt(result);
 }
 
-AskarResult<String> askarKeyEntryListGetMetadata(int keyEntryListHandle, int index) {
+AskarResult<String> askarKeyEntryListGetMetadata(
+    int keyEntryListHandle, int index) {
   Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
-  final funcResult =
-      nativeAskarKeyEntryListGetMetadata(keyEntryListHandle, index, utf8PtPointer);
+  final funcResult = nativeAskarKeyEntryListGetMetadata(
+      keyEntryListHandle, index, utf8PtPointer);
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final String value =
-      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+  final String value = (errorCode == ErrorCode.success)
+      ? utf8PtPointer.value.toDartString()
+      : "";
 
   calloc.free(utf8PtPointer.value);
   calloc.free(utf8PtPointer);
@@ -481,7 +488,8 @@ void askarKeyFree(int localKeyHandle) {
   nativeAskarKeyFree(localKeyHandle);
 }
 
-ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
+ErrorCode askarKeyFromJwk(
+    Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
   final result = nativeAskarKeyFromJwk(jwk, out);
   return ErrorCode.fromInt(result);
 }
@@ -571,13 +579,14 @@ AskarResult<int> askarKeyGenerate(
   final algPointer = alg.value.toNativeUtf8();
   final keyBackendPointer = keyBackend.value.toNativeUtf8();
 
-  final funcResult = nativeAskarKeyGenerate(
-      algPointer, keyBackendPointer, boolToInt(ephemeral), localKeyHandlePointer);
+  final funcResult = nativeAskarKeyGenerate(algPointer, keyBackendPointer,
+      boolToInt(ephemeral), localKeyHandlePointer);
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final int localKeyHandle =
-      (errorCode == ErrorCode.success) ? localKeyHandlePointer.value.toInt() : -1;
+  final int localKeyHandle = (errorCode == ErrorCode.success)
+      ? localKeyHandlePointer.value.toInt()
+      : -1;
 
   calloc.free(algPointer);
   calloc.free(keyBackendPointer);
@@ -586,7 +595,8 @@ AskarResult<int> askarKeyGenerate(
   return AskarResult<int>(errorCode, localKeyHandle);
 }
 
-ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
+ErrorCode askarKeyGetAlgorithm(
+    LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
   final result = nativeAskarKeyGetAlgorithm(handle, out);
   return ErrorCode.fromInt(result);
 }
@@ -689,7 +699,8 @@ AskarResult<Uint8List> askarKeySignMessage(
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final value = Uint8List.fromList(secretBufferToBytesList(secretBufferPointer.ref));
+  final value =
+      Uint8List.fromList(secretBufferToBytesList(secretBufferPointer.ref));
 
   calloc.free(sigTypePointer);
   calloc.free(byteBufferPointer.ref.data);
@@ -747,7 +758,8 @@ AskarResult<bool> askarKeyVerifySignature(
 
   final errorCode = ErrorCode.fromInt(funcResult);
 
-  final int output = (errorCode == ErrorCode.success) ? intPointer.value.toInt() : 0;
+  final int output =
+      (errorCode == ErrorCode.success) ? intPointer.value.toInt() : 0;
 
   calloc.free(intPointer);
   calloc.free(sigTypePointer);
@@ -786,16 +798,16 @@ ErrorCode askarScanFree(int scanHandle) {
 }
 
 ErrorCode askarScanNext(
-  int handle,
+  int scanHandle,
   Pointer<NativeFunction<AskarScanNextCallback>> cb,
   int cbId,
 ) {
-  final result = nativeAskarScanNext(handle, cb, cbId);
+  final result = nativeAskarScanNext(scanHandle, cb, cbId);
   return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarScanStart(
-  int handle,
+  int scanHandle,
   String profile,
   String category,
   String tagFilter,
@@ -809,7 +821,7 @@ ErrorCode askarScanStart(
   final tagFilterPointer = tagFilter.toNativeUtf8();
 
   final result = nativeAskarScanStart(
-    handle,
+    scanHandle,
     profilePointer,
     categoryPointer,
     tagFilterPointer,
@@ -827,19 +839,19 @@ ErrorCode askarScanStart(
 }
 
 Future<CallbackResult> askarSessionClose(
-  int handle,
+  int sessionHandle,
   bool commit,
 ) async {
   final callback = newCallbackWithoutHandle(() => {});
 
-  final result = nativeAskarSessionClose(
-      handle, boolToInt(commit), callback.nativeCallable.nativeFunction, callback.id);
+  final result = nativeAskarSessionClose(sessionHandle, boolToInt(commit),
+      callback.nativeCallable.nativeFunction, callback.id);
 
   return await callback.handleResult(result);
 }
 
 Future<CallbackResult> askarSessionCount(
-  int handle,
+  int sessionHandle,
   String category,
   Map<String, String> tagFilter,
 ) {
@@ -856,7 +868,7 @@ Future<CallbackResult> askarSessionCount(
   final callback = newCallbackWithInt64(cleanup);
 
   final result = nativeAskarSessionCount(
-    handle,
+    sessionHandle,
     categoryPointer,
     tagFilterPointer,
     callback.nativeCallable.nativeFunction,
@@ -867,7 +879,7 @@ Future<CallbackResult> askarSessionCount(
 }
 
 Future<CallbackResult> askarSessionFetch(
-  int handle,
+  int sessionHandle,
   String category,
   String name,
   bool forUpdate,
@@ -883,7 +895,7 @@ Future<CallbackResult> askarSessionFetch(
   final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetch(
-    handle,
+    sessionHandle,
     categoryPointer,
     namePointer,
     boolToInt(forUpdate),
@@ -893,7 +905,8 @@ Future<CallbackResult> askarSessionFetch(
 
   final callbackResult = await callback.handleResult(result);
 
-  if (callbackResult.errorCode == ErrorCode.success && callbackResult.handle == 0) {
+  if (callbackResult.errorCode == ErrorCode.success &&
+      callbackResult.handle == 0) {
     throw Exception(
         "Invalid handle. This means that the function call succeeded but none was found.");
   }
@@ -902,7 +915,7 @@ Future<CallbackResult> askarSessionFetch(
 }
 
 ErrorCode askarSessionFetchAll(
-  int handle,
+  int sessionHandle,
   String category,
   String tagFilter,
   int limit,
@@ -914,7 +927,7 @@ ErrorCode askarSessionFetchAll(
   final tagFilterPointer = tagFilter.toNativeUtf8();
 
   final result = nativeAskarSessionFetchAll(
-    handle,
+    sessionHandle,
     categoryPointer,
     tagFilterPointer,
     limit,
@@ -930,7 +943,7 @@ ErrorCode askarSessionFetchAll(
 }
 
 ErrorCode askarSessionFetchAllKeys(
-  int handle,
+  int sessionHandle,
   String alg,
   String thumbprint,
   String tagFilter,
@@ -944,7 +957,7 @@ ErrorCode askarSessionFetchAllKeys(
   final tagFilterPointer = tagFilter.toNativeUtf8();
 
   final result = nativeAskarSessionFetchAllKeys(
-    handle,
+    sessionHandle,
     algPointer,
     thumbprintPointer,
     tagFilterPointer,
@@ -962,7 +975,7 @@ ErrorCode askarSessionFetchAllKeys(
 }
 
 Future<CallbackResult> askarSessionFetchKey(
-    int handle, String name, bool forUpdate) async {
+    int sessionHandle, String name, bool forUpdate) async {
   final namePointer = name.toNativeUtf8();
 
   void cleanup() {
@@ -972,7 +985,7 @@ Future<CallbackResult> askarSessionFetchKey(
   final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchKey(
-    handle,
+    sessionHandle,
     namePointer,
     boolToInt(forUpdate),
     callback.nativeCallable.nativeFunction,
@@ -982,8 +995,8 @@ Future<CallbackResult> askarSessionFetchKey(
   return callback.handleResult(result);
 }
 
-Future<CallbackResult> askarSessionInsertKey(int sessionHandle, int localKeyHandle,
-    String name, String metadata, Map tags, int expiryMs) {
+Future<CallbackResult> askarSessionInsertKey(int sessionHandle,
+    int localKeyHandle, String name, String metadata, Map tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
   final tagsJsonPointer = jsonEncode(tags).toNativeUtf8();
@@ -1011,7 +1024,7 @@ Future<CallbackResult> askarSessionInsertKey(int sessionHandle, int localKeyHand
 }
 
 ErrorCode askarSessionRemoveAll(
-  int handle,
+  int sessionHandle,
   String category,
   String tagFilter,
   Pointer<NativeFunction<AskarSessionRemoveAllCallback>> cb,
@@ -1021,7 +1034,7 @@ ErrorCode askarSessionRemoveAll(
   final tagFilterPointer = tagFilter.toNativeUtf8();
 
   final result = nativeAskarSessionRemoveAll(
-    handle,
+    sessionHandle,
     categoryPointer,
     tagFilterPointer,
     cb,
@@ -1035,7 +1048,7 @@ ErrorCode askarSessionRemoveAll(
 }
 
 Future<CallbackResult> askarSessionRemoveKey(
-  int handle,
+  int sessionHandle,
   String name,
 ) async {
   final namePointer = name.toNativeUtf8();
@@ -1047,7 +1060,7 @@ Future<CallbackResult> askarSessionRemoveKey(
   final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionRemoveKey(
-    handle,
+    sessionHandle,
     namePointer,
     callback.nativeCallable.nativeFunction,
     callback.id,
@@ -1056,7 +1069,8 @@ Future<CallbackResult> askarSessionRemoveKey(
   return callback.handleResult(result);
 }
 
-Future<CallbackResult> askarSessionStart(int handle, String profile, bool asTransaction) {
+Future<CallbackResult> askarSessionStart(
+    int storeHandle, String profile, bool asTransaction) {
   final profilePointer = profile.toNativeUtf8();
 
   void cleanup() {
@@ -1066,7 +1080,7 @@ Future<CallbackResult> askarSessionStart(int handle, String profile, bool asTran
   final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionStart(
-    handle,
+    storeHandle,
     profilePointer,
     boolToInt(asTransaction),
     callback.nativeCallable.nativeFunction,
@@ -1077,7 +1091,7 @@ Future<CallbackResult> askarSessionStart(int handle, String profile, bool asTran
 }
 
 Future<CallbackResult> askarSessionUpdate(
-  int handle,
+  int sessionHandle,
   EntryOperation operation,
   String category,
   String name,
@@ -1106,7 +1120,7 @@ Future<CallbackResult> askarSessionUpdate(
   final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionUpdate(
-    handle,
+    sessionHandle,
     operation.value,
     categoryPointer,
     namePointer,
@@ -1121,7 +1135,7 @@ Future<CallbackResult> askarSessionUpdate(
 }
 
 ErrorCode askarSessionUpdateKey(
-  int handle,
+  int sessionHandle,
   String name,
   String metadata,
   String tags,
@@ -1134,7 +1148,7 @@ ErrorCode askarSessionUpdateKey(
   final tagsPointer = tags.toNativeUtf8();
 
   final result = nativeAskarSessionUpdateKey(
-    handle,
+    sessionHandle,
     namePointer,
     metadataPointer,
     tagsPointer,
@@ -1150,17 +1164,17 @@ ErrorCode askarSessionUpdateKey(
   return ErrorCode.fromInt(result);
 }
 
-Future<CallbackResult> askarStoreClose(int handle) {
+Future<CallbackResult> askarStoreClose(int storeHandle) {
   final callback = newCallbackWithoutHandle(() => {});
 
-  final result =
-      nativeAskarStoreClose(handle, callback.nativeCallable.nativeFunction, callback.id);
+  final result = nativeAskarStoreClose(
+      storeHandle, callback.nativeCallable.nativeFunction, callback.id);
 
   return callback.handleResult(result);
 }
 
 ErrorCode askarStoreCopy(
-  int handle,
+  int storeHandle,
   String targetUri,
   String keyMethod,
   String passKey,
@@ -1173,7 +1187,7 @@ ErrorCode askarStoreCopy(
   final passKeyPointer = passKey.toNativeUtf8();
 
   final result = nativeAskarStoreCopy(
-    handle,
+    storeHandle,
     targetUriPointer,
     keyMethodPointer,
     passKeyPointer,
@@ -1190,7 +1204,7 @@ ErrorCode askarStoreCopy(
 }
 
 ErrorCode askarStoreCreateProfile(
-  int handle,
+  int storeHandle,
   String profile,
   Pointer<NativeFunction<AskarStoreCreateProfileCallback>> cb,
   int cbId,
@@ -1198,7 +1212,7 @@ ErrorCode askarStoreCreateProfile(
   final profilePointer = profile.toNativeUtf8();
 
   final result = nativeAskarStoreCreateProfile(
-    handle,
+    storeHandle,
     profilePointer,
     cb,
     cbId,
@@ -1218,29 +1232,29 @@ ErrorCode askarStoreGenerateRawKey(
 }
 
 ErrorCode askarStoreGetDefaultProfile(
-  int handle,
+  int storeHandle,
   Pointer<NativeFunction<AskarStoreGetDefaultProfileCallback>> cb,
   int cbId,
 ) {
-  final result = nativeAskarStoreGetDefaultProfile(handle, cb, cbId);
+  final result = nativeAskarStoreGetDefaultProfile(storeHandle, cb, cbId);
   return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreGetProfileName(
-  int handle,
+  int storeHandle,
   Pointer<NativeFunction<AskarStoreGetProfileNameCallback>> cb,
   int cbId,
 ) {
-  final result = nativeAskarStoreGetProfileName(handle, cb, cbId);
+  final result = nativeAskarStoreGetProfileName(storeHandle, cb, cbId);
   return ErrorCode.fromInt(result);
 }
 
 ErrorCode askarStoreListProfiles(
-  int handle,
+  int storeHandle,
   Pointer<NativeFunction<AskarStoreListProfilesCallback>> cb,
   int cbId,
 ) {
-  final result = nativeAskarStoreListProfiles(handle, cb, cbId);
+  final result = nativeAskarStoreListProfiles(storeHandle, cb, cbId);
   return ErrorCode.fromInt(result);
 }
 
@@ -1311,7 +1325,7 @@ Future<CallbackResult> askarStoreProvision(
 }
 
 ErrorCode askarStoreRekey(
-  int handle,
+  int storeHandle,
   String keyMethod,
   String passKey,
   Pointer<NativeFunction<AskarStoreRekeyCallback>> cb,
@@ -1321,7 +1335,7 @@ ErrorCode askarStoreRekey(
   final passKeyPointer = passKey.toNativeUtf8();
 
   final result = nativeAskarStoreRekey(
-    handle,
+    storeHandle,
     keyMethodPointer,
     passKeyPointer,
     cb,
@@ -1353,7 +1367,7 @@ ErrorCode askarStoreRemove(
 }
 
 ErrorCode askarStoreRemoveProfile(
-  int handle,
+  int storeHandle,
   String profile,
   Pointer<NativeFunction<AskarStoreRemoveProfileCallback>> cb,
   int cbId,
@@ -1361,7 +1375,7 @@ ErrorCode askarStoreRemoveProfile(
   final profilePointer = profile.toNativeUtf8();
 
   final result = nativeAskarStoreRemoveProfile(
-    handle,
+    storeHandle,
     profilePointer,
     cb,
     cbId,
@@ -1373,7 +1387,7 @@ ErrorCode askarStoreRemoveProfile(
 }
 
 ErrorCode askarStoreSetDefaultProfile(
-  int handle,
+  int storeHandle,
   String profile,
   Pointer<NativeFunction<AskarStoreSetDefaultProfileCallback>> cb,
   int cbId,
@@ -1381,7 +1395,7 @@ ErrorCode askarStoreSetDefaultProfile(
   final profilePointer = profile.toNativeUtf8();
 
   final result = nativeAskarStoreSetDefaultProfile(
-    handle,
+    storeHandle,
     profilePointer,
     cb,
     cbId,

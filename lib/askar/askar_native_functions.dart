@@ -473,12 +473,12 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyEntryListCountNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Pointer<Int32> count,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   Pointer<Int32> count,
 ) nativeAskarKeyEntryListCount = nativeLib
     .lookup<NativeFunction<AskarKeyEntryListCountNative>>('askar_key_entry_list_count')
