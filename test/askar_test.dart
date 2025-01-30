@@ -15,41 +15,35 @@ import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
 
 void main() {
   group('Askar Tests', () {
-    late CallbackResult storeOpenResult;
-    late CallbackResult sessionStartResult;
-    late int sessionStartResultHandle;
+    late int storeHandle;
+    late int sessionHandle;
 
     setUpAll(() async {
-      // Askar Version
       final result = askarVersion();
       print(result);
       expect(result, equals('0.3.2'));
 
-      // Store Provision
       await storeProvisionTest();
-      storeOpenResult = await storeOpenTest();
-      await storeCloseTest(storeOpenResult.handle);
+
+      final storeOpenResult = await storeOpenTest();
+      storeHandle = storeOpenResult.handle;
     });
 
     tearDownAll(() async {
-      // Close the store after all tests pass.
-      await storeCloseTest(storeOpenResult.handle);
+      await storeCloseTest(storeHandle);
     });
 
     setUp(() async {
-      // Open store and start session to ensure setup
-      storeOpenResult = await storeOpenTest();
-      sessionStartResult = await sessionStartTest(storeOpenResult.handle);
-      sessionStartResultHandle = sessionStartResult.handle;
+      final sessionStartResult = await sessionStartTest(storeHandle);
+      sessionHandle = sessionStartResult.handle;
     });
 
     tearDown(() async {
-      // Close session after each test
-      await sessionCloseTest(sessionStartResultHandle);
+      await sessionCloseTest(sessionHandle);
     });
 
     test('Attempt to read from an unexisting category', () async {
-      await sessionFetchTest(sessionStartResultHandle, false);
+      await sessionFetchTest(sessionHandle, expectSuccess: false);
     });
 
     test('Writing and reading from session', () async {
@@ -58,13 +52,12 @@ void main() {
       String category = 'category-one';
       Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-      await sessionUpdateTest(sessionStartResult.handle, EntryOperation.insert,
-          value, tags, name, category);
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, name, category);
 
-      await sessionCountTest(sessionStartResultHandle, category, tags);
+      await sessionCountTest(sessionHandle, category, tags);
 
-      final sessionFetchResult =
-          await sessionFetchTest(sessionStartResultHandle, true);
+      final sessionFetchResult = await sessionFetchTest(sessionHandle);
 
       final entryListHandle = sessionFetchResult.handle;
 
@@ -86,11 +79,9 @@ void main() {
 
       final localKeyHandle = keyGenerateResult.value;
 
-      await sessionInsertKeyTest(
-          sessionStartResultHandle, localKeyHandle, name, metadata, tags);
+      await sessionInsertKeyTest(sessionHandle, localKeyHandle, name, metadata, tags);
 
-      final sessionFetchKeyResult =
-          await sessionFetchKeyTest(sessionStartResultHandle, name, false);
+      final sessionFetchKeyResult = await sessionFetchKeyTest(sessionHandle, name);
 
       keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0, metadata);
 
@@ -98,13 +89,10 @@ void main() {
       askarKeyFree(localKeyHandle);
 
       await expectLater(
-          () => keyEntryListGetMetadataTest(
-              sessionFetchKeyResult.handle, 0, metadata),
+          () => keyEntryListGetMetadataTest(sessionFetchKeyResult.handle, 0, metadata),
           throwsA(isA<Exception>()),
           reason:
               "Trying to read from keyEntryList after freeing should cause an exception");
-
-      await sessionCloseTest(sessionStartResultHandle);
     });
 
     test('Sign Message and Verify Signature', () async {
@@ -117,16 +105,14 @@ void main() {
       final otherMessage = utf8.encode("This is another message!");
 
       final signAlgorithm = SignatureAlgorithm.edDSA;
-      final expectSuccess = true;
 
-      final signResult =
-          keySignMessageTest(localKeyHandle, message, signAlgorithm);
+      final signResult = keySignMessageTest(localKeyHandle, message, signAlgorithm);
 
-      keyVerifySignatureTest(localKeyHandle, message, signResult.value,
-          signAlgorithm, expectSuccess);
+      keyVerifySignatureTest(localKeyHandle, message, signResult.value, signAlgorithm);
 
-      keyVerifySignatureTest(localKeyHandle, otherMessage, signResult.value,
-          signAlgorithm, !expectSuccess);
+      keyVerifySignatureTest(
+          localKeyHandle, otherMessage, signResult.value, signAlgorithm,
+          expectSuccess: false);
     });
 
     test('Removing Key', () async {
@@ -137,12 +123,13 @@ void main() {
       String metadata = 'meta';
       Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-      await sessionInsertKeyTest(
-          sessionStartResultHandle, localKeyHandle, name, metadata, tags);
+      await sessionInsertKeyTest(sessionHandle, localKeyHandle, name, metadata, tags);
 
-      await sessionFetchKeyTest(sessionStartResultHandle, name, false);
+      await sessionFetchKeyTest(sessionHandle, name, expectSuccess: true);
 
-      await sessionRemoveKeyTest(sessionStartResultHandle, name);
+      await sessionRemoveKeyTest(sessionHandle, name);
+
+      await sessionFetchKeyTest(sessionHandle, name, expectSuccess: false);
     });
   });
 }
@@ -169,8 +156,8 @@ Future<CallbackResult> storeOpenTest() async {
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
 
-  final result = await askarStoreOpen(
-      specUri, StoreKeyMethod.argon2IMod, passKey, profile);
+  final result =
+      await askarStoreOpen(specUri, StoreKeyMethod.argon2IMod, passKey, profile);
 
   printResult('StoreOpen', result);
 
@@ -194,8 +181,7 @@ Future<CallbackResult> sessionStartTest(int handle) async {
   return result;
 }
 
-AskarResult<int> keyGenerateTest(
-    KeyAlgorithm algorithm, KeyBackend keyBackend) {
+AskarResult<int> keyGenerateTest(KeyAlgorithm algorithm, KeyBackend keyBackend) {
   bool ephemeral = false;
 
   final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
@@ -208,12 +194,8 @@ AskarResult<int> keyGenerateTest(
   return result;
 }
 
-Future<CallbackResult> sessionInsertKeyTest(
-    int sessionHandle,
-    int localKeyHandle,
-    String name,
-    String metadata,
-    Map<String, String> tags) async {
+Future<CallbackResult> sessionInsertKeyTest(int sessionHandle, int localKeyHandle,
+    String name, String metadata, Map<String, String> tags) async {
   int expiryMs = 2000;
 
   final result = await askarSessionInsertKey(
@@ -227,8 +209,7 @@ Future<CallbackResult> sessionInsertKeyTest(
   return result;
 }
 
-Future<CallbackResult> sessionRemoveKeyTest(
-    int sessionHandle, String name) async {
+Future<CallbackResult> sessionRemoveKeyTest(int sessionHandle, String name) async {
   final result = await askarSessionRemoveKey(sessionHandle, name);
 
   printResult('SessionRemoveKey', result);
@@ -253,15 +234,22 @@ Future<CallbackResult> sessionCountTest(
   return result;
 }
 
-Future<CallbackResult> sessionFetchKeyTest(
-    int sessionHandle, String name, bool forUpdate) async {
+Future<CallbackResult> sessionFetchKeyTest(int sessionHandle, String name,
+    {bool expectSuccess = true}) async {
+  bool forUpdate = false;
+
   final result = await askarSessionFetchKey(sessionHandle, name, forUpdate);
 
   printResult('SessionFetchKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
-  expect(result.handle, greaterThan(0));
+
+  if (expectSuccess) {
+    expect(result.handle, greaterThan(0));
+  } else {
+    expect(result.handle, equals(0));
+  }
 
   return result;
 }
@@ -278,17 +266,12 @@ AskarResult<String> keyEntryListGetMetadataTest(
   return result;
 }
 
-Future<CallbackResult> sessionUpdateTest(
-    int handle,
-    EntryOperation operation,
-    String value,
-    Map<String, String> tags,
-    String name,
-    String category) async {
+Future<CallbackResult> sessionUpdateTest(int handle, EntryOperation operation,
+    String value, Map<String, String> tags, String name, String category) async {
   int expiryMs = 2000;
 
-  final result = await askarSessionUpdate(
-      handle, operation, category, name, value, tags, expiryMs);
+  final result =
+      await askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
 
   printResult('SessionUpdate', result);
 
@@ -298,22 +281,21 @@ Future<CallbackResult> sessionUpdateTest(
   return result;
 }
 
-Future<CallbackResult> sessionFetchTest(int handle, bool checkValid) async {
+Future<CallbackResult> sessionFetchTest(int handle, {bool expectSuccess = true}) async {
   String category = 'category-one';
   String name = 'testEntry';
   bool forUpdate = false;
 
   CallbackResult result = CallbackResult(ErrorCode.custom, -1, false);
 
-  if (checkValid) {
+  if (expectSuccess) {
     result = await askarSessionFetch(handle, category, name, forUpdate);
     expect(result.errorCode, equals(ErrorCode.success));
     expect(result.finished, equals(true));
     expect(result.handle, isNot(0));
   } else {
     await expectLater(
-      () async =>
-          {result = await askarSessionFetch(handle, category, name, forUpdate)},
+      () async => {result = await askarSessionFetch(handle, category, name, forUpdate)},
       throwsA(isA<Exception>()),
     );
   }
@@ -335,8 +317,7 @@ AskarResult<String> entryListGetValueTest(
   return result;
 }
 
-AskarResult<Map> entryListGetTagsTest(
-    int entryListHandle, int index, Map expectedTags) {
+AskarResult<Map> entryListGetTagsTest(int entryListHandle, int index, Map expectedTags) {
   final result = askarEntryListGetTags(entryListHandle, index);
 
   printAskarResult('EntryListGetTags', result);
@@ -384,9 +365,9 @@ AskarResult<Uint8List> keySignMessageTest(
 }
 
 AskarResult<bool> keyVerifySignatureTest(int localKeyHandle, Uint8List message,
-    Uint8List signature, SignatureAlgorithm sigType, bool expectSuccess) {
-  final result =
-      askarKeyVerifySignature(localKeyHandle, message, signature, sigType);
+    Uint8List signature, SignatureAlgorithm sigType,
+    {bool expectSuccess = true}) {
+  final result = askarKeyVerifySignature(localKeyHandle, message, signature, sigType);
 
   printAskarResult('KeyVerifySignature', result);
 
@@ -420,8 +401,7 @@ Future<CallbackResult> storeCloseTest(int handle) async {
 
 void printResult(String test, CallbackResult result) {
   if (result.handle == -1) {
-    print(
-        '$test Result: (${result.errorCode}, Finished: ${result.finished})\n');
+    print('$test Result: (${result.errorCode}, Finished: ${result.finished})\n');
   } else {
     print(
         '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
