@@ -459,10 +459,20 @@ AskarResult<String> askarKeyEntryListGetMetadata(int keyEntryListHandle, int ind
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarKeyEntryListGetName(
-    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> name) {
-  final result = nativeAskarKeyEntryListGetName(handle, index, name);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarKeyEntryListGetName(int localKeyHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final result = nativeAskarKeyEntryListGetName(localKeyHandle, index, utf8PtPointer);
+
+  final errorCode = ErrorCode.fromInt(result);
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyEntryListGetTags(

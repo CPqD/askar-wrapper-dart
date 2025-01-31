@@ -521,13 +521,13 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyEntryListGetNameNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> name,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> name,
 ) nativeAskarKeyEntryListGetName = nativeLib

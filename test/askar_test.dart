@@ -85,6 +85,7 @@ void main() {
       final keyEntryListHandle = fetchKeyResult.handle;
 
       keyEntryListGetMetadataTest(keyEntryListHandle, 0, metadata);
+      keyEntryListGetNameTest(keyEntryListHandle, 0, expectedValue: name);
 
       askarKeyEntryListFree(keyEntryListHandle);
       askarKeyFree(localKeyHandle);
@@ -205,6 +206,17 @@ AskarResult<String> keyGetAlgorithmTest(int localKeyHandle,
   final result = askarKeyGetAlgorithm(localKeyHandle);
 
   printAskarResult('KeyGetAlgorithm', result);
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value, expectedValue);
+
+  return result;
+}
+
+AskarResult<String> keyEntryListGetNameTest(int localKeyHandle, int index,
+    {required String expectedValue}) {
+  final result = askarKeyEntryListGetName(localKeyHandle, index);
+
+  printAskarResult('KeyEntryListGetName', result);
   expect(result.errorCode, ErrorCode.success);
   expect(result.value, expectedValue);
 
