@@ -86,7 +86,7 @@
 
 - [x] askar_key_generate: (args_0: string, args_1: string, args_2: number, args_3: Buffer) => number; **(required)**
 
-- [ ] askar_key_get_algorithm: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_algorithm: (args_0: Buffer, args_1: Buffer) => number;
 
 - [ ] askar_key_get_ephemeral: (args_0: Buffer, args_1: Buffer) => number;
 

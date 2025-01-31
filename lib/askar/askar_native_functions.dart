@@ -659,12 +659,12 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyGetAlgorithmNative = Int32 Function(
-  LocalKeyHandle handle,
+  IntPtr handle,
   Pointer<Pointer<Utf8>> out,
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Pointer<Utf8>> out,
 ) nativeAskarKeyGetAlgorithm = nativeLib
     .lookup<NativeFunction<AskarKeyGetAlgorithmNative>>('askar_key_get_algorithm')

@@ -586,9 +586,20 @@ AskarResult<int> askarKeyGenerate(
   return AskarResult<int>(errorCode, localKeyHandle);
 }
 
-ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
-  final result = nativeAskarKeyGetAlgorithm(handle, out);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarKeyGetAlgorithm(int localKeyHandle) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final funcResult = nativeAskarKeyGetAlgorithm(localKeyHandle, utf8PtPointer);
+
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyGetEphemeral(LocalKeyHandle handle, Pointer<Int8> out) {
