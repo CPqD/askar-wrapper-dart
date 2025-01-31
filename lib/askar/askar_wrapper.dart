@@ -459,10 +459,10 @@ AskarResult<String> askarKeyEntryListGetMetadata(int keyEntryListHandle, int ind
   return AskarResult<String>(errorCode, value);
 }
 
-AskarResult<String> askarKeyEntryListGetName(int localKeyHandle, int index) {
+AskarResult<String> askarKeyEntryListGetName(int keyEntryListHandle, int index) {
   Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
-  final result = nativeAskarKeyEntryListGetName(localKeyHandle, index, utf8PtPointer);
+  final result = nativeAskarKeyEntryListGetName(keyEntryListHandle, index, utf8PtPointer);
 
   final errorCode = ErrorCode.fromInt(result);
 
@@ -475,10 +475,21 @@ AskarResult<String> askarKeyEntryListGetName(int localKeyHandle, int index) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarKeyEntryListGetTags(
-    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> tags) {
-  final result = nativeAskarKeyEntryListGetTags(handle, index, tags);
-  return ErrorCode.fromInt(result);
+AskarResult<Map> askarKeyEntryListGetTags(int keyEntryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+  final result = nativeAskarKeyEntryListGetTags(keyEntryListHandle, index, utf8PtPointer);
+  final errorCode = ErrorCode.fromInt(result);
+
+  Map value = {};
+
+  if (errorCode == ErrorCode.success) {
+    String mapString = utf8PtPointer.value.toDartString();
+    value = jsonDecode(mapString);
+  }
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<Map>(errorCode, value);
 }
 
 ErrorCode askarKeyEntryListLoadLocal(

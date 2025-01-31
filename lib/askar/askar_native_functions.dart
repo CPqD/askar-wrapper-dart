@@ -536,13 +536,13 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyEntryListGetTagsNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> tags,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> tags,
 ) nativeAskarKeyEntryListGetTags = nativeLib

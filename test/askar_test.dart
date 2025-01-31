@@ -86,6 +86,7 @@ void main() {
 
       keyEntryListGetMetadataTest(keyEntryListHandle, 0, metadata);
       keyEntryListGetNameTest(keyEntryListHandle, 0, expectedValue: name);
+      keyEntryListGetTagsTest(keyEntryListHandle, 0, expectedValue: tags);
 
       askarKeyEntryListFree(keyEntryListHandle);
       askarKeyFree(localKeyHandle);
@@ -212,11 +213,22 @@ AskarResult<String> keyGetAlgorithmTest(int localKeyHandle,
   return result;
 }
 
-AskarResult<String> keyEntryListGetNameTest(int localKeyHandle, int index,
+AskarResult<String> keyEntryListGetNameTest(int keyEntryListHandle, int index,
     {required String expectedValue}) {
-  final result = askarKeyEntryListGetName(localKeyHandle, index);
+  final result = askarKeyEntryListGetName(keyEntryListHandle, index);
 
   printAskarResult('KeyEntryListGetName', result);
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value, expectedValue);
+
+  return result;
+}
+
+AskarResult<Map> keyEntryListGetTagsTest(int keyEntryListHandle, int index,
+    {required Map<dynamic, dynamic> expectedValue}) {
+  final result = askarKeyEntryListGetTags(keyEntryListHandle, index);
+
+  printAskarResult('KeyEntryListGetTags', result);
   expect(result.errorCode, ErrorCode.success);
   expect(result.value, expectedValue);
 

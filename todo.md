@@ -66,9 +66,9 @@
 
 - [x] askar_key_entry_list_get_metadata: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
-- [ ] askar_key_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
+- [x] askar_key_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
-- [ ] askar_key_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
+- [x] askar_key_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
 - [ ] askar_key_entry_list_load_local: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
