@@ -138,7 +138,7 @@
 
 - [x] askar_session_update: (args_0: number, args_1: number, args_2: string, args_3: string, args_4: Buffer, args_5: string, args_6: number, args_7: Buffer, args_8: number) => number; **(required)**
 
-- [ ] askar_session_update_key: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_session_update_key: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
 
 - [x] askar_store_close: (args_0: number, args_1: Buffer, args_2: number) => number;
 
