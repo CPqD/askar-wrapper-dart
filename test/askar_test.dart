@@ -58,13 +58,12 @@ void main() {
       await sessionCountTest(sessionHandle, category, tags);
 
       final sessionFetchResult = await sessionFetchTest(sessionHandle);
-
       final entryListHandle = sessionFetchResult.handle;
 
-      entryListGetValueTest(entryListHandle, 0, value);
-      entryListGetTagsTest(entryListHandle, 0, tags);
-      entryListGetNameTest(entryListHandle, 0, name);
-      entryListGetCategoryTest(entryListHandle, 0, category);
+      entryListGetValueTest(entryListHandle, 0, expectedValue: value);
+      entryListGetTagsTest(entryListHandle, 0, expectedTags: tags);
+      entryListGetNameTest(entryListHandle, 0, expectedName: name);
+      entryListGetCategoryTest(entryListHandle, 0, expectedCategory: category);
 
       askarEntryListFree(entryListHandle);
     });
@@ -235,6 +234,17 @@ AskarResult<Map> keyEntryListGetTagsTest(int keyEntryListHandle, int index,
   return result;
 }
 
+AskarResult<int> entryListCountTest(int entryListHandle, {required int expectedValue}) {
+  final result = askarEntryListCount(entryListHandle);
+
+  printAskarResult('EntryListCount', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
 AskarResult<int> keyEntryListCountTest(int keyEntryListHandle,
     {required int expectedValue}) {
   final result = askarKeyEntryListCount(keyEntryListHandle);
@@ -357,8 +367,8 @@ Future<CallbackResult> sessionFetchTest(int handle, {bool expectSuccess = true})
   return result;
 }
 
-AskarResult<String> entryListGetValueTest(
-    int entryListHandle, int index, String expectedValue) {
+AskarResult<String> entryListGetValueTest(int entryListHandle, int index,
+    {required String expectedValue}) {
   final result = askarEntryListGetValue(entryListHandle, index);
 
   printAskarResult('EntryListGetValue', result);
@@ -369,7 +379,8 @@ AskarResult<String> entryListGetValueTest(
   return result;
 }
 
-AskarResult<Map> entryListGetTagsTest(int entryListHandle, int index, Map expectedTags) {
+AskarResult<Map> entryListGetTagsTest(int entryListHandle, int index,
+    {required Map expectedTags}) {
   final result = askarEntryListGetTags(entryListHandle, index);
 
   printAskarResult('EntryListGetTags', result);
@@ -380,8 +391,8 @@ AskarResult<Map> entryListGetTagsTest(int entryListHandle, int index, Map expect
   return result;
 }
 
-AskarResult<String> entryListGetNameTest(
-    int entryListHandle, int index, String expectedName) {
+AskarResult<String> entryListGetNameTest(int entryListHandle, int index,
+    {required String expectedName}) {
   final result = askarEntryListGetName(entryListHandle, index);
 
   printAskarResult('EntryListGetName', result);
@@ -392,8 +403,8 @@ AskarResult<String> entryListGetNameTest(
   return result;
 }
 
-AskarResult<String> entryListGetCategoryTest(
-    int entryListHandle, int index, String expectedCategory) {
+AskarResult<String> entryListGetCategoryTest(int entryListHandle, int index,
+    {required String expectedCategory}) {
   final result = askarEntryListGetCategory(entryListHandle, index);
 
   printAskarResult('EntryListGetCategory', result);

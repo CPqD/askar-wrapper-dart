@@ -14,7 +14,7 @@
 
 - [ ] askar_set_max_log_level: (args_0: number) => number;
 
-- [ ] askar_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
+- [x] askar_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
 - [x] askar_entry_list_free: (args_0: Buffer) => unknown; **(required)**
 

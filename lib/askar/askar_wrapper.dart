@@ -79,15 +79,18 @@ ErrorCode askarSetMaxLogLevel(int maxLevel) {
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarEntryListCount(EntryListHandle handle, int count) {
-  final countPointer = calloc<Int32>();
-  countPointer.value = count;
+AskarResult<int> askarEntryListCount(int entryListHandle) {
+  Pointer<Int32> countPointer = calloc<Int32>();
 
-  final result = nativeAskarEntryListCount(handle, countPointer);
+  final funcResult = nativeAskarEntryListCount(entryListHandle, countPointer);
+
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  int count = countPointer.value;
 
   calloc.free(countPointer);
 
-  return ErrorCode.fromInt(result);
+  return AskarResult<int>(errorCode, count);
 }
 
 void askarEntryListFree(int entryListHandle) {

@@ -151,11 +151,10 @@ final int Function(int max_level) nativeAskarSetMaxLogLevel = nativeLib
     .lookup<NativeFunction<Int32 Function(Int32 max_level)>>('askar_set_max_log_level')
     .asFunction();
 
-typedef AskarEntryListCountNative = Int32 Function(
-    EntryListHandle handle, Pointer<Int32> count);
+typedef AskarEntryListCountNative = Int32 Function(IntPtr handle, Pointer<Int32> count);
 
-final int Function(EntryListHandle handle, Pointer<Int32> count)
-    nativeAskarEntryListCount = nativeLib
+final int Function(int entryListHandle, Pointer<Int32> count) nativeAskarEntryListCount =
+    nativeLib
         .lookup<NativeFunction<AskarEntryListCountNative>>('askar_entry_list_count')
         .asFunction();
 
