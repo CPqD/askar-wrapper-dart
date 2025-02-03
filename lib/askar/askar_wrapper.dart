@@ -439,10 +439,19 @@ void askarKeyEntryListFree(int keyEntryListHandle) {
   nativeAskarKeyEntryListFree(keyEntryListHandle);
 }
 
-ErrorCode askarKeyEntryListGetAlgorithm(
-    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> alg) {
-  final result = nativeAskarKeyEntryListGetAlgorithm(handle, index, alg);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarKeyEntryListGetAlgorithm(int keyEntryListHandle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+  final result =
+      nativeAskarKeyEntryListGetAlgorithm(keyEntryListHandle, index, utf8PtPointer);
+  final errorCode = ErrorCode.fromInt(result);
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 AskarResult<String> askarKeyEntryListGetMetadata(int keyEntryListHandle, int index) {

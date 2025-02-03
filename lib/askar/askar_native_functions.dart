@@ -490,13 +490,13 @@ final void Function(int handle) nativeAskarKeyEntryListFree = nativeLib
     .asFunction();
 
 typedef AskarKeyEntryListGetAlgorithmNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Int32 index,
   Pointer<Pointer<Utf8>> alg,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int handle,
   int index,
   Pointer<Pointer<Utf8>> alg,
 ) nativeAskarKeyEntryListGetAlgorithm = nativeLib

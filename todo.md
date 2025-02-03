@@ -62,7 +62,7 @@
 
 - [x] askar_key_entry_list_free: (args_0: Buffer) => unknown; **(required)**
 
-- [ ] askar_key_entry_list_get_algorithm: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
+- [x] askar_key_entry_list_get_algorithm: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
 - [x] askar_key_entry_list_get_metadata: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
