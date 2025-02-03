@@ -146,7 +146,7 @@
 
 - [ ] askar_store_create_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number; **(required)**
 
-- [ ] askar_store_generate_raw_key: (args_0: Buffer, args_1: Buffer) => number; **(required)**
+- [x] askar_store_generate_raw_key: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
 - [ ] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
 

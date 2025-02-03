@@ -1259,12 +1259,12 @@ final int Function(
     .asFunction();
 
 typedef AskarStoreGenerateRawKeyNative = Int32 Function(
-  Pointer<ByteBuffer> seed,
+  ByteBuffer seed,
   Pointer<Pointer<Utf8>> out,
 );
 
 final int Function(
-  Pointer<ByteBuffer> seed,
+  ByteBuffer seed,
   Pointer<Pointer<Utf8>> out,
 ) nativeAskarStoreGenerateRawKey = nativeLib
     .lookup<NativeFunction<AskarStoreGenerateRawKeyNative>>(

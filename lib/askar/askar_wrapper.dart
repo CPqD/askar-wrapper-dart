@@ -1256,12 +1256,27 @@ ErrorCode askarStoreCreateProfile(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarStoreGenerateRawKey(
-  Pointer<ByteBuffer> seed,
-  Pointer<Pointer<Utf8>> out,
-) {
-  final result = nativeAskarStoreGenerateRawKey(seed, out);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarStoreGenerateRawKey({Uint8List? seed}) {
+  // Generate a random seed if not provided
+  seed ??= generateRandomSeed();
+
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
+
+  final byteBufferPointer = bytesListToByteBuffer(seed);
+
+  final funcResult = nativeAskarStoreGenerateRawKey(byteBufferPointer.ref, utf8PtPointer);
+
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarStoreGetDefaultProfile(

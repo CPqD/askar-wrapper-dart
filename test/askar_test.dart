@@ -16,6 +16,7 @@ import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
 void main() {
   group('Askar Tests', () {
     late int storeHandle;
+    late String storeKey;
     late int sessionHandle;
 
     setUpAll(() async {
@@ -23,9 +24,12 @@ void main() {
       print(result);
       expect(result, equals('0.3.2'));
 
-      await storeProvisionTest();
+      final generateKeyResult = askarStoreGenerateRawKeyTest();
+      storeKey = generateKeyResult.value;
 
-      final storeOpenResult = await storeOpenTest();
+      await storeProvisionTest(storeKey);
+
+      final storeOpenResult = await storeOpenTest(storeKey);
       storeHandle = storeOpenResult.handle;
     });
 
@@ -40,6 +44,12 @@ void main() {
 
     tearDown(() async {
       await sessionCloseTest(sessionHandle);
+    });
+
+    test('Generate a random key with and without custom seed', () async {
+      askarStoreGenerateRawKeyTest();
+
+      askarStoreGenerateRawKeyTest(seed: utf8.encode("00000000000000000000000000000My1"));
     });
 
     test('Attempt to read from an unexisting category', () async {
@@ -143,9 +153,8 @@ void main() {
   });
 }
 
-Future<CallbackResult> storeProvisionTest() async {
+Future<CallbackResult> storeProvisionTest(String passKey) async {
   final String specUri = 'sqlite://storage.db';
-  final String passKey = 'mySecretKey';
   final String profile = 'rekey';
   final bool recreate = true;
 
@@ -160,9 +169,8 @@ Future<CallbackResult> storeProvisionTest() async {
   return result;
 }
 
-Future<CallbackResult> storeOpenTest() async {
+Future<CallbackResult> storeOpenTest(String passKey) async {
   final String specUri = 'sqlite://storage.db';
-  final String passKey = 'mySecretKey';
   final String profile = 'rekey';
 
   final result =
@@ -424,6 +432,17 @@ AskarResult<String> entryListGetCategoryTest(int entryListHandle, int index,
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expectedCategory));
+
+  return result;
+}
+
+AskarResult<String> askarStoreGenerateRawKeyTest({Uint8List? seed}) {
+  final result = askarStoreGenerateRawKey(seed: seed);
+
+  printAskarResult('StoreGenerateRawKey', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, true);
 
   return result;
 }

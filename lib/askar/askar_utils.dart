@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
@@ -49,4 +50,10 @@ bool intToBool(int value) {
 
 int boolToInt(bool value) {
   return value ? 1 : 0;
+}
+
+Uint8List generateRandomSeed() {
+  final random = Random.secure();
+  final seed = List<int>.generate(32, (_) => random.nextInt(256));
+  return Uint8List.fromList(seed);
 }
