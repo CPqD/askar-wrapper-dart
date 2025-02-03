@@ -80,7 +80,7 @@
 
 - [ ] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
 
-- [ ] askar_key_from_secret_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number; **(required)**
+- [x] askar_key_from_secret_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number; **(required)**
 
 - [ ] askar_key_from_seed: (args_0: string, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 

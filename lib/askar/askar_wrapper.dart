@@ -557,22 +557,30 @@ ErrorCode askarKeyFromPublicBytes(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyFromSecretBytes(
-  String alg,
-  Pointer<ByteBuffer> secret,
-  Pointer<LocalKeyHandle> out,
+AskarResult<int> askarKeyFromSecretBytes(
+  KeyAlgorithm algorithm,
+  Uint8List secret,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<IntPtr> localKeyHandlePtr = calloc<IntPtr>();
 
-  final result = nativeAskarKeyFromSecretBytes(
+  final algPointer = algorithm.value.toNativeUtf8();
+  final byteBufferPointer = bytesListToByteBuffer(secret);
+
+  final funcResult = nativeAskarKeyFromSecretBytes(
     algPointer,
-    secret,
-    out,
+    byteBufferPointer.ref,
+    localKeyHandlePtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  final localKeyHandle = localKeyHandlePtr.value;
+
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+  calloc.free(localKeyHandlePtr);
+
+  return AskarResult<int>(errorCode, localKeyHandle);
 }
 
 ErrorCode askarKeyFromSeed(
