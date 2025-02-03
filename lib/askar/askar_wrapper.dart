@@ -1244,24 +1244,26 @@ ErrorCode askarStoreCopy(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarStoreCreateProfile(
+Future<CallbackResult> askarStoreCreateProfile(
   int storeHandle,
   String profile,
-  Pointer<NativeFunction<AskarStoreCreateProfileCallback>> cb,
-  int cbId,
-) {
+) async {
   final profilePointer = profile.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithPtrUtf8(cleanup);
 
   final result = nativeAskarStoreCreateProfile(
     storeHandle,
     profilePointer,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(profilePointer);
-
-  return ErrorCode.fromInt(result);
+  return await callback.handleResult(result);
 }
 
 AskarResult<String> askarStoreGenerateRawKey({Uint8List? seed}) {
@@ -1293,15 +1295,6 @@ ErrorCode askarStoreGetDefaultProfile(
   int cbId,
 ) {
   final result = nativeAskarStoreGetDefaultProfile(storeHandle, cb, cbId);
-  return ErrorCode.fromInt(result);
-}
-
-ErrorCode askarStoreGetProfileName(
-  int storeHandle,
-  Pointer<NativeFunction<AskarStoreGetProfileNameCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarStoreGetProfileName(storeHandle, cb, cbId);
   return ErrorCode.fromInt(result);
 }
 

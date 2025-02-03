@@ -165,6 +165,25 @@ void main() {
       keyEntryListCountTest(fetchKeyResult.handle, expectedValue: 0);
     });
   });
+
+  group('Store Profile Tests:', () {
+    late int storeHandle;
+    late String storeKey;
+    test('Store create profile', () async {
+      final generateKeyResult = askarStoreGenerateRawKeyTest();
+      storeKey = generateKeyResult.value;
+
+      await storeProvisionTest(storeKey);
+
+      final storeOpenResult = await storeOpenTest(storeKey);
+      storeHandle = storeOpenResult.handle;
+
+      await storeCreateProfileTest(
+          storeHandle, 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e');
+
+      await storeCloseTest(storeHandle);
+    });
+  });
 }
 
 Future<CallbackResult> storeProvisionTest(String passKey) async {
@@ -512,6 +531,17 @@ Future<CallbackResult> storeCloseTest(int handle) async {
   final result = await askarStoreClose(handle);
 
   printResult('StoreClose', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
+  return result;
+}
+
+Future<CallbackResult> storeCreateProfileTest(int storeHandle, String profile) async {
+  final result = await askarStoreCreateProfile(storeHandle, profile);
+
+  printResult('StoreCreateProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
