@@ -98,7 +98,7 @@
 
 - [ ] askar_key_get_public_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
-- [ ] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
+- [x] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
 - [x] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 

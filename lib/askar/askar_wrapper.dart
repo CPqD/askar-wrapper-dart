@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -719,16 +720,22 @@ ErrorCode askarKeyGetPublicBytes(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyGetSecretBytes(
-  LocalKeyHandle handle,
-  Pointer<SecretBuffer> out,
-) {
-  final result = nativeAskarKeyGetSecretBytes(
+AskarResult<Uint8List> askarKeyGetSecretBytes(LocalKeyHandle handle) {
+  Pointer<SecretBuffer> secretBufferPtr = calloc<SecretBuffer>();
+
+  final funcResult = nativeAskarKeyGetSecretBytes(
     handle,
-    out,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final value = Uint8List.fromList(secretBufferToBytesList(secretBufferPtr.ref));
+
+  calloc.free(secretBufferPtr.ref.data);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 AskarResult<Uint8List> askarKeySignMessage(
