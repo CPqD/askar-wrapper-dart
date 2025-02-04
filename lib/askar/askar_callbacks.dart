@@ -2,30 +2,35 @@ import 'dart:async';
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
+import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 
-base class CallbackResult {
+base class AskarCallbackBlankResult {
   final ErrorCode errorCode;
-  final int handle;
   final bool finished;
 
-  CallbackResult(this.errorCode, this.handle, this.finished);
+  AskarCallbackBlankResult(this.errorCode, this.finished);
+}
+
+base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
+  final T value;
+
+  AskarCallbackResult(super.errorCode, super.finished, this.value);
 }
 
 base class Callback<T extends Function> {
   final int id;
   final NativeCallable<T> nativeCallable;
-  final Completer<CallbackResult> completer;
+  final Completer<AskarCallbackResult> completer;
   final void Function() cleanupPointers;
 
   Callback(this.nativeCallable, this.completer, this.id, this.cleanupPointers);
 
-  Future<CallbackResult> handleResult(int initialResult) {
+  Future<AskarCallbackResult> handleResult(int initialResult) {
     final initialErrorCode = ErrorCode.fromInt(initialResult);
 
     if (initialErrorCode != ErrorCode.success) {
-      completer.complete(CallbackResult(initialErrorCode, -1, false));
+      completer.complete(AskarCallbackResult(initialErrorCode, false, null));
 
       this.cleanupPointers();
       this.nativeCallable.close();
@@ -35,116 +40,82 @@ base class Callback<T extends Function> {
   }
 }
 
-final class CallbackWithHandle extends Callback<CbFuncWithHandle> {
-  @override
-  final NativeCallable<CbFuncWithHandle> nativeCallable;
-
-  CallbackWithHandle(this.nativeCallable, Completer<CallbackResult> completer,
-      int callbackId, void Function() cleanupPointers)
-      : super(nativeCallable, completer, callbackId, cleanupPointers);
-}
-
-final class CallbackWithoutHandle extends Callback<CbFuncWithoutHandle> {
-  @override
-  final NativeCallable<CbFuncWithoutHandle> nativeCallable;
-
-  CallbackWithoutHandle(this.nativeCallable, Completer<CallbackResult> completer,
-      int callbackId, void Function() cleanupPointers)
-      : super(nativeCallable, completer, callbackId, cleanupPointers);
-}
-
-final class CallbackWithInt64 extends Callback<CbFuncWithInt64> {
-  @override
-  final NativeCallable<CbFuncWithInt64> nativeCallable;
-
-  CallbackWithInt64(this.nativeCallable, Completer<CallbackResult> completer,
-      int callbackId, void Function() cleanupPointers)
-      : super(nativeCallable, completer, callbackId, cleanupPointers);
-}
-
-final class CallbackWithPtrUft8 extends Callback<CbFuncWithPtrUft8> {
-  @override
-  final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
-
-  CallbackWithPtrUft8(this.nativeCallable, Completer<CallbackResult> completer,
-      int callbackId, void Function() cleanupPointers)
-      : super(nativeCallable, completer, callbackId, cleanupPointers);
-}
-
 int _callbackIdCounter = 0;
 
 int nextCallbackId() {
   return _callbackIdCounter++;
 }
 
-typedef CbFuncWithHandle = Void Function(CallbackId, Int32, SessionHandle);
+typedef CbFuncWithHandle = Void Function(CallbackId, Int32, NativeSessionHandle);
 
-CallbackWithHandle newCallbackWithHandle(void Function() cleanup) {
-  final completer = Completer<CallbackResult>();
+Callback<CbFuncWithHandle> newCallbackWithHandle(void Function() cleanup) {
+  final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, handle));
     cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithHandle>.listener(callback);
 
-  return CallbackWithHandle(nativeCallable, completer, nextCallbackId(), cleanup);
-}
-
-typedef CbFuncWithoutHandle = Void Function(CallbackId, Int32);
-
-CallbackWithoutHandle newCallbackWithoutHandle(void Function() cleanup) {
-  final completer = Completer<CallbackResult>();
-
-  late final NativeCallable<CbFuncWithoutHandle> nativeCallable;
-
-  void callback(int callbackId, int errorCode) {
-    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), -1, true));
-    cleanup();
-    nativeCallable.close();
-  }
-
-  nativeCallable = NativeCallable<CbFuncWithoutHandle>.listener(callback);
-
-  return CallbackWithoutHandle(nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithHandle>(nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
 typedef CbFuncWithInt64 = Void Function(CallbackId, Int32, Int64);
 
-CallbackWithInt64 newCallbackWithInt64(void Function() cleanup) {
-  final completer = Completer<CallbackResult>();
+Callback<CbFuncWithInt64> newCallbackWithInt64(void Function() cleanup) {
+  final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithInt64> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), handle, true));
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, handle));
     cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithInt64>.listener(callback);
 
-  return CallbackWithInt64(nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithInt64>(nativeCallable, completer, nextCallbackId(), cleanup);
+}
+
+typedef CbFuncWithoutHandle = Void Function(CallbackId, Int32);
+
+Callback<CbFuncWithoutHandle> newCallbackWithoutHandle(void Function() cleanup) {
+  final completer = Completer<AskarCallbackResult>();
+
+  late final NativeCallable<CbFuncWithoutHandle> nativeCallable;
+
+  void callback(int callbackId, int errorCode) {
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, null));
+    cleanup();
+    nativeCallable.close();
+  }
+
+  nativeCallable = NativeCallable<CbFuncWithoutHandle>.listener(callback);
+
+  return Callback<CbFuncWithoutHandle>(
+      nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
 typedef CbFuncWithPtrUft8 = Void Function(CallbackId, Int32, Pointer<Utf8>);
 
-CallbackWithPtrUft8 newCallbackWithPtrUtf8(void Function() cleanup) {
-  final completer = Completer<CallbackResult>();
+Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
+  final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
 
   void callback(int callbackId, int errorCode, Pointer<Utf8> uft8) {
-    completer.complete(CallbackResult(ErrorCode.fromInt(errorCode), -1, true));
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, -1));
     cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithPtrUft8>.listener(callback);
 
-  return CallbackWithPtrUft8(nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithPtrUft8>(
+      nativeCallable, completer, nextCallbackId(), cleanup);
 }
