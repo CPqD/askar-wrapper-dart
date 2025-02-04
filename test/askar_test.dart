@@ -16,9 +16,26 @@ import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
 
 void main() {
   group('Askar Tests', () {
-    late StoreHandle storeHandle;
     late String storeKey;
-    late SessionHandle sessionHandle;
+    StoreHandle storeHandle = 0;
+    SessionHandle sessionHandle = 0;
+
+    bool isStoreOpen() => storeHandle != 0;
+    bool isSessionOpen() => sessionHandle != 0;
+
+    Future<void> closeStoreIfOpen() async {
+      if (isStoreOpen()) {
+        await storeCloseTest(storeHandle);
+        storeHandle = 0;
+      }
+    }
+
+    Future<void> closeSessionIfOpen() async {
+      if (isSessionOpen()) {
+        await sessionCloseTest(sessionHandle);
+        sessionHandle = 0;
+      }
+    }
 
     setUpAll(() async {
       final result = askarVersion();
@@ -35,7 +52,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await storeCloseTest(storeHandle);
+      await closeStoreIfOpen();
     });
 
     setUp(() async {
@@ -44,7 +61,7 @@ void main() {
     });
 
     tearDown(() async {
-      await sessionCloseTest(sessionHandle);
+      await closeSessionIfOpen();
     });
 
     test('Generate a random key with and without custom seed', () async {
@@ -77,6 +94,10 @@ void main() {
       entryListGetCategoryTest(entryListHandle, 0, expectedCategory: category);
 
       askarEntryListFree(entryListHandle);
+
+      await closeSessionIfOpen();
+
+      await scanStartTest(storeHandle, category, tags);
     });
 
     test('Inserting and reading Key', () async {
@@ -214,6 +235,24 @@ Future<AskarCallbackResult> storeOpenTest(String passKey) async {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+Future<AskarCallbackResult> scanStartTest(
+    StoreHandle handle, String category, Map tagFilter) async {
+  final String profile = 'rekey';
+  final int offset = 1;
+  final int limit = 2;
+
+  final result =
+      await askarScanStart(handle, profile, category, tagFilter, offset, limit);
+
+  printAskarCallbackResult('ScanStart', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, greaterThan(0));
 
   return result;
 }

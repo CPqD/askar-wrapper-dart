@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
-import 'dart:math';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -864,19 +863,25 @@ ErrorCode askarScanNext(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarScanStart(
+Future<AskarCallbackResult> askarScanStart(
   ScanHandle handle,
   String profile,
   String category,
-  String tagFilter,
+  Map tagFilter,
   int offset,
   int limit,
-  Pointer<NativeFunction<AskarScanStartCallback>> cb,
-  int cbId,
-) {
+) async {
   final profilePointer = profile.toNativeUtf8();
   final categoryPointer = category.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  final tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(profilePointer);
+    calloc.free(categoryPointer);
+    calloc.free(tagFilterPointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarScanStart(
     handle,
@@ -885,15 +890,11 @@ ErrorCode askarScanStart(
     tagFilterPointer,
     offset,
     limit,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(profilePointer);
-  calloc.free(categoryPointer);
-  calloc.free(tagFilterPointer);
-
-  return ErrorCode.fromInt(result);
+  return await callback.handleResult(result);
 }
 
 Future<AskarCallbackBlankResult> askarSessionClose(

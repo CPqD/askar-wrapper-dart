@@ -114,7 +114,7 @@
 
 - [ ] askar_scan_next: (args_0: number, args_1: Buffer, args_2: number) => number; **(required)**
 
-- [ ] askar_scan_start: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number; **(required)**
+- [x] askar_scan_start: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number; **(required)**
 
 - [x] askar_session_close: (args_0: number, args_1: number, args_2: Buffer, args_3: number) => number; **(required)**
 
