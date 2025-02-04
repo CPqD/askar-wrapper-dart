@@ -504,10 +504,18 @@ AskarResult<Map> askarKeyEntryListGetTags(int keyEntryListHandle, int index) {
   return AskarResult<Map>(errorCode, value);
 }
 
-ErrorCode askarKeyEntryListLoadLocal(
-    KeyEntryListHandle handle, int index, Pointer<LocalKeyHandle> out) {
-  final result = nativeAskarKeyEntryListLoadLocal(handle, index, out);
-  return ErrorCode.fromInt(result);
+AskarResult<int> askarKeyEntryListLoadLocal(int keyEntryListHandle, int index) {
+  Pointer<IntPtr> outPtr = calloc<IntPtr>();
+
+  final funcResult = nativeAskarKeyEntryListLoadLocal(keyEntryListHandle, index, outPtr);
+
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final out = outPtr.value;
+
+  calloc.free(outPtr);
+
+  return AskarResult<int>(errorCode, out);
 }
 
 void askarKeyFree(int localKeyHandle) {

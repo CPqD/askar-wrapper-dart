@@ -99,6 +99,7 @@ void main() {
       keyEntryListGetTagsTest(keyEntryListHandle, 0, expectedValue: tags);
       keyEntryListGetAlgorithmTest(keyEntryListHandle, 0,
           expectedValue: KeyAlgorithm.ed25519.value);
+      keyEntryListLoadLocalTest(keyEntryListHandle, 0);
 
       askarKeyEntryListFree(keyEntryListHandle);
       askarKeyFree(localKeyHandle);
@@ -465,6 +466,17 @@ AskarResult<String> entryListGetCategoryTest(int entryListHandle, int index,
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expectedCategory));
+
+  return result;
+}
+
+AskarResult<int> keyEntryListLoadLocalTest(int keyEntryListHandle, int index) {
+  final result = askarKeyEntryListLoadLocal(keyEntryListHandle, index);
+
+  printAskarResult('KeyEntryListLoadLocalTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
 
   return result;
 }

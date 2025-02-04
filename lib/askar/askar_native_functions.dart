@@ -550,15 +550,15 @@ final int Function(
     .asFunction();
 
 typedef AskarKeyEntryListLoadLocalNative = Int32 Function(
-  KeyEntryListHandle handle,
+  IntPtr handle,
   Int32 index,
-  Pointer<LocalKeyHandle> out,
+  Pointer<IntPtr> out,
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int handle,
   int index,
-  Pointer<LocalKeyHandle> out,
+  Pointer<IntPtr> out,
 ) nativeAskarKeyEntryListLoadLocal = nativeLib
     .lookup<NativeFunction<AskarKeyEntryListLoadLocalNative>>(
         'askar_key_entry_list_load_local')
