@@ -1327,12 +1327,30 @@ AskarResult<String> askarStoreGenerateRawKey({Uint8List? seed}) {
 Future<AskarCallbackResult> askarStoreGetDefaultProfile(
   StoreHandle handle,
 ) async {
-  void cleanup() {}
-
-  final callback = newCallbackWithPtrUtf8(cleanup);
+  final callback = newCallbackWithPtrUtf8(() => {});
 
   final result = nativeAskarStoreGetDefaultProfile(
     handle,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
+  );
+
+  return await callback.handleResult(result);
+}
+
+Future<AskarCallbackBlankResult> askarStoreSetDefaultProfile(
+    StoreHandle handle, String profile) async {
+  final profilePointer = profile.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
+
+  final result = nativeAskarStoreSetDefaultProfile(
+    handle,
+    profilePointer,
     callback.nativeCallable.nativeFunction,
     callback.id,
   );
@@ -1466,26 +1484,6 @@ ErrorCode askarStoreRemoveProfile(
   final profilePointer = profile.toNativeUtf8();
 
   final result = nativeAskarStoreRemoveProfile(
-    handle,
-    profilePointer,
-    cb,
-    cbId,
-  );
-
-  calloc.free(profilePointer);
-
-  return ErrorCode.fromInt(result);
-}
-
-ErrorCode askarStoreSetDefaultProfile(
-  StoreHandle handle,
-  String profile,
-  Pointer<NativeFunction<AskarStoreSetDefaultProfileCallback>> cb,
-  int cbId,
-) {
-  final profilePointer = profile.toNativeUtf8();
-
-  final result = nativeAskarStoreSetDefaultProfile(
     handle,
     profilePointer,
     cb,

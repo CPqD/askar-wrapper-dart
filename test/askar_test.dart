@@ -241,14 +241,15 @@ void main() {
       keyEntryListCountTest(fetchKeyResult.value, expectedValue: 0);
     });
     test('Store Get Default Profile', () async {
-      await storeGetDefaultProfileTest(storeHandle, expectedValue: 'rekey');
+      String defaultProfile = 'rekey';
+      await storeGetDefaultProfileTest(storeHandle, expectedValue: defaultProfile);
     });
   });
 
   group('Store Profile Tests:', () {
     late StoreHandle storeHandle;
     late String storeKey;
-    test('Store create profile', () async {
+    test('Store Create Profile', () async {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
@@ -260,6 +261,23 @@ void main() {
       String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
 
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
+
+      await storeCloseTest(storeHandle);
+    });
+
+    test('Store Set Default Profile', () async {
+      final generateKeyResult = askarStoreGenerateRawKeyTest();
+      storeKey = generateKeyResult.value;
+
+      await storeProvisionTest(storeKey);
+
+      final storeOpenResult = await storeOpenTest(storeKey);
+      storeHandle = storeOpenResult.value;
+
+      String newDefaultProfile = 'rekey2';
+
+      await storeSetDefaultProfileTest(storeHandle, newDefaultProfile);
+      await storeGetDefaultProfileTest(storeHandle, expectedValue: newDefaultProfile);
 
       await storeCloseTest(storeHandle);
     });
@@ -756,6 +774,18 @@ Future<AskarCallbackResult> storeGetDefaultProfileTest(StoreHandle handle,
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
   expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
+Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
+    StoreHandle handle, String profile) async {
+  final result = await askarStoreSetDefaultProfile(handle, profile);
+
+  printAskarBlankResult('StoreSetDefaultProfile', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
 
   return result;
 }
