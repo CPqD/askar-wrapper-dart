@@ -82,7 +82,7 @@ void main() {
 
       await sessionUpdateTest(
           sessionHandle, EntryOperation.insert, value, tags, name, category);
-          
+
       await sessionCountTest(sessionHandle, category, tags);
 
       final sessionFetchResult = await sessionFetchTest(sessionHandle);
@@ -98,6 +98,29 @@ void main() {
       await closeSessionIfOpen();
       final scanStartResult = await scanStartTest(storeHandle, category, tags);
       await scanNextTest(scanStartResult.value);
+    });
+
+    test('Writing and reading all values', () async {
+      String value = 'foobar';
+      String name = 'testAll';
+      String category = 'category-test-all';
+      Map<String, String> tags = {'test-all-1': 'a'};
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_1", category);
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_2", category);
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_3", category);
+
+      final fetchAllResult = await sessionFetchAllTest(sessionHandle, category, tags);
+      final entryListHandle = fetchAllResult.value;
+
+      entryListCountTest(entryListHandle, expectedValue: 3);
+
+      askarEntryListFree(entryListHandle);
     });
 
     test('Inserting and reading Key', () async {
@@ -153,8 +176,7 @@ void main() {
           sessionHandle, localKeyHandle, '${name}_3', metadata, tags);
 
       final fetchKeyResult = await sessionFetchAllKeysTest(
-          sessionHandle, algorithm, thumbprintResult.value, tags,
-          expectSuccess: true);
+          sessionHandle, algorithm, thumbprintResult.value, tags);
 
       final KeyEntryListHandle keyEntryListHandle = fetchKeyResult.value;
 
@@ -490,9 +512,27 @@ Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String nam
   return result;
 }
 
-Future<AskarCallbackResult> sessionFetchAllKeysTest(
-    SessionHandle handle, KeyAlgorithm algorithm, String thumbprint, Map tagFilter,
-    {bool expectSuccess = true}) async {
+Future<AskarResult<EntryListHandle>> sessionFetchAllTest(
+  SessionHandle handle,
+  String category,
+  Map tagFilter,
+) async {
+  int limit = 10;
+  bool forUpdate = false;
+
+  final result =
+      await askarSessionFetchAll(handle, category, tagFilter, limit, forUpdate);
+
+  printAskarResult('SessionFetchAll', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+Future<AskarCallbackResult> sessionFetchAllKeysTest(SessionHandle handle,
+    KeyAlgorithm algorithm, String thumbprint, Map tagFilter) async {
   int limit = 10;
   bool forUpdate = false;
 
@@ -503,12 +543,7 @@ Future<AskarCallbackResult> sessionFetchAllKeysTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
-
-  if (expectSuccess) {
-    expect(result.value, greaterThan(0));
-  } else {
-    expect(result.value, equals(0));
-  }
+  expect(result.value, greaterThan(0));
 
   return result;
 }

@@ -122,7 +122,7 @@
 
 - [x] askar_session_fetch: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: Buffer, args_5: number) => number; **(required)**
 
-- [ ] askar_session_fetch_all: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_session_fetch_all: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: number, args_5: Buffer, args_6: number) => number;
 
 - [x] askar_session_fetch_all_keys: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number;
 

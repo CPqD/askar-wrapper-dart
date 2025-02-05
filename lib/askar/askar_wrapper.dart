@@ -867,8 +867,8 @@ Future<AskarCallbackResult> askarScanNext(
 ) async {
   final callback = newCallbackWithHandle(() => {});
 
-  final result = nativeAskarScanNext(
-      handle, callback.nativeCallable.nativeFunction, callback.id);
+  final result =
+      nativeAskarScanNext(handle, callback.nativeCallable.nativeFunction, callback.id);
 
   return await callback.handleResult(result);
 }
@@ -982,32 +982,36 @@ Future<AskarCallbackResult> askarSessionFetch(
   return callbackResult;
 }
 
-ErrorCode askarSessionFetchAll(
+Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
   SessionHandle handle,
   String category,
-  String tagFilter,
+  Map tagFilter,
   int limit,
-  int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchAllCallback>> cb,
-  int cbId,
-) {
-  final categoryPointer = category.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  bool forUpdate,
+) async {
+  final categoryPtr = category.toNativeUtf8();
+  final tagFilterPtr = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(categoryPtr);
+    calloc.free(tagFilterPtr);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchAll(
     handle,
-    categoryPointer,
-    tagFilterPointer,
+    categoryPtr,
+    tagFilterPtr,
     limit,
-    forUpdate,
-    cb,
-    cbId,
+    boolToInt(forUpdate),
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(categoryPointer);
-  calloc.free(tagFilterPointer);
+  final callbackResult = await callback.handleResult(result);
 
-  return ErrorCode.fromInt(result);
+  return AskarResult<EntryListHandle>(callbackResult.errorCode, callbackResult.value);
 }
 
 Future<AskarCallbackResult> askarSessionFetchAllKeys(
