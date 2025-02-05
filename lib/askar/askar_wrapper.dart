@@ -854,13 +854,15 @@ ErrorCode askarScanFree(ScanHandle handle) {
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarScanNext(
+Future<AskarCallbackResult> askarScanNext(
   ScanHandle handle,
-  Pointer<NativeFunction<AskarScanNextCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarScanNext(handle, cb, cbId);
-  return ErrorCode.fromInt(result);
+) async {
+  final callback = newCallbackWithHandle(() => {});
+
+  final result = nativeAskarScanNext(
+      handle, callback.nativeCallable.nativeFunction, callback.id);
+
+  return await callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarScanStart(

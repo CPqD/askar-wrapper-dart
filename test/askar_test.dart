@@ -82,7 +82,7 @@ void main() {
 
       await sessionUpdateTest(
           sessionHandle, EntryOperation.insert, value, tags, name, category);
-
+          
       await sessionCountTest(sessionHandle, category, tags);
 
       final sessionFetchResult = await sessionFetchTest(sessionHandle);
@@ -96,8 +96,8 @@ void main() {
       askarEntryListFree(entryListHandle);
 
       await closeSessionIfOpen();
-
-      await scanStartTest(storeHandle, category, tags);
+      final scanStartResult = await scanStartTest(storeHandle, category, tags);
+      await scanNextTest(scanStartResult.value);
     });
 
     test('Inserting and reading Key', () async {
@@ -242,13 +242,27 @@ Future<AskarCallbackResult> storeOpenTest(String passKey) async {
 Future<AskarCallbackResult> scanStartTest(
     StoreHandle handle, String category, Map tagFilter) async {
   final String profile = 'rekey';
-  final int offset = 1;
+  final int offset = 0;
   final int limit = 2;
 
   final result =
       await askarScanStart(handle, profile, category, tagFilter, offset, limit);
 
   printAskarCallbackResult('ScanStart', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+Future<AskarCallbackResult> scanNextTest(
+  ScanHandle handle,
+) async {
+  final result = await askarScanNext(handle);
+
+  printAskarCallbackResult('ScanNext', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
