@@ -218,6 +218,9 @@ void main() {
 
       keyEntryListCountTest(fetchKeyResult.value, expectedValue: 0);
     });
+    test('Store Get Default Profile', () async {
+      await storeGetDefaultProfileTest(storeHandle, expectedValue: 'rekey');
+    });
   });
 
   group('Store Profile Tests:', () {
@@ -232,8 +235,9 @@ void main() {
       final storeOpenResult = await storeOpenTest(storeKey);
       storeHandle = storeOpenResult.value;
 
-      await storeCreateProfileTest(
-          storeHandle, 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e');
+      String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
+
+      await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
 
       await storeCloseTest(storeHandle);
     });
@@ -695,14 +699,28 @@ Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
   return result;
 }
 
-Future<AskarCallbackResult> storeCreateProfileTest(
-    StoreHandle handle, String profile) async {
+Future<AskarCallbackResult> storeCreateProfileTest(StoreHandle handle, String profile,
+    {required String expectedValue}) async {
   final result = await askarStoreCreateProfile(handle, profile);
 
   printAskarCallbackResult('StoreCreateProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+  expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
+Future<AskarCallbackResult> storeGetDefaultProfileTest(StoreHandle handle,
+    {required String expectedValue}) async {
+  final result = await askarStoreGetDefaultProfile(handle);
+
+  printAskarCallbackResult('StoreGetDefaultProfile', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, equals(expectedValue));
 
   return result;
 }

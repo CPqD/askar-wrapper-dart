@@ -150,7 +150,7 @@
 
 - [ ] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_get_default_profile: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_get_default_profile: (args_0: number, args_1: Buffer, args_2: number) => number;
 
 - [ ] askar_store_list_profiles: (args_0: number, args_1: Buffer, args_2: number) => number;
 

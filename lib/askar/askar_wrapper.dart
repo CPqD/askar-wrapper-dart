@@ -1320,13 +1320,20 @@ AskarResult<String> askarStoreGenerateRawKey({Uint8List? seed}) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarStoreGetDefaultProfile(
+Future<AskarCallbackResult> askarStoreGetDefaultProfile(
   StoreHandle handle,
-  Pointer<NativeFunction<AskarStoreGetDefaultProfileCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarStoreGetDefaultProfile(handle, cb, cbId);
-  return ErrorCode.fromInt(result);
+) async {
+  void cleanup() {}
+
+  final callback = newCallbackWithPtrUtf8(cleanup);
+
+  final result = nativeAskarStoreGetDefaultProfile(
+    handle,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
+  );
+
+  return await callback.handleResult(result);
 }
 
 ErrorCode askarStoreListProfiles(

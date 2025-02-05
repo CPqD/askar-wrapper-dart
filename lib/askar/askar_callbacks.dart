@@ -108,8 +108,9 @@ Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
 
   late final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
 
-  void callback(int callbackId, int errorCode, Pointer<Utf8> uft8) {
-    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, -1));
+  void callback(int callbackId, int errorCode, Pointer<Utf8> utf8) {
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true,
+        utf8 == nullptr ? null : utf8.toDartString()));
     cleanup();
     nativeCallable.close();
   }
