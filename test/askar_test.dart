@@ -131,6 +131,38 @@ void main() {
               "Trying to read from keyEntryList after freeing should cause an exception");
     });
 
+    test('Inserting and reading all keys', () async {
+      String name = 'testAllKeys';
+      String metadata = 'meta';
+      Map<String, String> tags = {'tag_a': '1', 'tag_b': '2'};
+
+      final algorithm = KeyAlgorithm.ed25519;
+
+      final keyGenerateResult = keyGenerateTest(algorithm, KeyBackend.software);
+      final localKeyHandle = keyGenerateResult.value;
+
+      final thumbprintResult = keyGetJwkThumbprintTest(localKeyHandle, algorithm);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_2', metadata, tags);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_3', metadata, tags);
+
+      final fetchKeyResult = await sessionFetchAllKeysTest(
+          sessionHandle, algorithm, thumbprintResult.value, tags,
+          expectSuccess: true);
+
+      final KeyEntryListHandle keyEntryListHandle = fetchKeyResult.value;
+
+      keyEntryListCountTest(keyEntryListHandle, expectedValue: 3);
+
+      askarKeyEntryListFree(keyEntryListHandle);
+    });
+
     test('Sign Message and Verify Signature', () async {
       final keyGenerateResult =
           keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
@@ -299,6 +331,18 @@ AskarResult<LocalKeyHandle> keyGenerateTest(
   return result;
 }
 
+AskarResult<String> keyGetJwkThumbprintTest(
+    LocalKeyHandle handle, KeyAlgorithm algorithm) {
+  final result = askarKeyGetJwkThumbprint(handle, algorithm);
+
+  printAskarResult('KeyGetJwkThumbprint', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
 AskarResult<String> keyGetAlgorithmTest(LocalKeyHandle handle,
     {required KeyAlgorithm expected}) {
   final result = askarKeyGetAlgorithm(handle);
@@ -429,6 +473,29 @@ Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String nam
   final result = await askarSessionFetchKey(handle, name, forUpdate);
 
   printAskarCallbackResult('SessionFetchKey', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+
+  if (expectSuccess) {
+    expect(result.value, greaterThan(0));
+  } else {
+    expect(result.value, equals(0));
+  }
+
+  return result;
+}
+
+Future<AskarCallbackResult> sessionFetchAllKeysTest(
+    SessionHandle handle, KeyAlgorithm algorithm, String thumbprint, Map tagFilter,
+    {bool expectSuccess = true}) async {
+  int limit = 10;
+  bool forUpdate = false;
+
+  final result = await askarSessionFetchAllKeys(
+      handle, algorithm, thumbprint, tagFilter, limit, forUpdate);
+
+  printAskarCallbackResult('SessionFetchAllKeys', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));

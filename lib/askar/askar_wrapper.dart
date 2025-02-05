@@ -689,22 +689,30 @@ ErrorCode askarKeyGetJwkSecret(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyGetJwkThumbprint(
+AskarResult<String> askarKeyGetJwkThumbprint(
   LocalKeyHandle handle,
-  String alg,
-  Pointer<Pointer<Utf8>> out,
+  KeyAlgorithm alg,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
-  final result = nativeAskarKeyGetJwkThumbprint(
+  final algPointer = alg.value.toNativeUtf8();
+
+  final funcResult = nativeAskarKeyGetJwkThumbprint(
     handle,
     algPointer,
-    out,
+    utf8PtPointer,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(algPointer);
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyGetPublicBytes(
@@ -1002,19 +1010,25 @@ ErrorCode askarSessionFetchAll(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarSessionFetchAllKeys(
+Future<AskarCallbackResult> askarSessionFetchAllKeys(
   SessionHandle handle,
-  String alg,
+  KeyAlgorithm algorithm,
   String thumbprint,
-  String tagFilter,
+  Map tagFilter,
   int limit,
-  int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchAllKeysCallback>> cb,
-  int cbId,
-) {
-  final algPointer = alg.toNativeUtf8();
+  bool forUpdate,
+) async {
+  final algPointer = algorithm.value.toNativeUtf8();
   final thumbprintPointer = thumbprint.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  final tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(algPointer);
+    calloc.free(thumbprintPointer);
+    calloc.free(tagFilterPointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchAllKeys(
     handle,
@@ -1022,16 +1036,12 @@ ErrorCode askarSessionFetchAllKeys(
     thumbprintPointer,
     tagFilterPointer,
     limit,
-    forUpdate,
-    cb,
-    cbId,
+    boolToInt(forUpdate),
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(algPointer);
-  calloc.free(thumbprintPointer);
-  calloc.free(tagFilterPointer);
-
-  return ErrorCode.fromInt(result);
+  return await callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarSessionFetchKey(
