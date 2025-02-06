@@ -89,7 +89,7 @@ class AskarSession implements IAskarSession {
   }
 
   @override
-  Future<bool> removeAll(String category, String tagFilter) async {
+  Future<bool> removeAll(String category, Map tagFilter) async {
     final result = await askarSessionRemoveAll(handle!, category, tagFilter);
     if (result.errorCode == ErrorCode.success) {
       return true;

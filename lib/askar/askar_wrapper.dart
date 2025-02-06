@@ -179,28 +179,34 @@ AskarResult<String> askarEntryListGetValue(EntryListHandle handle, int index) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarStringListCount(StringListHandle handle, int count) {
-  final countPointer = calloc<Int32>();
-  countPointer.value = count;
+AskarResult<int> askarStringListCount(StringListHandle handle) {
+  Pointer<Int32> countPtr = calloc<Int32>();
 
-  final result = nativeAskarStringListCount(handle, countPointer);
+  final errorCode = ErrorCode.fromInt(nativeAskarStringListCount(handle, countPtr));
+  final count = countPtr.value;
 
-  final errorCode = ErrorCode.fromInt(result);
-  count = countPointer.value;
+  calloc.free(countPtr);
 
-  calloc.free(countPointer);
-
-  return errorCode;
+  return AskarResult<int>(errorCode, count);
 }
 
 void askarStringListFree(StringListHandle handle) {
   nativeAskarStringListFree(handle);
 }
 
-ErrorCode askarStringListGetItem(
-    StringListHandle handle, int index, Pointer<Pointer<Utf8>> item) {
-  final result = nativeAskarStringListGetItem(handle, index, item);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtrPointer = calloc<Pointer<Utf8>>();
+
+  final errorCode =
+      ErrorCode.fromInt(nativeAskarStringListGetItem(handle, index, utf8PtrPointer));
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtrPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtrPointer.value);
+  calloc.free(utf8PtrPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyAeadDecrypt(
@@ -267,16 +273,24 @@ ErrorCode askarKeyAeadGetParams(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyAeadRandomNonce(
+AskarResult<Uint8List> askarKeyAeadRandomNonce(
   LocalKeyHandle handle,
-  Pointer<SecretBuffer> out,
 ) {
-  final result = nativeAskarKeyAeadRandomNonce(
+  Pointer<SecretBuffer> secretBufferPtr = calloc<SecretBuffer>();
+
+  final funcResult = nativeAskarKeyAeadRandomNonce(
     handle,
-    out,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final value = Uint8List.fromList(secretBufferToBytesList(secretBufferPtr.ref));
+
+  calloc.free(secretBufferPtr.ref.data);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 ErrorCode askarKeyConvert(
@@ -857,9 +871,16 @@ ErrorCode askarKeyWrapKey(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyGetSupportedBackends(Pointer<NativeStringListHandle> out) {
-  final result = nativeAskarKeyGetSupportedBackends(out);
-  return ErrorCode.fromInt(result);
+AskarResult<StringListHandle> askarKeyGetSupportedBackends() {
+  Pointer<NativeStringListHandle> handlePtr = calloc<NativeStringListHandle>();
+
+  final errorCode = ErrorCode.fromInt(nativeAskarKeyGetSupportedBackends(handlePtr));
+
+  StringListHandle handle = handlePtr.value;
+
+  calloc.free(handlePtr);
+
+  return AskarResult<StringListHandle>(errorCode, handle);
 }
 
 ErrorCode askarScanFree(ScanHandle handle) {
@@ -1105,10 +1126,10 @@ Future<AskarCallbackResult> askarSessionInsertKey(SessionHandle handle,
 Future<AskarCallbackResult> askarSessionRemoveAll(
   SessionHandle handle,
   String category,
-  String tagFilter,
+  Map tagFilter,
 ) {
   final categoryPointer = category.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  final tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
 
   void cleanup() {
     calloc.free(categoryPointer);

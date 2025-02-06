@@ -21,7 +21,7 @@ abstract class IAskarSession {
   Future<bool> insertKeys(LocalKeyHandle localKeyHandle, String name, String metadata,
       Map tags, int expiryMs);
 
-  Future<bool> removeAll(String category, String tagFilter);
+  Future<bool> removeAll(String category, Map tagFilter);
 
   Future<bool> removeKey();
 

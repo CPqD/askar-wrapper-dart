@@ -96,31 +96,38 @@ void main() {
       askarEntryListFree(entryListHandle);
 
       await closeSessionIfOpen();
+
       final scanStartResult = await scanStartTest(storeHandle, category, tags);
       await scanNextTest(scanStartResult.value);
+      askarScanFree(scanStartResult.value);
     });
 
-    test('Writing and reading all values', () async {
+    test('Writing, reading and removing all values', () async {
       String value = 'foobar';
       String name = 'testAll';
       String category = 'category-test-all';
       Map<String, String> tags = {'test-all-1': 'a'};
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_1", category);
+      final insertCount = 5;
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_2", category);
+      for (int i = 0; i < insertCount; i++) {
+        await sessionUpdateTest(
+            sessionHandle, EntryOperation.insert, value, tags, "${name}_$i", category);
+      }
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_3", category);
-
+      // Should find all inserted keys
       final fetchAllResult = await sessionFetchAllTest(sessionHandle, category, tags);
-      final entryListHandle = fetchAllResult.value;
+      entryListCountTest(fetchAllResult.value, expectedValue: insertCount);
 
-      entryListCountTest(entryListHandle, expectedValue: 3);
+      // Should remove all keys
+      await sessionRemoveAllTest(sessionHandle, category, tags, expected: insertCount);
 
-      askarEntryListFree(entryListHandle);
+      // Should find 0 keys
+      final fetchAllResult2 = await sessionFetchAllTest(sessionHandle, category, tags);
+      entryListCountTest(fetchAllResult2.value, expectedValue: 0);
+
+      askarEntryListFree(fetchAllResult.value);
+      askarEntryListFree(fetchAllResult2.value);
     });
 
     test('Inserting and reading Key', () async {
@@ -207,6 +214,15 @@ void main() {
           expectSuccess: false);
     });
 
+    test('Generate nonce', () async {
+      final keyGenerateResult =
+          keyGenerateTest(KeyAlgorithm.aesA128CbcHs256, KeyBackend.software);
+
+      final localKeyHandle = keyGenerateResult.value;
+
+      keyAeadRandomNonceTest(localKeyHandle);
+    });
+
     test('Get Key From Secret Bytes', () async {
       final secret = Uint8List.fromList(hex.decode(
           'fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0efeeedecebeae9e8e7e6e5e4e3e2e1e0dfdedddcdbdad9d8d7d6d5d4d3d2d1d0cfcecdcccbcac9c8c7c6c5c4c3c2c1c0'));
@@ -243,6 +259,17 @@ void main() {
     test('Store Get Default Profile', () async {
       String defaultProfile = 'rekey';
       await storeGetDefaultProfileTest(storeHandle, expectedValue: defaultProfile);
+    });
+
+    test('Get Supported Backends', () async {
+      final supportedBackendsResult = getSupportedBackendsTest();
+      final stringListHandle = supportedBackendsResult.value;
+
+      stringListCountTest(stringListHandle, expectGreaterThan: 0);
+
+      stringListGetItemTest(stringListHandle, 0, expected: KeyBackend.software.value);
+
+      askarStringListFree(stringListHandle);
     });
   });
 
@@ -371,6 +398,17 @@ AskarResult<LocalKeyHandle> keyGenerateTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
+  final result = askarKeyAeadRandomNonce(handle);
+
+  printAskarResult('KeyAeadRandomNonce', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
 
   return result;
 }
@@ -598,6 +636,20 @@ Future<AskarCallbackResult> sessionUpdateTest(
   return result;
 }
 
+Future<AskarCallbackResult> sessionRemoveAllTest(
+    SessionHandle handle, String category, Map<String, String> tags,
+    {required int expected}) async {
+  final result = await askarSessionRemoveAll(handle, category, tags);
+
+  printAskarCallbackResult('SessionRemoveAll', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, equals(expected));
+
+  return result;
+}
+
 Future<AskarCallbackResult> sessionFetchTest(SessionHandle handle,
     {bool expectSuccess = true}) async {
   String category = 'category-one';
@@ -748,6 +800,41 @@ Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+AskarResult<StringListHandle> getSupportedBackendsTest() {
+  final result = askarKeyGetSupportedBackends();
+
+  printAskarResult('GetSupportedBackends', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<int> stringListCountTest(StringListHandle handle,
+    {required int expectGreaterThan}) {
+  final result = askarStringListCount(handle);
+
+  printAskarResult('StringListCount', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(expectGreaterThan));
+
+  return result;
+}
+
+AskarResult<String> stringListGetItemTest(StringListHandle handle, int index,
+    {required String expected}) {
+  final result = askarStringListGetItem(handle, index);
+
+  printAskarResult('StringListGetItemTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expected));
 
   return result;
 }

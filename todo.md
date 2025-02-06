@@ -26,11 +26,11 @@
 
 - [x] askar_entry_list_get_value: (args_0: Buffer, args_1: number, args_2: Buffer) => number; **(required)**
 
-- [ ] askar_string_list_count: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_string_list_count: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_string_list_free: (args_0: Buffer) => unknown;
+- [x] askar_string_list_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_string_list_get_item: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_string_list_get_item: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
 - [ ] askar_key_aead_decrypt: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
 
@@ -40,7 +40,7 @@
 
 - [ ] askar_key_aead_get_params: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_aead_random_nonce: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_aead_random_nonce: (args_0: Buffer, args_1: Buffer) => number;
 
 - [ ] askar_key_convert: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
@@ -108,7 +108,7 @@
 
 - [ ] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
-- [ ] askar_key_get_supported_backends: (args_0: Buffer) => number;
+- [x] askar_key_get_supported_backends: (args_0: Buffer) => number;
 
 - [x] askar_scan_free: (args_0: number) => number; **(required)**
 
@@ -130,7 +130,7 @@
 
 - [x] askar_session_insert_key: (args_0: number, args_1: Buffer, args_2: string, args_3: string, args_4: string, args_5: number, args_6: Buffer, args_7: number) => number;
 
-- [ ] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
 - [x] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
