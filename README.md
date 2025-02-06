@@ -1,8 +1,9 @@
-# import_so_libaskar
+# aries-flutter-sdk
 
-A new Flutter project that imports aries library.
+![Status do Workflow](https://github.com/CPqD/aries-flutter-sdk/actions/workflows/dart.yml/badge.svg)
+![Static Badge](https://img.shields.io/badge/Askar_Version-0%2E3%2E2-blue)
 
-Askar Version: 0.3.2
+Aries Cloud Agent SDK for Flutter mobile framework
 
 ## Build Askar for Android
 
