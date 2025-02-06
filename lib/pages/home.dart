@@ -19,11 +19,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<MenuItem> menuItems = [
     MenuItem('Store Provision'),
+    MenuItem('Start Session'),
+    MenuItem('Close Session'),
     MenuItem('Ler Categoria inexistente'),
     MenuItem('Escrevendo e lendo da sessão'),
     MenuItem('Inserindo e lendo uma chave'),
     MenuItem('Assinar Mensagem e verificar Assinatura'),
-    MenuItem('Inserindo, Recuperando e removendo chave'),
+    MenuItem('Inserindo, Lendo e removendo chave'),
+    MenuItem('Lendo chave'),
   ];
 
   @override
