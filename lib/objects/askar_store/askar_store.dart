@@ -44,6 +44,12 @@ class AskarStore implements IAskarStore {
     return false;
   }
 
+  checkStore() {
+    if (storeHandle == null) {
+      throw AskarStoreException("Store não iniciado");
+    }
+  }
+
   @override
   Future<bool> open() async {
     final result = await askarStoreOpen(specUri, method, passKey, profile);
@@ -68,6 +74,7 @@ class AskarStore implements IAskarStore {
 
   @override
   Future<bool> createProfile() async {
+    checkStore();
     final result = await askarStoreCreateProfile(storeHandle!, "${profile}2");
     if (result.errorCode == ErrorCode.duplicate) {
       throw ProfileDuplicatedException("Este Profile já existe");
@@ -80,46 +87,55 @@ class AskarStore implements IAskarStore {
 
   @override
   Future<bool> copy() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> generateRawKey() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> getDefaultProfile() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> getProfileName() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> listProfiles() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> rekey() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> remove() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> removeProfile() {
+    checkStore();
     throw UnimplementedError();
   }
 
   @override
   Future<bool> setDefaultProfile() {
+    checkStore();
     throw UnimplementedError();
   }
 }

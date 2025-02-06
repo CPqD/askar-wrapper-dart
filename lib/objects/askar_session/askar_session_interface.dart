@@ -1,4 +1,5 @@
 import '../../askar/askar_wrapper.dart';
+import '../../askar/enums/askar_entry_operation.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
 
 abstract class IAskarSession {
@@ -6,7 +7,7 @@ abstract class IAskarSession {
 
   Future<bool> close({required bool commit});
 
-  Future<int> sessionCount();
+  Future<int> sessionCount(String category, Map<String, String> tagFilter);
 
   Future<EntryListHandle?> fetch(String category, String name, bool forUpdate);
 
@@ -23,9 +24,10 @@ abstract class IAskarSession {
 
   Future<bool> removeAll(String category, Map tagFilter);
 
-  Future<bool> removeKey();
+  Future<bool> removeKey(String name);
 
-  Future<bool> update();
+  Future<bool> update(EntryOperation operation, String category, String name,
+      String value, Map<String, String> tags, int expiryMs);
 
-  Future<bool> updateKey();
+  Future<bool> updateKey(String name, String metadata, String tags, int expiryMs);
 }
