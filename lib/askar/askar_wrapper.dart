@@ -273,16 +273,24 @@ ErrorCode askarKeyAeadGetParams(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyAeadRandomNonce(
+AskarResult<Uint8List> askarKeyAeadRandomNonce(
   LocalKeyHandle handle,
-  Pointer<SecretBuffer> out,
 ) {
-  final result = nativeAskarKeyAeadRandomNonce(
+  Pointer<SecretBuffer> secretBufferPtr = calloc<SecretBuffer>();
+
+  final funcResult = nativeAskarKeyAeadRandomNonce(
     handle,
-    out,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final value = Uint8List.fromList(secretBufferToBytesList(secretBufferPtr.ref));
+
+  calloc.free(secretBufferPtr.ref.data);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 ErrorCode askarKeyConvert(

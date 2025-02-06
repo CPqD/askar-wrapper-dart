@@ -214,6 +214,15 @@ void main() {
           expectSuccess: false);
     });
 
+    test('Generate nonce', () async {
+      final keyGenerateResult =
+          keyGenerateTest(KeyAlgorithm.aesA128CbcHs256, KeyBackend.software);
+
+      final localKeyHandle = keyGenerateResult.value;
+
+      keyAeadRandomNonceTest(localKeyHandle);
+    });
+
     test('Get Key From Secret Bytes', () async {
       final secret = Uint8List.fromList(hex.decode(
           'fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0efeeedecebeae9e8e7e6e5e4e3e2e1e0dfdedddcdbdad9d8d7d6d5d4d3d2d1d0cfcecdcccbcac9c8c7c6c5c4c3c2c1c0'));
@@ -389,6 +398,17 @@ AskarResult<LocalKeyHandle> keyGenerateTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
+  final result = askarKeyAeadRandomNonce(handle);
+
+  printAskarResult('KeyAeadRandomNonce', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
 
   return result;
 }
