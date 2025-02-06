@@ -194,10 +194,19 @@ void askarStringListFree(StringListHandle handle) {
   nativeAskarStringListFree(handle);
 }
 
-ErrorCode askarStringListGetItem(
-    StringListHandle handle, int index, Pointer<Pointer<Utf8>> item) {
-  final result = nativeAskarStringListGetItem(handle, index, item);
-  return ErrorCode.fromInt(result);
+AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
+  Pointer<Pointer<Utf8>> utf8PtrPointer = calloc<Pointer<Utf8>>();
+
+  final errorCode =
+      ErrorCode.fromInt(nativeAskarStringListGetItem(handle, index, utf8PtrPointer));
+
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtrPointer.value.toDartString() : "";
+
+  calloc.free(utf8PtrPointer.value);
+  calloc.free(utf8PtrPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyAeadDecrypt(

@@ -253,6 +253,8 @@ void main() {
 
       stringListCountTest(stringListHandle, expectGreaterThan: 0);
 
+      stringListGetItemTest(stringListHandle, 0, expected: KeyBackend.software.value);
+
       askarStringListFree(stringListHandle);
     });
   });
@@ -782,6 +784,18 @@ AskarResult<int> stringListCountTest(StringListHandle handle,
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(expectGreaterThan));
+
+  return result;
+}
+
+AskarResult<String> stringListGetItemTest(StringListHandle handle, int index,
+    {required String expected}) {
+  final result = askarStringListGetItem(handle, index);
+
+  printAskarResult('StringListGetItemTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(expected));
 
   return result;
 }

@@ -30,7 +30,7 @@
 
 - [x] askar_string_list_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_string_list_get_item: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_string_list_get_item: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
 - [ ] askar_key_aead_decrypt: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
 
