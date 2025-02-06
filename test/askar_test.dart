@@ -96,8 +96,31 @@ void main() {
       askarEntryListFree(entryListHandle);
 
       await closeSessionIfOpen();
+      final scanStartResult = await scanStartTest(storeHandle, category, tags);
+      await scanNextTest(scanStartResult.value);
+    });
 
-      await scanStartTest(storeHandle, category, tags);
+    test('Writing and reading all values', () async {
+      String value = 'foobar';
+      String name = 'testAll';
+      String category = 'category-test-all';
+      Map<String, String> tags = {'test-all-1': 'a'};
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_1", category);
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_2", category);
+
+      await sessionUpdateTest(
+          sessionHandle, EntryOperation.insert, value, tags, "${name}_3", category);
+
+      final fetchAllResult = await sessionFetchAllTest(sessionHandle, category, tags);
+      final entryListHandle = fetchAllResult.value;
+
+      entryListCountTest(entryListHandle, expectedValue: 3);
+
+      askarEntryListFree(entryListHandle);
     });
 
     test('Inserting and reading Key', () async {
@@ -129,6 +152,37 @@ void main() {
           throwsA(isA<Exception>()),
           reason:
               "Trying to read from keyEntryList after freeing should cause an exception");
+    });
+
+    test('Inserting and reading all keys', () async {
+      String name = 'testAllKeys';
+      String metadata = 'meta';
+      Map<String, String> tags = {'tag_a': '1', 'tag_b': '2'};
+
+      final algorithm = KeyAlgorithm.ed25519;
+
+      final keyGenerateResult = keyGenerateTest(algorithm, KeyBackend.software);
+      final localKeyHandle = keyGenerateResult.value;
+
+      final thumbprintResult = keyGetJwkThumbprintTest(localKeyHandle, algorithm);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_2', metadata, tags);
+
+      await sessionInsertKeyTest(
+          sessionHandle, localKeyHandle, '${name}_3', metadata, tags);
+
+      final fetchKeyResult = await sessionFetchAllKeysTest(
+          sessionHandle, algorithm, thumbprintResult.value, tags);
+
+      final KeyEntryListHandle keyEntryListHandle = fetchKeyResult.value;
+
+      keyEntryListCountTest(keyEntryListHandle, expectedValue: 3);
+
+      askarKeyEntryListFree(keyEntryListHandle);
     });
 
     test('Sign Message and Verify Signature', () async {
@@ -186,12 +240,16 @@ void main() {
 
       keyEntryListCountTest(fetchKeyResult.value, expectedValue: 0);
     });
+    test('Store Get Default Profile', () async {
+      String defaultProfile = 'rekey';
+      await storeGetDefaultProfileTest(storeHandle, expectedValue: defaultProfile);
+    });
   });
 
   group('Store Profile Tests:', () {
     late StoreHandle storeHandle;
     late String storeKey;
-    test('Store create profile', () async {
+    test('Store Create Profile', () async {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
@@ -200,8 +258,26 @@ void main() {
       final storeOpenResult = await storeOpenTest(storeKey);
       storeHandle = storeOpenResult.value;
 
-      await storeCreateProfileTest(
-          storeHandle, 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e');
+      String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
+
+      await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
+
+      await storeCloseTest(storeHandle);
+    });
+
+    test('Store Set Default Profile', () async {
+      final generateKeyResult = askarStoreGenerateRawKeyTest();
+      storeKey = generateKeyResult.value;
+
+      await storeProvisionTest(storeKey);
+
+      final storeOpenResult = await storeOpenTest(storeKey);
+      storeHandle = storeOpenResult.value;
+
+      String newDefaultProfile = 'rekey2';
+
+      await storeSetDefaultProfileTest(storeHandle, newDefaultProfile);
+      await storeGetDefaultProfileTest(storeHandle, expectedValue: newDefaultProfile);
 
       await storeCloseTest(storeHandle);
     });
@@ -242,13 +318,27 @@ Future<AskarCallbackResult> storeOpenTest(String passKey) async {
 Future<AskarCallbackResult> scanStartTest(
     StoreHandle handle, String category, Map tagFilter) async {
   final String profile = 'rekey';
-  final int offset = 1;
+  final int offset = 0;
   final int limit = 2;
 
   final result =
       await askarScanStart(handle, profile, category, tagFilter, offset, limit);
 
   printAskarCallbackResult('ScanStart', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+Future<AskarCallbackResult> scanNextTest(
+  ScanHandle handle,
+) async {
+  final result = await askarScanNext(handle);
+
+  printAskarCallbackResult('ScanNext', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -281,6 +371,18 @@ AskarResult<LocalKeyHandle> keyGenerateTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<String> keyGetJwkThumbprintTest(
+    LocalKeyHandle handle, KeyAlgorithm algorithm) {
+  final result = askarKeyGetJwkThumbprint(handle, algorithm);
+
+  printAskarResult('KeyGetJwkThumbprint', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
 
   return result;
 }
@@ -424,6 +526,42 @@ Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String nam
   } else {
     expect(result.value, equals(0));
   }
+
+  return result;
+}
+
+Future<AskarResult<EntryListHandle>> sessionFetchAllTest(
+  SessionHandle handle,
+  String category,
+  Map tagFilter,
+) async {
+  int limit = 10;
+  bool forUpdate = false;
+
+  final result =
+      await askarSessionFetchAll(handle, category, tagFilter, limit, forUpdate);
+
+  printAskarResult('SessionFetchAll', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+Future<AskarCallbackResult> sessionFetchAllKeysTest(SessionHandle handle,
+    KeyAlgorithm algorithm, String thumbprint, Map tagFilter) async {
+  int limit = 10;
+  bool forUpdate = false;
+
+  final result = await askarSessionFetchAllKeys(
+      handle, algorithm, thumbprint, tagFilter, limit, forUpdate);
+
+  printAskarCallbackResult('SessionFetchAllKeys', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, greaterThan(0));
 
   return result;
 }
@@ -614,11 +752,37 @@ Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
   return result;
 }
 
-Future<AskarCallbackResult> storeCreateProfileTest(
-    StoreHandle handle, String profile) async {
+Future<AskarCallbackResult> storeCreateProfileTest(StoreHandle handle, String profile,
+    {required String expectedValue}) async {
   final result = await askarStoreCreateProfile(handle, profile);
 
   printAskarCallbackResult('StoreCreateProfile', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
+Future<AskarCallbackResult> storeGetDefaultProfileTest(StoreHandle handle,
+    {required String expectedValue}) async {
+  final result = await askarStoreGetDefaultProfile(handle);
+
+  printAskarCallbackResult('StoreGetDefaultProfile', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
+Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
+    StoreHandle handle, String profile) async {
+  final result = await askarStoreSetDefaultProfile(handle, profile);
+
+  printAskarBlankResult('StoreSetDefaultProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));

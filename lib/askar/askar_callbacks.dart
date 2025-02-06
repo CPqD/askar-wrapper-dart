@@ -10,12 +10,22 @@ base class AskarCallbackBlankResult {
   final bool finished;
 
   AskarCallbackBlankResult(this.errorCode, this.finished);
+
+  @override
+  String toString() {
+    return "($errorCode, finished: $finished)";
+  }
 }
 
 base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
   final T value;
 
   AskarCallbackResult(super.errorCode, super.finished, this.value);
+
+  @override
+  String toString() {
+    return "($errorCode, value: $value, finished: $finished)";
+  }
 }
 
 base class Callback<T extends Function> {
@@ -108,8 +118,10 @@ Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
 
   late final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
 
-  void callback(int callbackId, int errorCode, Pointer<Utf8> uft8) {
-    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, -1));
+  void callback(int callbackId, int errorCode, Pointer<Utf8> utf8) {
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true,
+        utf8 == nullptr ? null : utf8.toDartString()));
+    calloc.free(utf8);
     cleanup();
     nativeCallable.close();
   }

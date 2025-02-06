@@ -35,6 +35,7 @@ class _ExecutePageState extends State<ExecutePage> {
       fetchCategory,
       writeAndRead,
       insertAndReadKey,
+      readAllKeys,
       signMessageAndVerify,
       insertAndRemoveKey,
       readKey,
@@ -78,16 +79,16 @@ class _ExecutePageState extends State<ExecutePage> {
 
   storeProvision() async {
     final res = await askarStoreProvision(specUri!, method, passKey, profile, recreate);
-    await delay('storeProvision', res);
+    await show('storeProvision', res);
   }
 
   startSession({bool asTransaction = true}) async {
     storeHandle = await askarStoreOpen(specUri!, method, passKey, profile);
-    await delay('StoreOpen', storeHandle!);
+    await show('StoreOpen', storeHandle!);
 
     sessionHandle = await askarSessionStart(storeHandle!.value, profile, asTransaction);
 
-    await delay('SessionStart', sessionHandle!);
+    await show('SessionStart', sessionHandle!);
   }
 
   closeSession() async {
@@ -116,7 +117,7 @@ class _ExecutePageState extends State<ExecutePage> {
       final sessionFetchResult =
           await askarSessionFetch(sessionHandle!.value, category, name, forUpdate);
 
-      await delay('SessionFetch', sessionFetchResult);
+      await show('SessionFetch', sessionFetchResult);
     } catch (e) {
       result = '$result SessionFetch: $e\n';
       setState(() {});
@@ -130,19 +131,19 @@ class _ExecutePageState extends State<ExecutePage> {
     String name = 'testEntry';
     bool forUpdate = false;
     String value = 'foobar';
-    Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+    Map<String, String> tags = {'tag_1': 'b'};
 
     await startSession(asTransaction: asTransaction);
 
     final sessionUpdateResult = await askarSessionUpdate(
         sessionHandle!.value, EntryOperation.insert, category, name, value, tags, 2000);
 
-    await delay('SessionUpdatet', sessionUpdateResult);
+    await show('SessionUpdatet', sessionUpdateResult);
 
     try {
       final sessionFetchResult =
           await askarSessionFetch(sessionHandle!.value, category, name, forUpdate);
-      await delay('SessionFetch', sessionFetchResult);
+      await show('SessionFetch', sessionFetchResult);
 
       final entryListHandle = sessionFetchResult.value;
 
@@ -168,32 +169,28 @@ class _ExecutePageState extends State<ExecutePage> {
     bool asTransaction = true;
     String name = 'testEntry5';
     bool forUpdate = true;
-    Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+    Map<String, String> tags = {'tag_1': 'b'};
     String metadata = 'meta';
 
     await startSession(asTransaction: asTransaction);
 
-    final keyGenerateResult = keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
-
-    final localKeyHandle = keyGenerateResult.value;
+    await getOrGenerateKey();
 
     final sessionInsertKey = await askarSessionInsertKey(
-        sessionHandle!.value, localKeyHandle, name, metadata, tags, 2000);
+        sessionHandle!.value, localKeyHandle, name, metadata, tags, 200000);
 
-    await delay('SessionInsertKey', sessionInsertKey);
+    await show('SessionInsertKey', sessionInsertKey);
 
     try {
       final sessionFetchKeyResult =
           await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
 
-      await delay('SessionFetchKey', sessionFetchKeyResult);
+      await show('SessionFetchKey', sessionFetchKeyResult);
 
-      final askarKeyEntryListResult =
+      final askarKeyEntryListGetMetadataResult =
           askarKeyEntryListGetMetadata(sessionFetchKeyResult.value, 0);
-      result =
-          '$result KeyEntryListGetMetadata: ${askarKeyEntryListResult.errorCode} Valor: ${askarKeyEntryListResult.value}\n';
 
-      setState(() {});
+      await show('KeyEntryListGetMetadata', askarKeyEntryListGetMetadataResult);
     } catch (e) {
       result = '$result SessionFetchKeyError: $e\n';
 
@@ -203,15 +200,56 @@ class _ExecutePageState extends State<ExecutePage> {
     await closeSession();
   }
 
+  readAllKeys() async {
+    Map<String, String> tags = {'tag_1': 'b'};
+    final algorithm = KeyAlgorithm.ed25519;
+    final limit = 20;
+
+    startSession();
+
+    await getOrGenerateKey();
+
+    result = '$result Thumbprint: $thumbprint // Local Key Handle: $localKeyHandle\n';
+
+    try {
+      final fetchAllKeysResult = await askarSessionFetchAllKeys(
+          sessionHandle!.value, algorithm, thumbprint, tags, limit, false);
+
+      await show('SessionFetchAllKeys', fetchAllKeysResult);
+
+      final KeyEntryListHandle keyEntryListHandle = fetchAllKeysResult.value;
+
+      final countResult = askarKeyEntryListCount(keyEntryListHandle);
+      await show('KeyEntryListCount', countResult);
+
+      for (int i = 0; i < countResult.value; i++) {
+        result = '$result Call for index $i:\n';
+
+        final askarKeyEntryListGetMetadataResult =
+            askarKeyEntryListGetMetadata(keyEntryListHandle, i);
+
+        await show('KeyEntryListGetMetadata', askarKeyEntryListGetMetadataResult);
+      }
+    } catch (e) {
+      result = '$result SessionFetchKey: $e\n';
+
+      await delay();
+    }
+
+    final sessionCloseResult = await askarSessionClose(sessionHandle!.value, true);
+
+    await show('SessionClose', sessionCloseResult);
+
+    setState(() {});
+  }
+
   signMessageAndVerify() async {
     final message = utf8.encode("This is a message!");
     final signAlgorithm = SignatureAlgorithm.edDSA;
 
-    final keyGenerateResult = keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
-
-    final localKeyHandle = keyGenerateResult.value;
-
+    await getOrGenerateKey();
     final signResult = askarKeySignMessage(localKeyHandle, message, signAlgorithm);
+
     result = '$result KeySignMessage: ${signResult.errorCode} ${signResult.value}\n';
 
     setState(() {});
@@ -229,7 +267,7 @@ class _ExecutePageState extends State<ExecutePage> {
     bool asTransaction = true;
     String name = 'testEntry3';
     bool forUpdate = true;
-    Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
+    Map<String, String> tags = {'tag_1': 'b'};
     String metadata = 'meta';
     await startSession(asTransaction: asTransaction);
 
@@ -240,19 +278,19 @@ class _ExecutePageState extends State<ExecutePage> {
     final sessionInsertKey = await askarSessionInsertKey(
         sessionHandle!.value, localKeyHandle, name, metadata, tags, 2000);
 
-    await delay('sessionInsertKey', sessionInsertKey);
+    await show('sessionInsertKey', sessionInsertKey);
 
     try {
       final sessionFetchKeyResult =
           await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
 
-      await delay('SessionFetchKey', sessionFetchKeyResult);
+      await show('SessionFetchKey', sessionFetchKeyResult);
 
       final sessionRemoveKey = await askarSessionRemoveKey(sessionHandle!.value, name);
 
-      await delay('SessionRemoveKey', sessionRemoveKey);
+      await show('SessionRemoveKey', sessionRemoveKey);
     } catch (e) {
-      result = '$result SessionFetchKey: $e\n';
+      result = '$result Error: $e\n';
 
       setState(() {});
     }
@@ -270,7 +308,7 @@ class _ExecutePageState extends State<ExecutePage> {
       final sessionFetchKeyResult =
           await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
 
-      await delay('SessionFetchKey', sessionFetchKeyResult);
+      await show('SessionFetchKey', sessionFetchKeyResult);
 
       final askarKeyEntryListResult =
           askarKeyEntryListGetMetadata(sessionFetchKeyResult.value, 0);
@@ -295,10 +333,30 @@ class _ExecutePageState extends State<ExecutePage> {
     return result;
   }
 
-  Future<void> delay(String title, AskarCallbackResult<dynamic> handle) async {
-    setState(() {
-      result = '$result $title:${handle.value} ${handle.errorCode}\n';
-    });
+  Future<void> show(String funcName, dynamic funcResult) async {
+    result = '$result $funcName: $funcResult\n';
+    await delay();
+  }
+
+  Future<void> delay() async {
+    setState(() {});
     await Future.delayed(Duration(milliseconds: 500));
+  }
+
+  Future<void> getOrGenerateKey() async {
+    if (localKeyHandle == 0) {
+      final keyGenerateResult =
+          await keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
+
+      await show('KeyGenerate', keyGenerateResult);
+
+      localKeyHandle = keyGenerateResult.value;
+
+      final thumbprintResult =
+          askarKeyGetJwkThumbprint(localKeyHandle, KeyAlgorithm.ed25519);
+      await show('KeyGetJwkThumbprint', thumbprintResult);
+
+      thumbprint = thumbprintResult.value;
+    }
   }
 }

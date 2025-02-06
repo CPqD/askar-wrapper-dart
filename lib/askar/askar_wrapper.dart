@@ -20,6 +20,11 @@ final class AskarResult<T> {
   final T value;
 
   AskarResult(this.errorCode, this.value);
+
+  @override
+  String toString() {
+    return "($errorCode, $value)";
+  }
 }
 
 typedef LocalKeyHandle = int;
@@ -689,22 +694,30 @@ ErrorCode askarKeyGetJwkSecret(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyGetJwkThumbprint(
+AskarResult<String> askarKeyGetJwkThumbprint(
   LocalKeyHandle handle,
-  String alg,
-  Pointer<Pointer<Utf8>> out,
+  KeyAlgorithm alg,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
-  final result = nativeAskarKeyGetJwkThumbprint(
+  final algPointer = alg.value.toNativeUtf8();
+
+  final funcResult = nativeAskarKeyGetJwkThumbprint(
     handle,
     algPointer,
-    out,
+    utf8PtPointer,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  final String value =
+      (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
+
+  calloc.free(algPointer);
+  calloc.free(utf8PtPointer.value);
+  calloc.free(utf8PtPointer);
+
+  return AskarResult<String>(errorCode, value);
 }
 
 ErrorCode askarKeyGetPublicBytes(
@@ -854,13 +867,15 @@ ErrorCode askarScanFree(ScanHandle handle) {
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarScanNext(
+Future<AskarCallbackResult> askarScanNext(
   ScanHandle handle,
-  Pointer<NativeFunction<AskarScanNextCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarScanNext(handle, cb, cbId);
-  return ErrorCode.fromInt(result);
+) async {
+  final callback = newCallbackWithHandle(() => {});
+
+  final result =
+      nativeAskarScanNext(handle, callback.nativeCallable.nativeFunction, callback.id);
+
+  return await callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarScanStart(
@@ -972,47 +987,57 @@ Future<AskarCallbackResult> askarSessionFetch(
   return callbackResult;
 }
 
-ErrorCode askarSessionFetchAll(
+Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
   SessionHandle handle,
   String category,
-  String tagFilter,
+  Map tagFilter,
   int limit,
-  int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchAllCallback>> cb,
-  int cbId,
-) {
-  final categoryPointer = category.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  bool forUpdate,
+) async {
+  final categoryPtr = category.toNativeUtf8();
+  final tagFilterPtr = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(categoryPtr);
+    calloc.free(tagFilterPtr);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchAll(
     handle,
-    categoryPointer,
-    tagFilterPointer,
+    categoryPtr,
+    tagFilterPtr,
     limit,
-    forUpdate,
-    cb,
-    cbId,
+    boolToInt(forUpdate),
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(categoryPointer);
-  calloc.free(tagFilterPointer);
+  final callbackResult = await callback.handleResult(result);
 
-  return ErrorCode.fromInt(result);
+  return AskarResult<EntryListHandle>(callbackResult.errorCode, callbackResult.value);
 }
 
-ErrorCode askarSessionFetchAllKeys(
+Future<AskarCallbackResult> askarSessionFetchAllKeys(
   SessionHandle handle,
-  String alg,
+  KeyAlgorithm algorithm,
   String thumbprint,
-  String tagFilter,
+  Map tagFilter,
   int limit,
-  int forUpdate,
-  Pointer<NativeFunction<AskarSessionFetchAllKeysCallback>> cb,
-  int cbId,
-) {
-  final algPointer = alg.toNativeUtf8();
+  bool forUpdate,
+) async {
+  final algPointer = algorithm.value.toNativeUtf8();
   final thumbprintPointer = thumbprint.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  final tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(algPointer);
+    calloc.free(thumbprintPointer);
+    calloc.free(tagFilterPointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionFetchAllKeys(
     handle,
@@ -1020,16 +1045,12 @@ ErrorCode askarSessionFetchAllKeys(
     thumbprintPointer,
     tagFilterPointer,
     limit,
-    forUpdate,
-    cb,
-    cbId,
+    boolToInt(forUpdate),
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(algPointer);
-  calloc.free(thumbprintPointer);
-  calloc.free(tagFilterPointer);
-
-  return ErrorCode.fromInt(result);
+  return await callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarSessionFetchKey(
@@ -1308,13 +1329,38 @@ AskarResult<String> askarStoreGenerateRawKey({Uint8List? seed}) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarStoreGetDefaultProfile(
+Future<AskarCallbackResult> askarStoreGetDefaultProfile(
   StoreHandle handle,
-  Pointer<NativeFunction<AskarStoreGetDefaultProfileCallback>> cb,
-  int cbId,
-) {
-  final result = nativeAskarStoreGetDefaultProfile(handle, cb, cbId);
-  return ErrorCode.fromInt(result);
+) async {
+  final callback = newCallbackWithPtrUtf8(() => {});
+
+  final result = nativeAskarStoreGetDefaultProfile(
+    handle,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
+  );
+
+  return await callback.handleResult(result);
+}
+
+Future<AskarCallbackBlankResult> askarStoreSetDefaultProfile(
+    StoreHandle handle, String profile) async {
+  final profilePointer = profile.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
+
+  final result = nativeAskarStoreSetDefaultProfile(
+    handle,
+    profilePointer,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
+  );
+
+  return await callback.handleResult(result);
 }
 
 ErrorCode askarStoreListProfiles(
@@ -1443,26 +1489,6 @@ ErrorCode askarStoreRemoveProfile(
   final profilePointer = profile.toNativeUtf8();
 
   final result = nativeAskarStoreRemoveProfile(
-    handle,
-    profilePointer,
-    cb,
-    cbId,
-  );
-
-  calloc.free(profilePointer);
-
-  return ErrorCode.fromInt(result);
-}
-
-ErrorCode askarStoreSetDefaultProfile(
-  StoreHandle handle,
-  String profile,
-  Pointer<NativeFunction<AskarStoreSetDefaultProfileCallback>> cb,
-  int cbId,
-) {
-  final profilePointer = profile.toNativeUtf8();
-
-  final result = nativeAskarStoreSetDefaultProfile(
     handle,
     profilePointer,
     cb,
