@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../askar/askar_callbacks.dart';
 import '../askar/askar_wrapper.dart';
 import '../askar/enums/askar_entry_operation.dart';
 import '../askar/enums/askar_key_algorithm.dart';
@@ -92,7 +91,7 @@ class _ExecutePageState extends State<ExecutePage> {
   }
 
   closeSession() async {
-    print('CLOSE SESSION $sessionHandle');
+    debugPrint('CLOSE SESSION $sessionHandle');
     if (sessionHandle != null) {
       final sessinCloseResult = await askarSessionClose(sessionHandle!.value, true);
       result = '$result SessionClose: ${sessinCloseResult.errorCode}\n';
@@ -205,7 +204,7 @@ class _ExecutePageState extends State<ExecutePage> {
     final algorithm = KeyAlgorithm.ed25519;
     final limit = 20;
 
-    startSession();
+    await startSession();
 
     await getOrGenerateKey();
 
@@ -345,8 +344,7 @@ class _ExecutePageState extends State<ExecutePage> {
 
   Future<void> getOrGenerateKey() async {
     if (localKeyHandle == 0) {
-      final keyGenerateResult =
-          await keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
+      final keyGenerateResult = keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
 
       await show('KeyGenerate', keyGenerateResult);
 
