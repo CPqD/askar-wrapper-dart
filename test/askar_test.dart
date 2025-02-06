@@ -102,27 +102,32 @@ void main() {
       askarScanFree(scanStartResult.value);
     });
 
-    test('Writing and reading all values', () async {
+    test('Writing, reading and removing all values', () async {
       String value = 'foobar';
       String name = 'testAll';
       String category = 'category-test-all';
       Map<String, String> tags = {'test-all-1': 'a'};
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_1", category);
+      final insertCount = 5;
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_2", category);
+      for (int i = 0; i < insertCount; i++) {
+        await sessionUpdateTest(
+            sessionHandle, EntryOperation.insert, value, tags, "${name}_$i", category);
+      }
 
-      await sessionUpdateTest(
-          sessionHandle, EntryOperation.insert, value, tags, "${name}_3", category);
-
+      // Should find all inserted keys
       final fetchAllResult = await sessionFetchAllTest(sessionHandle, category, tags);
-      final entryListHandle = fetchAllResult.value;
+      entryListCountTest(fetchAllResult.value, expectedValue: insertCount);
 
-      entryListCountTest(entryListHandle, expectedValue: 3);
+      // Should remove all keys
+      await sessionRemoveAllTest(sessionHandle, category, tags, expected: insertCount);
 
-      askarEntryListFree(entryListHandle);
+      // Should find 0 keys
+      final fetchAllResult2 = await sessionFetchAllTest(sessionHandle, category, tags);
+      entryListCountTest(fetchAllResult2.value, expectedValue: 0);
+
+      askarEntryListFree(fetchAllResult.value);
+      askarEntryListFree(fetchAllResult2.value);
     });
 
     test('Inserting and reading Key', () async {
@@ -607,6 +612,20 @@ Future<AskarCallbackResult> sessionUpdateTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+Future<AskarCallbackResult> sessionRemoveAllTest(
+    SessionHandle handle, String category, Map<String, String> tags,
+    {required int expected}) async {
+  final result = await askarSessionRemoveAll(handle, category, tags);
+
+  printAskarCallbackResult('SessionRemoveAll', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(result.value, equals(expected));
 
   return result;
 }

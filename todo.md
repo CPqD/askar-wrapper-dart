@@ -130,7 +130,7 @@
 
 - [x] askar_session_insert_key: (args_0: number, args_1: Buffer, args_2: string, args_3: string, args_4: string, args_5: number, args_6: Buffer, args_7: number) => number;
 
-- [ ] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
 - [x] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 

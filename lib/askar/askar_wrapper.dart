@@ -1115,28 +1115,30 @@ Future<AskarCallbackResult> askarSessionInsertKey(SessionHandle handle,
   return callback.handleResult(result);
 }
 
-ErrorCode askarSessionRemoveAll(
+Future<AskarCallbackResult> askarSessionRemoveAll(
   SessionHandle handle,
   String category,
-  String tagFilter,
-  Pointer<NativeFunction<AskarSessionRemoveAllCallback>> cb,
-  int cbId,
+  Map tagFilter,
 ) {
   final categoryPointer = category.toNativeUtf8();
-  final tagFilterPointer = tagFilter.toNativeUtf8();
+  final tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(categoryPointer);
+    calloc.free(tagFilterPointer);
+  }
+
+  final callback = newCallbackWithInt64(cleanup);
 
   final result = nativeAskarSessionRemoveAll(
     handle,
     categoryPointer,
     tagFilterPointer,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(categoryPointer);
-  calloc.free(tagFilterPointer);
-
-  return ErrorCode.fromInt(result);
+  return callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarSessionRemoveKey(
