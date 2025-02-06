@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:import_so_libaskar/objects/askar_session/askar_session.dart';
 
 import '../askar/askar_callbacks.dart';
 import '../askar/askar_wrapper.dart';
@@ -9,6 +10,7 @@ import '../askar/enums/askar_key_algorithm.dart';
 import '../askar/enums/askar_key_backend.dart';
 import '../askar/enums/askar_signature_algorithm.dart';
 import '../global.dart';
+import '../objects/askar_exceptions/exceptions.dart';
 
 class ExecutePage extends StatefulWidget {
   final String title;
@@ -25,13 +27,13 @@ class _ExecutePageState extends State<ExecutePage> {
 
   String result = '';
 
+  AskarSession? session;
+
   @override
   initState() {
     super.initState();
     _functions = [
-      storeProvision,
-      startSession,
-      closeSession,
+      createProfile,
       fetchCategory,
       writeAndRead,
       insertAndReadKey,
@@ -77,34 +79,34 @@ class _ExecutePageState extends State<ExecutePage> {
     );
   }
 
-  storeProvision() async {
-    final res = await askarStoreProvision(specUri!, method, passKey, profile, recreate);
-    await show('storeProvision', res);
-  }
-
   startSession({bool asTransaction = true}) async {
-    storeHandle = await askarStoreOpen(specUri!, method, passKey, profile);
-    await show('StoreOpen', storeHandle!);
-
-    sessionHandle = await askarSessionStart(storeHandle!.value, profile, asTransaction);
-
-    await show('SessionStart', sessionHandle!);
+    session = AskarSession(store: store!, asTransaction: asTransaction);
+    await session!.start();
+    setState(() {
+      result = 'Session Started: ${session!.handle}\n';
+    });
   }
 
   closeSession() async {
-    print('CLOSE SESSION $sessionHandle');
-    if (sessionHandle != null) {
-      final sessinCloseResult = await askarSessionClose(sessionHandle!.value, true);
-      result = '$result SessionClose: ${sessinCloseResult.errorCode}\n';
-      sessionHandle = null;
+    print('CLOSE SESSION');
+    if (session != null) {
+      final sessinCloseResult = await session!.close(commit: true);
+      result = '$result SessionClose: $sessinCloseResult\n';
+      session = null;
       setState(() {});
     }
-    if (storeHandle != null) {
-      await askarStoreClose(storeHandle!.value);
-      result = '$result CloseStore';
-      storeHandle = null;
+  }
+
+  createProfile() async {
+    try {
+      await store!.createProfile();
+    } on ProfileDuplicatedException catch (e) {
+      result = '$result Error: $e\n';
       setState(() {});
+      return;
     }
+    result = "Profile Created\n";
+    setState(() {});
   }
 
   fetchCategory() async {
@@ -115,7 +117,7 @@ class _ExecutePageState extends State<ExecutePage> {
     try {
       await startSession();
       final sessionFetchResult =
-          await askarSessionFetch(sessionHandle!.value, category, name, forUpdate);
+          await askarSessionFetch(session!.handle!, category, name, forUpdate);
 
       await show('SessionFetch', sessionFetchResult);
     } catch (e) {
@@ -136,13 +138,13 @@ class _ExecutePageState extends State<ExecutePage> {
     await startSession(asTransaction: asTransaction);
 
     final sessionUpdateResult = await askarSessionUpdate(
-        sessionHandle!.value, EntryOperation.insert, category, name, value, tags, 2000);
+        session!.handle!, EntryOperation.insert, category, name, value, tags, 2000);
 
     await show('SessionUpdatet', sessionUpdateResult);
 
     try {
       final sessionFetchResult =
-          await askarSessionFetch(sessionHandle!.value, category, name, forUpdate);
+          await askarSessionFetch(session!.handle!, category, name, forUpdate);
       await show('SessionFetch', sessionFetchResult);
 
       final entryListHandle = sessionFetchResult.value;
@@ -177,13 +179,13 @@ class _ExecutePageState extends State<ExecutePage> {
     await getOrGenerateKey();
 
     final sessionInsertKey = await askarSessionInsertKey(
-        sessionHandle!.value, localKeyHandle, name, metadata, tags, 200000);
+        session!.handle!, localKeyHandle, name, metadata, tags, 200000);
 
     await show('SessionInsertKey', sessionInsertKey);
 
     try {
       final sessionFetchKeyResult =
-          await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
+          await askarSessionFetchKey(session!.handle!, name, forUpdate);
 
       await show('SessionFetchKey', sessionFetchKeyResult);
 
@@ -213,7 +215,7 @@ class _ExecutePageState extends State<ExecutePage> {
 
     try {
       final fetchAllKeysResult = await askarSessionFetchAllKeys(
-          sessionHandle!.value, algorithm, thumbprint, tags, limit, false);
+          session!.handle!, algorithm, thumbprint, tags, limit, false);
 
       await show('SessionFetchAllKeys', fetchAllKeysResult);
 
@@ -236,7 +238,7 @@ class _ExecutePageState extends State<ExecutePage> {
       await delay();
     }
 
-    final sessionCloseResult = await askarSessionClose(sessionHandle!.value, true);
+    final sessionCloseResult = await askarSessionClose(session!.handle!, true);
 
     await show('SessionClose', sessionCloseResult);
 
@@ -276,17 +278,17 @@ class _ExecutePageState extends State<ExecutePage> {
     final localKeyHandle = keyGenerateResult.value;
 
     final sessionInsertKey = await askarSessionInsertKey(
-        sessionHandle!.value, localKeyHandle, name, metadata, tags, 2000);
+        session!.handle!, localKeyHandle, name, metadata, tags, 2000);
 
     await show('sessionInsertKey', sessionInsertKey);
 
     try {
       final sessionFetchKeyResult =
-          await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
+          await askarSessionFetchKey(session!.handle!, name, forUpdate);
 
       await show('SessionFetchKey', sessionFetchKeyResult);
 
-      final sessionRemoveKey = await askarSessionRemoveKey(sessionHandle!.value, name);
+      final sessionRemoveKey = await askarSessionRemoveKey(session!.handle!, name);
 
       await show('SessionRemoveKey', sessionRemoveKey);
     } catch (e) {
@@ -306,7 +308,7 @@ class _ExecutePageState extends State<ExecutePage> {
 
     try {
       final sessionFetchKeyResult =
-          await askarSessionFetchKey(sessionHandle!.value, name, forUpdate);
+          await askarSessionFetchKey(session!.handle!, name, forUpdate);
 
       await show('SessionFetchKey', sessionFetchKeyResult);
 

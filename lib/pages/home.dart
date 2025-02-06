@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../global.dart';
+import '../objects/askar_store/askar_store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -18,9 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<MenuItem> menuItems = [
-    MenuItem('Store Provision'),
-    MenuItem('Start Session'),
-    MenuItem('Close Session'),
+    MenuItem('Criar Profile'),
     MenuItem('Ler Categoria inexistente'),
     MenuItem('Escrevendo e lendo da sessão'),
     MenuItem('Inserindo e lendo uma chave'),
@@ -36,10 +35,21 @@ class _HomePageState extends State<HomePage> {
     setStorage();
   }
 
+  onDispose() {
+    super.dispose();
+    print("ON DISPOSE");
+    store?.close();
+  }
+
   setStorage() async {
-    specUri = (Platform.isIOS || Platform.isAndroid)
-        ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
-        : 'sqlite://storage.db';
+    store = AskarStore(
+        specUri: (Platform.isIOS || Platform.isAndroid)
+            ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
+            : 'sqlite://storage.db',
+        method: method,
+        passKey: passKey,
+        profile: profile,
+        recreate: recreate);
   }
 
   @override

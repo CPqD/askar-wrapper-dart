@@ -1,0 +1,34 @@
+abstract class IAskarKey {
+  Future<bool> aeadDecrypt();
+  Future<bool> aeadEncrypt();
+  Future<bool> aeadGetPadding();
+  Future<bool> aeadGetParams();
+  Future<bool> aeadRandomNonce();
+  Future<bool> convert();
+  Future<bool> cryptoBox();
+  Future<bool> cryptoBoxOpen();
+  Future<bool> cryptoBoxRandomNonce();
+  Future<bool> cryptoBoxSeal();
+  Future<bool> cryptoBoxSealOpen();
+  Future<bool> deriveEcdh1Pu();
+  Future<bool> deriveEcdhEs();
+  Future<bool> free();
+  Future<bool> fromJwk();
+  Future<bool> fromKeyExchange();
+  Future<bool> fromPublicBytes();
+  Future<bool> fromSecretBytes();
+  Future<bool> fromSeed();
+  Future<bool> generate();
+  Future<bool> getAlgorithm();
+  Future<bool> getEphemeral();
+  Future<bool> getJwkPublic();
+  Future<bool> getJwkSecret();
+  Future<bool> getJwkThumbprint();
+  Future<bool> getPublicBytes();
+  Future<bool> getSecretBytes();
+  Future<bool> getSupportedBackends();
+  Future<bool> signMessage();
+  Future<bool> unwrapKey();
+  Future<bool> verifySignature();
+  Future<bool> wrapKey();
+}
