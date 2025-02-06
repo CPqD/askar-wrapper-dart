@@ -20,6 +20,11 @@ final class AskarResult<T> {
   final T value;
 
   AskarResult(this.errorCode, this.value);
+
+  @override
+  String toString() {
+    return "($errorCode, $value)";
+  }
 }
 
 typedef LocalKeyHandle = int;

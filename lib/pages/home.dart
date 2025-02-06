@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
     MenuItem('Ler Categoria inexistente'),
     MenuItem('Escrevendo e lendo da sessão'),
     MenuItem('Inserindo e lendo uma chave'),
+    MenuItem('Lendo todas as chaves'),
     MenuItem('Assinar Mensagem e verificar Assinatura'),
     MenuItem('Inserindo, Recuperando e removendo chave'),
   ];

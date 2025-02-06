@@ -10,12 +10,22 @@ base class AskarCallbackBlankResult {
   final bool finished;
 
   AskarCallbackBlankResult(this.errorCode, this.finished);
+
+  @override
+  String toString() {
+    return "($errorCode, finished: $finished)";
+  }
 }
 
 base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
   final T value;
 
   AskarCallbackResult(super.errorCode, super.finished, this.value);
+
+  @override
+  String toString() {
+    return "($errorCode, value: $value, finished: $finished)";
+  }
 }
 
 base class Callback<T extends Function> {
