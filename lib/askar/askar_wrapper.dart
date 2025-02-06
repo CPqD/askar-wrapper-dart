@@ -179,18 +179,15 @@ AskarResult<String> askarEntryListGetValue(EntryListHandle handle, int index) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarStringListCount(StringListHandle handle, int count) {
-  final countPointer = calloc<Int32>();
-  countPointer.value = count;
+AskarResult<int> askarStringListCount(StringListHandle handle) {
+  Pointer<Int32> countPtr = calloc<Int32>();
 
-  final result = nativeAskarStringListCount(handle, countPointer);
+  final errorCode = ErrorCode.fromInt(nativeAskarStringListCount(handle, countPtr));
+  final count = countPtr.value;
 
-  final errorCode = ErrorCode.fromInt(result);
-  count = countPointer.value;
+  calloc.free(countPtr);
 
-  calloc.free(countPointer);
-
-  return errorCode;
+  return AskarResult<int>(errorCode, count);
 }
 
 void askarStringListFree(StringListHandle handle) {
@@ -857,9 +854,16 @@ ErrorCode askarKeyWrapKey(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyGetSupportedBackends(Pointer<NativeStringListHandle> out) {
-  final result = nativeAskarKeyGetSupportedBackends(out);
-  return ErrorCode.fromInt(result);
+AskarResult<StringListHandle> askarKeyGetSupportedBackends() {
+  Pointer<NativeStringListHandle> handlePtr = calloc<NativeStringListHandle>();
+
+  final errorCode = ErrorCode.fromInt(nativeAskarKeyGetSupportedBackends(handlePtr));
+
+  StringListHandle handle = handlePtr.value;
+
+  calloc.free(handlePtr);
+
+  return AskarResult<StringListHandle>(errorCode, handle);
 }
 
 ErrorCode askarScanFree(ScanHandle handle) {

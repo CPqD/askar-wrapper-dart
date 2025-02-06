@@ -96,8 +96,10 @@ void main() {
       askarEntryListFree(entryListHandle);
 
       await closeSessionIfOpen();
+
       final scanStartResult = await scanStartTest(storeHandle, category, tags);
       await scanNextTest(scanStartResult.value);
+      askarScanFree(scanStartResult.value);
     });
 
     test('Writing and reading all values', () async {
@@ -243,6 +245,15 @@ void main() {
     test('Store Get Default Profile', () async {
       String defaultProfile = 'rekey';
       await storeGetDefaultProfileTest(storeHandle, expectedValue: defaultProfile);
+    });
+
+    test('Get Supported Backends', () async {
+      final supportedBackendsResult = getSupportedBackendsTest();
+      final stringListHandle = supportedBackendsResult.value;
+
+      stringListCountTest(stringListHandle, expectGreaterThan: 0);
+
+      askarStringListFree(stringListHandle);
     });
   });
 
@@ -748,6 +759,29 @@ Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+AskarResult<StringListHandle> getSupportedBackendsTest() {
+  final result = askarKeyGetSupportedBackends();
+
+  printAskarResult('GetSupportedBackends', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<int> stringListCountTest(StringListHandle handle,
+    {required int expectGreaterThan}) {
+  final result = askarStringListCount(handle);
+
+  printAskarResult('StringListCount', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(expectGreaterThan));
 
   return result;
 }
