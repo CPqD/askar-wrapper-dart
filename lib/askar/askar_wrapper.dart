@@ -229,22 +229,39 @@ ErrorCode askarKeyAeadDecrypt(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyAeadEncrypt(
-  LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> nonce,
-  Pointer<ByteBuffer> aad,
-  Pointer<EncryptedBuffer> out,
-) {
-  final result = nativeAskarKeyAeadEncrypt(
-    handle,
-    message,
-    nonce,
-    aad,
-    out,
+AskarResult<Uint8List> askarKeyAeadEncrypt(
+    LocalKeyHandle localKeyHandle, Uint8List message,
+    {Uint8List? nonce, Uint8List? aad}) {
+  final randomNonce = askarKeyAeadRandomNonce(localKeyHandle);
+  nonce ??= randomNonce.value;
+  aad ??= Uint8List(0);
+
+  Pointer<ByteBuffer> messagePtr = bytesListToByteBuffer(message);
+  Pointer<ByteBuffer> noncePtr = bytesListToByteBuffer(nonce);
+  Pointer<ByteBuffer> aadPtr = bytesListToByteBuffer(aad);
+  Pointer<EncryptedBuffer> outPtr = calloc<EncryptedBuffer>();
+
+  final funcResult = nativeAskarKeyAeadEncrypt(
+    localKeyHandle,
+    messagePtr.ref,
+    noncePtr.ref,
+    aadPtr.ref,
+    outPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final encryptedData = secretBufferToBytesList(outPtr.ref.buffer);
+
+  calloc.free(messagePtr.ref.data);
+  calloc.free(noncePtr.ref.data);
+  calloc.free(aadPtr.ref.data);
+  calloc.free(messagePtr);
+  calloc.free(noncePtr);
+  calloc.free(aadPtr);
+  calloc.free(outPtr);
+
+  return AskarResult(errorCode, encryptedData);
 }
 
 ErrorCode askarKeyAeadGetPadding(
