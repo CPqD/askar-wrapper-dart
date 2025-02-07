@@ -1522,10 +1522,10 @@ Future<AskarCallbackResult> askarStoreProvision(
 
 Future<AskarCallbackResult> askarStoreRekey(
   StoreHandle handle,
-  String keyMethod,
+  StoreKeyMethod keyMethod,
   String passKey,
 ) {
-  final keyMethodPointer = keyMethod.toNativeUtf8();
+  final keyMethodPointer = keyMethod.value.toNativeUtf8();
   final passKeyPointer = passKey.toNativeUtf8();
 
   void cleanup() {

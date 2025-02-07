@@ -4,7 +4,7 @@ import 'package:import_so_libaskar/models/askar_store/askar_store.dart';
 import '../../askar/enums/askar_entry_operation.dart';
 import '../../askar/enums/askar_error_code.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
-import '../askar_exceptions/exceptions.dart';
+import '../../exceptions/askar_exceptions/exceptions.dart';
 import 'askar_session_interface.dart';
 
 class AskarSession implements IAskarSession {

@@ -9,7 +9,7 @@ import '../askar/enums/askar_key_algorithm.dart';
 import '../askar/enums/askar_key_backend.dart';
 import '../askar/enums/askar_signature_algorithm.dart';
 import '../global.dart';
-import '../models/askar_exceptions/exceptions.dart';
+import '../exceptions/askar_exceptions/exceptions.dart';
 
 class ExecutePage extends StatefulWidget {
   final String title;
@@ -87,7 +87,7 @@ class _ExecutePageState extends State<ExecutePage> {
   }
 
   closeSession() async {
-    debugPrint('CLOSE SESSION');
+    print('CLOSE SESSION');
     if (session != null) {
       final sessinCloseResult = await session!.close(commit: true);
       result = '$result SessionClose: $sessinCloseResult\n';

@@ -10,8 +10,8 @@ abstract class IAskarStore {
   Future<String> getDefaultProfile();
   Future<String> getProfileName();
   Future<List<String>> listProfiles();
-  Future<bool> rekey();
+  Future<bool> rekey(String newPassKey);
   Future<bool> remove();
   Future<bool> removeProfile();
-  Future<bool> setDefaultProfile();
+  Future<bool> setDefaultProfile(String profileName);
 }
