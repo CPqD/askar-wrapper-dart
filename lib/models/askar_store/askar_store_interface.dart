@@ -9,7 +9,7 @@ abstract class IAskarStore {
   String generateRawKey({Uint8List? seed});
   Future<String> getDefaultProfile();
   Future<String> getProfileName();
-  Future<bool> listProfiles();
+  Future<List<String>> listProfiles();
   Future<bool> rekey();
   Future<bool> remove();
   Future<bool> removeProfile();

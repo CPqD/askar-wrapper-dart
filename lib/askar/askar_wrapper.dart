@@ -1494,28 +1494,30 @@ Future<AskarCallbackResult> askarStoreProvision(
   return callback.handleResult(result);
 }
 
-ErrorCode askarStoreRekey(
+Future<AskarCallbackResult> askarStoreRekey(
   StoreHandle handle,
   String keyMethod,
   String passKey,
-  Pointer<NativeFunction<AskarStoreRekeyCallback>> cb,
-  int cbId,
 ) {
   final keyMethodPointer = keyMethod.toNativeUtf8();
   final passKeyPointer = passKey.toNativeUtf8();
+
+  void cleanup() {
+    calloc.free(keyMethodPointer);
+    calloc.free(passKeyPointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarStoreRekey(
     handle,
     keyMethodPointer,
     passKeyPointer,
-    cb,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  calloc.free(keyMethodPointer);
-  calloc.free(passKeyPointer);
-
-  return ErrorCode.fromInt(result);
+  return callback.handleResult(result);
 }
 
 ErrorCode askarStoreRemove(

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/models/askar_exceptions/exceptions.dart';
+import 'package:import_so_libaskar/models/askar_string_list/askar_string_list.dart';
 
 import '../../askar/askar_wrapper.dart';
 import '../../askar/enums/askar_store_key_method.dart';
@@ -125,9 +126,14 @@ class AskarStore implements IAskarStore {
   }
 
   @override
-  Future<bool> listProfiles() {
+  Future<List<String>> listProfiles() async {
     checkStore();
-    throw UnimplementedError();
+    final result = await askarStoreListProfiles(handle!);
+    if (result.errorCode == ErrorCode.success) {
+      final stringList = AskarStringList(handle: handle!);
+      return stringList.getAllItems();
+    }
+    return [];
   }
 
   @override
