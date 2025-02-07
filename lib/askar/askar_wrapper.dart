@@ -23,7 +23,20 @@ final class AskarResult<T> {
 
   @override
   String toString() {
-    return "($errorCode, $value)";
+    return "AskarResult($errorCode, $value)";
+  }
+}
+
+final class AskarEncryptedBuffer {
+  final Uint8List buffer;
+  final int tagPos;
+  final int noncePos;
+
+  AskarEncryptedBuffer(this.buffer, this.tagPos, this.noncePos);
+
+  @override
+  String toString() {
+    return "AskarEncryptedBuffer(tagPos: $tagPos, noncePos: $noncePos, buffer: $buffer)";
   }
 }
 
@@ -56,7 +69,7 @@ AskarResult<String> askarGetCurrentError() {
   return AskarResult<String>(errorCode, value);
 }
 
-void askarBufferFree(Pointer<SecretBuffer> buffer) {
+void askarBufferFree(Pointer<NativeSecretBuffer> buffer) {
   nativeAskarBufferFree(buffer);
 }
 
@@ -67,8 +80,8 @@ void askarClearCustomLogger() {
 ErrorCode askarSetCustomLogger(
   Pointer<Void> context,
   Pointer<NativeFunction<LogCallback>> log,
-  Pointer<OptionEnabledCallbackStruct> enabled,
-  Pointer<OptionFlushCallbackStruct> flush,
+  Pointer<NativeOptionEnabledCallbackStruct> enabled,
+  Pointer<NativeOptionFlushCallbackStruct> flush,
   int maxLevel,
 ) {
   final result = nativeAskarSetCustomLogger(
@@ -163,7 +176,7 @@ AskarResult<Map> askarEntryListGetTags(EntryListHandle handle, int index) {
 }
 
 AskarResult<String> askarEntryListGetValue(EntryListHandle handle, int index) {
-  Pointer<SecretBuffer> secretBufferPointer = calloc<SecretBuffer>();
+  Pointer<NativeSecretBuffer> secretBufferPointer = calloc<NativeSecretBuffer>();
 
   final funcResult = nativeAskarEntryListGetValue(handle, index, secretBufferPointer);
 
@@ -211,11 +224,11 @@ AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
 
 ErrorCode askarKeyAeadDecrypt(
   LocalKeyHandle handle,
-  Pointer<ByteBuffer> ciphertext,
-  Pointer<ByteBuffer> nonce,
-  Pointer<ByteBuffer> tag,
-  Pointer<ByteBuffer> aad,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeByteBuffer> ciphertext,
+  Pointer<NativeByteBuffer> nonce,
+  Pointer<NativeByteBuffer> tag,
+  Pointer<NativeByteBuffer> aad,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyAeadDecrypt(
     handle,
@@ -236,10 +249,10 @@ AskarResult<Uint8List> askarKeyAeadEncrypt(
   nonce ??= randomNonce.value;
   aad ??= Uint8List(0);
 
-  Pointer<ByteBuffer> messagePtr = bytesListToByteBuffer(message);
-  Pointer<ByteBuffer> noncePtr = bytesListToByteBuffer(nonce);
-  Pointer<ByteBuffer> aadPtr = bytesListToByteBuffer(aad);
-  Pointer<EncryptedBuffer> outPtr = calloc<EncryptedBuffer>();
+  Pointer<NativeByteBuffer> messagePtr = bytesListToByteBuffer(message);
+  Pointer<NativeByteBuffer> noncePtr = bytesListToByteBuffer(nonce);
+  Pointer<NativeByteBuffer> aadPtr = bytesListToByteBuffer(aad);
+  Pointer<NativeEncryptedBuffer> outPtr = calloc<NativeEncryptedBuffer>();
 
   final funcResult = nativeAskarKeyAeadEncrypt(
     localKeyHandle,
@@ -280,7 +293,7 @@ ErrorCode askarKeyAeadGetPadding(
 
 ErrorCode askarKeyAeadGetParams(
   LocalKeyHandle handle,
-  Pointer<AeadParams> out,
+  Pointer<NativeAeadParams> out,
 ) {
   final result = nativeAskarKeyAeadGetParams(
     handle,
@@ -293,7 +306,7 @@ ErrorCode askarKeyAeadGetParams(
 AskarResult<Uint8List> askarKeyAeadRandomNonce(
   LocalKeyHandle handle,
 ) {
-  Pointer<SecretBuffer> secretBufferPtr = calloc<SecretBuffer>();
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
 
   final funcResult = nativeAskarKeyAeadRandomNonce(
     handle,
@@ -331,9 +344,9 @@ ErrorCode askarKeyConvert(
 ErrorCode askarKeyCryptoBox(
   LocalKeyHandle recipKey,
   LocalKeyHandle senderKey,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> nonce,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeByteBuffer> message,
+  Pointer<NativeByteBuffer> nonce,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyCryptoBox(
     recipKey,
@@ -349,9 +362,9 @@ ErrorCode askarKeyCryptoBox(
 ErrorCode askarKeyCryptoBoxOpen(
   LocalKeyHandle recipKey,
   LocalKeyHandle senderKey,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> nonce,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeByteBuffer> message,
+  Pointer<NativeByteBuffer> nonce,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyCryptoBoxOpen(
     recipKey,
@@ -365,7 +378,7 @@ ErrorCode askarKeyCryptoBoxOpen(
 }
 
 ErrorCode askarKeyCryptoBoxRandomNonce(
-  Pointer<SecretBuffer> out,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyCryptoBoxRandomNonce(
     out,
@@ -376,8 +389,8 @@ ErrorCode askarKeyCryptoBoxRandomNonce(
 
 ErrorCode askarKeyCryptoBoxSeal(
   LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeByteBuffer> message,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyCryptoBoxSeal(
     handle,
@@ -390,8 +403,8 @@ ErrorCode askarKeyCryptoBoxSeal(
 
 ErrorCode askarKeyCryptoBoxSealOpen(
   LocalKeyHandle handle,
-  Pointer<ByteBuffer> ciphertext,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeByteBuffer> ciphertext,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyCryptoBoxSealOpen(
     handle,
@@ -407,10 +420,10 @@ ErrorCode askarKeyDeriveEcdh1pu(
   LocalKeyHandle ephemKey,
   LocalKeyHandle senderKey,
   LocalKeyHandle recipKey,
-  Pointer<ByteBuffer> algId,
-  Pointer<ByteBuffer> apu,
-  Pointer<ByteBuffer> apv,
-  Pointer<ByteBuffer> ccTag,
+  Pointer<NativeByteBuffer> algId,
+  Pointer<NativeByteBuffer> apu,
+  Pointer<NativeByteBuffer> apv,
+  Pointer<NativeByteBuffer> ccTag,
   int receive,
   Pointer<NativeLocalKeyHandle> out,
 ) {
@@ -438,9 +451,9 @@ ErrorCode askarKeyDeriveEcdhEs(
   String alg,
   LocalKeyHandle ephemKey,
   LocalKeyHandle recipKey,
-  Pointer<ByteBuffer> algId,
-  Pointer<ByteBuffer> apu,
-  Pointer<ByteBuffer> apv,
+  Pointer<NativeByteBuffer> algId,
+  Pointer<NativeByteBuffer> apu,
+  Pointer<NativeByteBuffer> apv,
   int receive,
   Pointer<NativeLocalKeyHandle> out,
 ) {
@@ -561,7 +574,8 @@ void askarKeyFree(LocalKeyHandle handle) {
   nativeAskarKeyFree(handle);
 }
 
-ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<NativeLocalKeyHandle> out) {
+ErrorCode askarKeyFromJwk(
+    Pointer<NativeByteBuffer> jwk, Pointer<NativeLocalKeyHandle> out) {
   final result = nativeAskarKeyFromJwk(jwk, out);
   return ErrorCode.fromInt(result);
 }
@@ -588,7 +602,7 @@ ErrorCode askarKeyFromKeyExchange(
 
 ErrorCode askarKeyFromPublicBytes(
   String alg,
-  Pointer<ByteBuffer> public_,
+  Pointer<NativeByteBuffer> public_,
   Pointer<NativeLocalKeyHandle> out,
 ) {
   final algPointer = alg.toNativeUtf8();
@@ -632,7 +646,7 @@ AskarResult<LocalKeyHandle> askarKeyFromSecretBytes(
 
 ErrorCode askarKeyFromSeed(
   String alg,
-  Pointer<ByteBuffer> seed,
+  Pointer<NativeByteBuffer> seed,
   String method,
   Pointer<NativeLocalKeyHandle> out,
 ) {
@@ -715,7 +729,7 @@ ErrorCode askarKeyGetJwkPublic(
 
 ErrorCode askarKeyGetJwkSecret(
   LocalKeyHandle handle,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyGetJwkSecret(
     handle,
@@ -753,7 +767,7 @@ AskarResult<String> askarKeyGetJwkThumbprint(
 
 ErrorCode askarKeyGetPublicBytes(
   LocalKeyHandle handle,
-  Pointer<SecretBuffer> out,
+  Pointer<NativeSecretBuffer> out,
 ) {
   final result = nativeAskarKeyGetPublicBytes(
     handle,
@@ -764,7 +778,7 @@ ErrorCode askarKeyGetPublicBytes(
 }
 
 AskarResult<Uint8List> askarKeyGetSecretBytes(LocalKeyHandle handle) {
-  Pointer<SecretBuffer> secretBufferPtr = calloc<SecretBuffer>();
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
 
   final funcResult = nativeAskarKeyGetSecretBytes(
     handle,
@@ -786,12 +800,12 @@ AskarResult<Uint8List> askarKeySignMessage(
   Uint8List message,
   SignatureAlgorithm sigType,
 ) {
-  Pointer<SecretBuffer> secretBufferPointer = calloc<SecretBuffer>();
+  Pointer<NativeSecretBuffer> secretBufferPointer = calloc<NativeSecretBuffer>();
 
   final sigTypePointer = sigType.value.toNativeUtf8();
   final byteBufferPointer = bytesListToByteBuffer(message);
 
-  ByteBuffer byteBuffer = byteBufferPointer.ref;
+  NativeByteBuffer byteBuffer = byteBufferPointer.ref;
 
   final funcResult = nativeAskarKeySignMessage(
     handle,
@@ -816,9 +830,9 @@ AskarResult<Uint8List> askarKeySignMessage(
 ErrorCode askarKeyUnwrapKey(
   LocalKeyHandle handle,
   String alg,
-  Pointer<ByteBuffer> ciphertext,
-  Pointer<ByteBuffer> nonce,
-  Pointer<ByteBuffer> tag,
+  Pointer<NativeByteBuffer> ciphertext,
+  Pointer<NativeByteBuffer> nonce,
+  Pointer<NativeByteBuffer> tag,
   Pointer<NativeLocalKeyHandle> out,
 ) {
   final algPointer = alg.toNativeUtf8();
@@ -872,20 +886,32 @@ AskarResult<bool> askarKeyVerifySignature(
   return AskarResult<bool>(errorCode, intToBool(output));
 }
 
-ErrorCode askarKeyWrapKey(
+AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
   LocalKeyHandle handle,
   LocalKeyHandle other,
-  Pointer<ByteBuffer> nonce,
-  Pointer<EncryptedBuffer> out,
+  Uint8List nonce,
 ) {
-  final result = nativeAskarKeyWrapKey(
+  final byteBufferPointer = bytesListToByteBuffer(nonce);
+
+  Pointer<NativeEncryptedBuffer> encryptedBufferPtr = calloc<NativeEncryptedBuffer>();
+
+  final errorCode = ErrorCode.fromInt(nativeAskarKeyWrapKey(
     handle,
     other,
-    nonce,
-    out,
-  );
+    byteBufferPointer.ref,
+    encryptedBufferPtr,
+  ));
 
-  return ErrorCode.fromInt(result);
+  final value = (errorCode == ErrorCode.success)
+      ? readNativeEncryptedBuffer(encryptedBufferPtr.ref)
+      : AskarEncryptedBuffer(Uint8List.fromList([]), 0, 0);
+
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+  calloc.free(encryptedBufferPtr.ref.buffer.data);
+  calloc.free(encryptedBufferPtr);
+
+  return AskarResult<AskarEncryptedBuffer>(errorCode, value);
 }
 
 AskarResult<StringListHandle> askarKeyGetSupportedBackends() {
@@ -1226,7 +1252,7 @@ Future<AskarCallbackResult> askarSessionUpdate(
   final byteBufferPointer = stringToByteBuffer(value);
 
   // Uso da variável byteBuffer
-  ByteBuffer byteBuffer = byteBufferPointer.ref;
+  NativeByteBuffer byteBuffer = byteBufferPointer.ref;
 
   void cleanup() {
     calloc.free(categoryPointer);

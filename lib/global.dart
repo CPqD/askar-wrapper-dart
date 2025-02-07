@@ -1,4 +1,3 @@
-import 'askar/askar_callbacks.dart';
 import 'askar/askar_wrapper.dart';
 import 'askar/enums/askar_store_key_method.dart';
 import 'models/askar_store/askar_store.dart';

@@ -106,7 +106,7 @@
 
 - [x] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
 
-- [ ] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
+- [x] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
 - [x] askar_key_get_supported_backends: (args_0: Buffer) => number;
 
