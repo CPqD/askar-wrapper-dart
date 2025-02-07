@@ -2,14 +2,14 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
-import 'package:import_so_libaskar/exceptions/askar_exceptions/exceptions.dart';
-import 'package:import_so_libaskar/models/askar_string_list/askar_string_list.dart';
+import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
+import 'package:import_so_libaskar/askar/repository/askar_string_repository.dart';
 
-import '../../askar/askar_wrapper.dart';
-import '../../askar/enums/askar_store_key_method.dart';
-import 'askar_store_interface.dart';
+import '../askar_wrapper.dart';
+import '../enums/askar_store_key_method.dart';
+import '../interface/askar_store_interface.dart';
 
-class AskarStore implements IAskarStore {
+class AskarStoreRepository implements IAskarStore {
   final String specUri;
   final StoreKeyMethod method;
   final String passKey;
@@ -18,7 +18,7 @@ class AskarStore implements IAskarStore {
 
   StoreHandle? handle;
 
-  AskarStore(
+  AskarStoreRepository(
       {required this.specUri,
       required this.method,
       required this.passKey,
@@ -130,7 +130,7 @@ class AskarStore implements IAskarStore {
     checkStore();
     final result = await askarStoreListProfiles(handle!);
     if (result.errorCode == ErrorCode.success) {
-      final stringList = AskarStringList(handle: handle!);
+      final stringList = AskarStringRepository(handle: handle!);
       return stringList.getAllItems();
     }
     return [];

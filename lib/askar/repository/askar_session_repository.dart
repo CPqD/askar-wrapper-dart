@@ -1,19 +1,19 @@
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/models/askar_store/askar_store.dart';
+import 'package:import_so_libaskar/askar/repository/askar_store_repository.dart';
 
-import '../../askar/enums/askar_entry_operation.dart';
-import '../../askar/enums/askar_error_code.dart';
-import '../../askar/enums/askar_key_algorithm.dart';
-import '../../exceptions/askar_exceptions/exceptions.dart';
-import 'askar_session_interface.dart';
+import '../enums/askar_entry_operation.dart';
+import '../enums/askar_error_code.dart';
+import '../enums/askar_key_algorithm.dart';
+import '../exceptions/exceptions.dart';
+import '../interface/askar_session_interface.dart';
 
-class AskarSession implements IAskarSession {
-  final AskarStore store;
+class AskarSessionRepository implements IAskarSession {
+  final AskarStoreRepository store;
   final bool asTransaction;
 
   SessionHandle? handle;
 
-  AskarSession({required this.store, this.asTransaction = false});
+  AskarSessionRepository({required this.store, this.asTransaction = false});
 
   @override
   Future<bool> start() async {
@@ -74,7 +74,7 @@ class AskarSession implements IAskarSession {
   }
 
   @override
-  Future<KeyEntryListHandle?> fetchKeys(String name, bool forUpdate) async {
+  Future<KeyEntryListHandle?> fetchKey(String name, bool forUpdate) async {
     checkSession();
     final result = await askarSessionFetchKey(handle!, name, forUpdate);
     if (result.errorCode == ErrorCode.success) {

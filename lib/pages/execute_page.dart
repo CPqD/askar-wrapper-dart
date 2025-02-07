@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/models/askar_session/askar_session.dart';
+import 'package:import_so_libaskar/askar/repository/askar_session_repository.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../askar/enums/askar_entry_operation.dart';
@@ -9,7 +9,7 @@ import '../askar/enums/askar_key_algorithm.dart';
 import '../askar/enums/askar_key_backend.dart';
 import '../askar/enums/askar_signature_algorithm.dart';
 import '../global.dart';
-import '../exceptions/askar_exceptions/exceptions.dart';
+import '../askar/exceptions/exceptions.dart';
 
 class ExecutePage extends StatefulWidget {
   final String title;
@@ -26,7 +26,7 @@ class _ExecutePageState extends State<ExecutePage> {
 
   String result = '';
 
-  AskarSession? session;
+  AskarSessionRepository? session;
 
   @override
   initState() {
@@ -79,7 +79,7 @@ class _ExecutePageState extends State<ExecutePage> {
   }
 
   startSession({bool asTransaction = true}) async {
-    session = AskarSession(store: store!, asTransaction: asTransaction);
+    session = AskarSessionRepository(store: store!, asTransaction: asTransaction);
     await session!.start();
     setState(() {
       result = 'Session Started: ${session!.handle}\n';

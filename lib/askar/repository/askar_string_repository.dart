@@ -1,14 +1,14 @@
-import '../../askar/askar_wrapper.dart';
-import '../../askar/enums/askar_error_code.dart';
-import 'askar_string_list_interface.dart';
+import '../askar_wrapper.dart';
+import '../enums/askar_error_code.dart';
+import '../interface/askar_string_list_interface.dart';
 
-class AskarStringList implements IAskarStringList {
+class AskarStringRepository implements IAskarString {
   //StringListHandle é necessário
   //Valor é obtido em AskarSession.fetch ou AskarSession.fetchAll
 
   final StringListHandle? handle;
 
-  AskarStringList({required this.handle});
+  AskarStringRepository({required this.handle});
 
   @override
   int count() {

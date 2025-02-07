@@ -1,6 +1,6 @@
-import '../../askar/askar_wrapper.dart';
-import '../../askar/enums/askar_entry_operation.dart';
-import '../../askar/enums/askar_key_algorithm.dart';
+import '../askar_wrapper.dart';
+import '../enums/askar_entry_operation.dart';
+import '../enums/askar_key_algorithm.dart';
 
 abstract class IAskarSession {
   Future<bool> start();
@@ -17,7 +17,7 @@ abstract class IAskarSession {
   Future<KeyEntryListHandle?> fetchAllKeys(KeyAlgorithm algorithm, String thumbprint,
       Map tagFilter, int limit, bool forUpdate);
 
-  Future<KeyEntryListHandle?> fetchKeys(String name, bool forUpdate);
+  Future<KeyEntryListHandle?> fetchKey(String name, bool forUpdate);
 
   Future<bool> insertKeys(LocalKeyHandle localKeyHandle, String name, String metadata,
       Map tags, int expiryMs);

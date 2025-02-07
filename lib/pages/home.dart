@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../global.dart';
-import '../models/askar_store/askar_store.dart';
+import '../askar/repository/askar_store_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   setStorage() async {
-    store = AskarStore(
+    store = AskarStoreRepository(
         specUri: (Platform.isIOS || Platform.isAndroid)
             ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
             : 'sqlite://storage.db',

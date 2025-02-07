@@ -45,3 +45,15 @@ class AskarKeyEntryListException implements Exception {
     return "Exception: $message";
   }
 }
+
+class AskarEntryException implements Exception {
+  final String? message;
+
+  AskarEntryException([this.message]);
+
+  @override
+  String toString() {
+    if (message == null) return "Exception";
+    return "Exception: $message";
+  }
+}

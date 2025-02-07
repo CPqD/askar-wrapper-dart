@@ -1,12 +1,20 @@
-import 'askar_key_interface.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import '../askar_wrapper.dart';
+import '../interface/askar_key_interface.dart';
 
-class AskarKey implements IAskarKey {
+class AskarKeyRepository implements IAskarKey {
   //LocalKeyHandle é necessário
   //Obtido em this.convert, this.deriveEcdh1Pu, this.deriveEcdhEs,
   // this.fromJwk, this.fromKeyExchange, this.fromPublicBytes, this.fromSecretBytes,
   // this.fromSeed, this.generate, this.unwrapKey,
   // ******this.generate
   // AskarKeyEntryList.loadLocal
+
+  LocalKeyHandle handle;
+
+  AskarKeyRepository({
+    required this.handle,
+  });
 
   @override
   Future<bool> aeadDecrypt() {
