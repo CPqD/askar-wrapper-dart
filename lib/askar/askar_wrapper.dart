@@ -210,24 +210,40 @@ AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarKeyAeadDecrypt(
-  LocalKeyHandle handle,
-  Pointer<NativeByteBuffer> ciphertext,
-  Pointer<NativeByteBuffer> nonce,
-  Pointer<NativeByteBuffer> tag,
-  Pointer<NativeByteBuffer> aad,
-  Pointer<NativeSecretBuffer> out,
-) {
-  final result = nativeAskarKeyAeadDecrypt(
+AskarResult<Uint8List> askarKeyAeadDecrypt(
+    LocalKeyHandle handle, Uint8List ciphertext, Uint8List nonce, Uint8List tag,
+    {Uint8List? aad}) {
+  aad ??= Uint8List(0);
+
+  Pointer<NativeByteBuffer> ciphertextPtr = bytesListToByteBuffer(ciphertext);
+  Pointer<NativeByteBuffer> noncePtr = bytesListToByteBuffer(nonce);
+  Pointer<NativeByteBuffer> tagPtr = bytesListToByteBuffer(tag);
+  Pointer<NativeByteBuffer> aadPtr = bytesListToByteBuffer(aad);
+  Pointer<NativeSecretBuffer> secretBufferPointer = calloc<NativeSecretBuffer>();
+
+  final funcResult = nativeAskarKeyAeadDecrypt(
     handle,
-    ciphertext,
-    nonce,
-    tag,
-    aad,
-    out,
+    ciphertextPtr.ref,
+    noncePtr.ref,
+    tagPtr.ref,
+    aadPtr.ref,
+    secretBufferPointer,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+  final decryptedData = secretBufferToBytesList(secretBufferPointer.ref);
+
+  calloc.free(secretBufferPointer);
+  calloc.free(ciphertextPtr.ref.data);
+  calloc.free(ciphertextPtr);
+  calloc.free(noncePtr.ref.data);
+  calloc.free(noncePtr);
+  calloc.free(tagPtr.ref.data);
+  calloc.free(tagPtr);
+  calloc.free(aadPtr.ref.data);
+  calloc.free(aadPtr);
+
+  return AskarResult<Uint8List>(errorCode, decryptedData);
 }
 
 AskarResult<AskarEncryptedBuffer> askarKeyAeadEncrypt(
