@@ -1,9 +1,11 @@
+import '../../askar/askar_wrapper.dart';
+
 abstract class IAskarKeyEntryList {
-  Future<bool> count();
-  Future<bool> free();
-  Future<bool> getAlgorithm();
-  Future<bool> getMetadata();
-  Future<bool> getName();
-  Future<bool> getTags();
-  Future<bool> loadLocal();
+  int count();
+  void free();
+  String getAlgorithm(int index);
+  String getMetadata(int index);
+  String getName(int index);
+  Map getTags(int index);
+  LocalKeyHandle loadLocal(int index);
 }

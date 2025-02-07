@@ -28,12 +28,6 @@ class AskarSession implements IAskarSession {
     return false;
   }
 
-  checkSession() {
-    if (handle == null) {
-      throw AskarSessionException("Sessão não iniciada");
-    }
-  }
-
   @override
   Future<bool> close({required bool commit}) async {
     checkSession();
@@ -151,5 +145,11 @@ class AskarSession implements IAskarSession {
       return true;
     }
     return false;
+  }
+
+  checkSession() {
+    if (handle == null) {
+      throw AskarSessionException("Sessão não iniciada");
+    }
   }
 }
