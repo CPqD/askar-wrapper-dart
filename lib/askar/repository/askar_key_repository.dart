@@ -1,5 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/foundation.dart';
+
 import '../askar_wrapper.dart';
+import '../enums/askar_error_code.dart';
+import '../exceptions/exceptions.dart';
 import '../interface/askar_key_interface.dart';
 
 class AskarKeyRepository implements IAskarKey {
@@ -7,10 +11,10 @@ class AskarKeyRepository implements IAskarKey {
   //Obtido em this.convert, this.deriveEcdh1Pu, this.deriveEcdhEs,
   // this.fromJwk, this.fromKeyExchange, this.fromPublicBytes, this.fromSecretBytes,
   // this.fromSeed, this.generate, this.unwrapKey,
-  // ******this.generate
+  // ******this.generate -> static ???
   // AskarKeyEntryList.loadLocal
 
-  LocalKeyHandle handle;
+  LocalKeyHandle? handle;
 
   AskarKeyRepository({
     required this.handle,
@@ -41,9 +45,14 @@ class AskarKeyRepository implements IAskarKey {
   }
 
   @override
-  Future<bool> aeadRandomNonce() {
-    // TODO: implement aeadRandomNonce
-    throw UnimplementedError();
+  Uint8List aeadRandomNonce() {
+    checkHandle();
+    final result = askarKeyAeadRandomNonce(handle!);
+    if (result.errorCode == ErrorCode.success) {
+      return result.value;
+    }
+
+    throw AskarKeyException("Erro ao gerar nonce aleatório");
   }
 
   @override
@@ -131,12 +140,6 @@ class AskarKeyRepository implements IAskarKey {
   }
 
   @override
-  Future<bool> generate() {
-    // TODO: implement generate
-    throw UnimplementedError();
-  }
-
-  @override
   Future<bool> getAlgorithm() {
     // TODO: implement getAlgorithm
     throw UnimplementedError();
@@ -206,5 +209,11 @@ class AskarKeyRepository implements IAskarKey {
   Future<bool> wrapKey() {
     // TODO: implement wrapKey
     throw UnimplementedError();
+  }
+
+  checkHandle() {
+    if (handle == null) {
+      throw AskarKeyException("LocalKeyHandle não inicializado");
+    }
   }
 }

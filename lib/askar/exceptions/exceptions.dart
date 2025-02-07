@@ -57,3 +57,15 @@ class AskarEntryException implements Exception {
     return "Exception: $message";
   }
 }
+
+class AskarKeyException implements Exception {
+  final String? message;
+
+  AskarKeyException([this.message]);
+
+  @override
+  String toString() {
+    if (message == null) return "Exception";
+    return "Exception: $message";
+  }
+}

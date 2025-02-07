@@ -1,9 +1,18 @@
+import 'dart:typed_data';
+
+import 'package:import_so_libaskar/askar/askar_wrapper.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
+import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
+
+import '../enums/askar_error_code.dart';
+import '../exceptions/exceptions.dart';
+
 abstract class IAskarKey {
   Future<bool> aeadDecrypt();
   Future<bool> aeadEncrypt();
   Future<bool> aeadGetPadding();
   Future<bool> aeadGetParams();
-  Future<bool> aeadRandomNonce();
+  Uint8List aeadRandomNonce();
   Future<bool> convert();
   Future<bool> cryptoBox();
   Future<bool> cryptoBoxOpen();
@@ -18,7 +27,7 @@ abstract class IAskarKey {
   Future<bool> fromPublicBytes(); //Sem Entrada de LocalKeyHandle -- SAIDA
   Future<bool> fromSecretBytes(); //Sem Entrada de LocalKeyHandle -- SAIDA
   Future<bool> fromSeed(); //Sem Entrada de LocalKeyHandle -- SAIDA
-  Future<bool> generate(); //Sem Entrada de LocalKeyHandle -- SAIDA
+
   Future<bool> getAlgorithm();
   Future<bool> getEphemeral();
   Future<bool> getJwkPublic();
@@ -31,4 +40,14 @@ abstract class IAskarKey {
   Future<bool> unwrapKey();
   Future<bool> verifySignature();
   Future<bool> wrapKey();
+
+  //Sem Entrada de LocalKeyHandle -- SAIDA
+  static LocalKeyHandle generate(
+      KeyAlgorithm alg, KeyBackend keyBackend, bool ephemeral) {
+    final result = askarKeyGenerate(alg, keyBackend, ephemeral);
+    if (result.errorCode == ErrorCode.success) {
+      return result.value;
+    }
+    throw AskarKeyException("Erro ao gerar chave");
+  }
 }
