@@ -309,6 +309,33 @@ void main() {
       await storeCloseTest(storeHandle);
     });
   });
+
+  group('Aead Encryption Tests:', () {
+    test('Encryption with and without nonce and aad', () {
+      final keyGenerateResult =
+          keyGenerateTest(KeyAlgorithm.aesA256Gcm, KeyBackend.software);
+      final localKeyHandle = keyGenerateResult.value;
+
+      final message = Uint8List(4);
+      final nonce = askarKeyAeadRandomNonce(localKeyHandle);
+      final aad = Uint8List(0);
+
+      keyAeadEncryptTest(localKeyHandle, message, nonce: nonce.value, aad: aad);
+      keyAeadEncryptTest(localKeyHandle, message);
+    });
+  });
+}
+
+AskarResult<Uint8List> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List message,
+    {Uint8List? nonce, Uint8List? aad}) {
+  final result = askarKeyAeadEncrypt(handle, message, nonce: nonce, aad: aad);
+
+  printAskarResult('KeyAeadEncryptTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, isNotEmpty);
+
+  return result;
 }
 
 Future<AskarCallbackResult> storeProvisionTest(String passKey) async {

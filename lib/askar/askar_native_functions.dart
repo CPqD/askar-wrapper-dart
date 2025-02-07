@@ -252,17 +252,17 @@ final int Function(
 
 typedef AskarKeyAeadEncryptNative = Int32 Function(
   NativeLocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> nonce,
-  Pointer<ByteBuffer> aad,
+  ByteBuffer message,
+  ByteBuffer nonce,
+  ByteBuffer aad,
   Pointer<EncryptedBuffer> out,
 );
 
 final int Function(
   LocalKeyHandle handle,
-  Pointer<ByteBuffer> message,
-  Pointer<ByteBuffer> nonce,
-  Pointer<ByteBuffer> aad,
+  ByteBuffer message,
+  ByteBuffer nonce,
+  ByteBuffer aad,
   Pointer<EncryptedBuffer> out,
 ) nativeAskarKeyAeadEncrypt = nativeLib
     .lookup<NativeFunction<AskarKeyAeadEncryptNative>>('askar_key_aead_encrypt')
