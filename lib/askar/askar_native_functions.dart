@@ -428,9 +428,9 @@ typedef AskarKeyDeriveEcdhEsNative = Int32 Function(
   Pointer<Utf8> alg,
   NativeLocalKeyHandle ephem_key,
   NativeLocalKeyHandle recip_key,
-  Pointer<NativeByteBuffer> alg_id,
-  Pointer<NativeByteBuffer> apu,
-  Pointer<NativeByteBuffer> apv,
+  NativeByteBuffer alg_id,
+  NativeByteBuffer apu,
+  NativeByteBuffer apv,
   Int8 receive,
   Pointer<NativeLocalKeyHandle> out,
 );
@@ -439,9 +439,9 @@ final int Function(
   Pointer<Utf8> alg,
   LocalKeyHandle ephem_key,
   LocalKeyHandle recip_key,
-  Pointer<NativeByteBuffer> alg_id,
-  Pointer<NativeByteBuffer> apu,
-  Pointer<NativeByteBuffer> apv,
+  NativeByteBuffer alg_id,
+  NativeByteBuffer apu,
+  NativeByteBuffer apv,
   int receive,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyDeriveEcdhEs = nativeLib
@@ -547,12 +547,12 @@ final void Function(LocalKeyHandle handle) nativeAskarKeyFree =
     nativeLib.lookup<NativeFunction<AskarKeyFreeNative>>('askar_key_free').asFunction();
 
 typedef AskarKeyFromJwkNative = Int32 Function(
-  Pointer<NativeByteBuffer> jwk,
+  NativeByteBuffer jwk,
   Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
-  Pointer<NativeByteBuffer> jwk,
+  NativeByteBuffer jwk,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyFromJwk = nativeLib
     .lookup<NativeFunction<AskarKeyFromJwkNative>>('askar_key_from_jwk')
@@ -742,18 +742,18 @@ final int Function(
 typedef AskarKeyUnwrapKeyNative = Int32 Function(
   NativeLocalKeyHandle handle,
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> ciphertext,
-  Pointer<NativeByteBuffer> nonce,
-  Pointer<NativeByteBuffer> tag,
+  NativeByteBuffer ciphertext,
+  NativeByteBuffer nonce,
+  NativeByteBuffer tag,
   Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
   LocalKeyHandle handle,
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> ciphertext,
-  Pointer<NativeByteBuffer> nonce,
-  Pointer<NativeByteBuffer> tag,
+  NativeByteBuffer ciphertext,
+  NativeByteBuffer nonce,
+  NativeByteBuffer tag,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyUnwrapKey = nativeLib
     .lookup<NativeFunction<AskarKeyUnwrapKeyNative>>('askar_key_unwrap_key')

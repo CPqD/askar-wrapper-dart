@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 
 import 'askar_native_functions.dart';
 
@@ -38,12 +37,14 @@ Uint8List secretBufferToBytesList(NativeSecretBuffer secretBuffer) {
   return dataPointer.asTypedList(length);
 }
 
-AskarEncryptedBuffer readNativeEncryptedBuffer(NativeEncryptedBuffer encryptedBuffer) {
-  int noncePos = encryptedBuffer.nonce_pos;
-  int tagPos = encryptedBuffer.tag_pos;
+int boolToInt(bool value) {
+  return value ? 1 : 0;
+}
 
-  return AskarEncryptedBuffer(
-      secretBufferToBytesList(encryptedBuffer.buffer), tagPos, noncePos);
+Uint8List generateRandomSeed() {
+  final random = Random.secure();
+  final seed = List<int>.generate(32, (_) => random.nextInt(256));
+  return Uint8List.fromList(seed);
 }
 
 bool intToBool(int value) {
@@ -55,14 +56,4 @@ bool intToBool(int value) {
     default:
       throw ArgumentError('Invalid bool value: $value');
   }
-}
-
-int boolToInt(bool value) {
-  return value ? 1 : 0;
-}
-
-Uint8List generateRandomSeed() {
-  final random = Random.secure();
-  final seed = List<int>.generate(32, (_) => random.nextInt(256));
-  return Uint8List.fromList(seed);
 }
