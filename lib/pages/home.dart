@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   onDispose() {
     super.dispose();
-    print("ON DISPOSE");
+    debugPrint("ON DISPOSE");
     store?.close();
   }
 

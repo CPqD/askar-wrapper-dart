@@ -13,7 +13,7 @@ base class AskarCallbackBlankResult {
 
   @override
   String toString() {
-    return "($errorCode, finished: $finished)";
+    return "AskarCallbackBlankResult($errorCode, finished: $finished)";
   }
 }
 
@@ -24,7 +24,7 @@ base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
 
   @override
   String toString() {
-    return "($errorCode, value: $value, finished: $finished)";
+    return "AskarCallbackResult($errorCode, value: $value, finished: $finished)";
   }
 }
 
@@ -56,7 +56,7 @@ int nextCallbackId() {
   return _callbackIdCounter++;
 }
 
-typedef CbFuncWithHandle = Void Function(CallbackId, Int32, NativeSessionHandle);
+typedef CbFuncWithHandle = Void Function(NativeCallbackId, Int32, NativeSessionHandle);
 
 Callback<CbFuncWithHandle> newCallbackWithHandle(void Function() cleanup) {
   final completer = Completer<AskarCallbackResult>();
@@ -74,7 +74,7 @@ Callback<CbFuncWithHandle> newCallbackWithHandle(void Function() cleanup) {
   return Callback<CbFuncWithHandle>(nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
-typedef CbFuncWithInt64 = Void Function(CallbackId, Int32, Int64);
+typedef CbFuncWithInt64 = Void Function(NativeCallbackId, Int32, Int64);
 
 Callback<CbFuncWithInt64> newCallbackWithInt64(void Function() cleanup) {
   final completer = Completer<AskarCallbackResult>();
@@ -92,7 +92,7 @@ Callback<CbFuncWithInt64> newCallbackWithInt64(void Function() cleanup) {
   return Callback<CbFuncWithInt64>(nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
-typedef CbFuncWithoutHandle = Void Function(CallbackId, Int32);
+typedef CbFuncWithoutHandle = Void Function(NativeCallbackId, Int32);
 
 Callback<CbFuncWithoutHandle> newCallbackWithoutHandle(void Function() cleanup) {
   final completer = Completer<AskarCallbackResult>();
@@ -111,7 +111,7 @@ Callback<CbFuncWithoutHandle> newCallbackWithoutHandle(void Function() cleanup) 
       nativeCallable, completer, nextCallbackId(), cleanup);
 }
 
-typedef CbFuncWithPtrUft8 = Void Function(CallbackId, Int32, Pointer<Utf8>);
+typedef CbFuncWithPtrUft8 = Void Function(NativeCallbackId, Int32, Pointer<Utf8>);
 
 Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
   final completer = Completer<AskarCallbackResult>();

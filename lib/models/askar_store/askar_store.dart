@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/models/askar_exceptions/exceptions.dart';
 
@@ -25,14 +25,14 @@ class AskarStore implements IAskarStore {
       this.recreate = false}) {
     open().then((resp) async {
       if (recreate) {
-        print('Store Provision');
+        debugPrint('Store Provision');
         await provision();
         return;
       }
       if (resp) {
-        print('Store Opened');
+        debugPrint('Store Opened');
       } else {
-        print('Store not Opened - Provisioning');
+        debugPrint('Store not Opened - Provisioning');
         await provision();
       }
     });

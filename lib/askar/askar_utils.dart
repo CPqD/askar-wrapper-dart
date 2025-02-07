@@ -4,21 +4,22 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
+import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 
 import 'askar_native_functions.dart';
 
-Pointer<ByteBuffer> stringToByteBuffer(String value) {
+Pointer<NativeByteBuffer> stringToByteBuffer(String value) {
   return bytesListToByteBuffer(utf8.encode(value));
 }
 
-Pointer<ByteBuffer> bytesListToByteBuffer(Uint8List bytesList) {
+Pointer<NativeByteBuffer> bytesListToByteBuffer(Uint8List bytesList) {
   Pointer<Uint8> dataPointer = calloc<Uint8>(bytesList.length);
 
   for (int i = 0; i < bytesList.length; i++) {
     dataPointer[i] = bytesList[i];
   }
 
-  Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
+  Pointer<NativeByteBuffer> byteBufferPointer = calloc<NativeByteBuffer>();
 
   byteBufferPointer.ref.len = bytesList.length;
   byteBufferPointer.ref.data = dataPointer;
@@ -26,15 +27,23 @@ Pointer<ByteBuffer> bytesListToByteBuffer(Uint8List bytesList) {
   return byteBufferPointer;
 }
 
-String secretBufferToString(SecretBuffer secretBuffer) {
+String secretBufferToString(NativeSecretBuffer secretBuffer) {
   return utf8.decode(secretBufferToBytesList(secretBuffer));
 }
 
-Uint8List secretBufferToBytesList(SecretBuffer secretBuffer) {
+Uint8List secretBufferToBytesList(NativeSecretBuffer secretBuffer) {
   int length = secretBuffer.len;
   Pointer<Uint8> dataPointer = secretBuffer.data;
 
   return dataPointer.asTypedList(length);
+}
+
+AskarEncryptedBuffer readNativeEncryptedBuffer(NativeEncryptedBuffer encryptedBuffer) {
+  int noncePos = encryptedBuffer.nonce_pos;
+  int tagPos = encryptedBuffer.tag_pos;
+
+  return AskarEncryptedBuffer(
+      secretBufferToBytesList(encryptedBuffer.buffer), tagPos, noncePos);
 }
 
 bool intToBool(int value) {

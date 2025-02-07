@@ -214,13 +214,18 @@ void main() {
           expectSuccess: false);
     });
 
-    test('Generate nonce', () async {
+    test('Askar Key Wrap', () async {
       final keyGenerateResult =
           keyGenerateTest(KeyAlgorithm.aesA128CbcHs256, KeyBackend.software);
-
       final localKeyHandle = keyGenerateResult.value;
 
-      keyAeadRandomNonceTest(localKeyHandle);
+      final ephemeralKeyResult =
+          keyGenerateTest(KeyAlgorithm.x25519, KeyBackend.software, ephemeral: true);
+      final ephemeralKey = ephemeralKeyResult.value;
+
+      final randomNonceResult = keyAeadRandomNonceTest(localKeyHandle);
+
+      keyWrapKeyTest(localKeyHandle, ephemeralKey, randomNonceResult.value);
     });
 
     test('Get Key From Secret Bytes', () async {
@@ -346,7 +351,7 @@ Future<AskarCallbackResult> storeProvisionTest(String passKey) async {
   final result = await askarStoreProvision(
       specUri, StoreKeyMethod.argon2IMod, passKey, profile, recreate);
 
-  printAskarCallbackResult('StoreProvision', result);
+  printAskarResult('StoreProvision', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -361,7 +366,7 @@ Future<AskarCallbackResult> storeOpenTest(String passKey) async {
   final result =
       await askarStoreOpen(specUri, StoreKeyMethod.argon2IMod, passKey, profile);
 
-  printAskarCallbackResult('StoreOpen', result);
+  printAskarResult('StoreOpen', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -378,7 +383,7 @@ Future<AskarCallbackResult> scanStartTest(
   final result =
       await askarScanStart(handle, profile, category, tagFilter, offset, limit);
 
-  printAskarCallbackResult('ScanStart', result);
+  printAskarResult('ScanStart', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -392,7 +397,7 @@ Future<AskarCallbackResult> scanNextTest(
 ) async {
   final result = await askarScanNext(handle);
 
-  printAskarCallbackResult('ScanNext', result);
+  printAskarResult('ScanNext', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -407,7 +412,7 @@ Future<AskarCallbackResult> sessionStartTest(StoreHandle handle) async {
 
   final result = await askarSessionStart(handle, profile, asTransaction);
 
-  printAskarCallbackResult('SessionStart', result);
+  printAskarResult('SessionStart', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -415,10 +420,8 @@ Future<AskarCallbackResult> sessionStartTest(StoreHandle handle) async {
   return result;
 }
 
-AskarResult<LocalKeyHandle> keyGenerateTest(
-    KeyAlgorithm algorithm, KeyBackend keyBackend) {
-  bool ephemeral = false;
-
+AskarResult<LocalKeyHandle> keyGenerateTest(KeyAlgorithm algorithm, KeyBackend keyBackend,
+    {bool ephemeral = false}) {
   final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
 
   printAskarResult('KeyGenerate', result);
@@ -436,6 +439,23 @@ AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
+  LocalKeyHandle handle,
+  LocalKeyHandle other,
+  Uint8List nonce,
+) {
+  final result = askarKeyWrapKey(handle, other, nonce);
+
+  printAskarResult('KeyWrapKeyTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.buffer.isNotEmpty, equals(true));
+  expect(result.value.noncePos, greaterThan(0));
+  expect(result.value.tagPos, greaterThan(0));
 
   return result;
 }
@@ -542,7 +562,7 @@ Future<AskarCallbackResult> sessionInsertKeyTest(
   final result = await askarSessionInsertKey(
       sessionHandle, localKeyHandle, name, metadata, tags, expiryMs);
 
-  printAskarCallbackResult('SessionInsertKey', result);
+  printAskarResult('SessionInsertKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -554,7 +574,7 @@ Future<AskarCallbackResult> sessionRemoveKeyTest(
     SessionHandle handle, String name) async {
   final result = await askarSessionRemoveKey(handle, name);
 
-  printAskarCallbackResult('SessionRemoveKey', result);
+  printAskarResult('SessionRemoveKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -566,7 +586,7 @@ Future<AskarCallbackResult> sessionCountTest(
     SessionHandle handle, String category, Map<String, String> tagFilter) async {
   final result = await askarSessionCount(handle, category, tagFilter);
 
-  printAskarCallbackResult('SessionCount', result);
+  printAskarResult('SessionCount', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -581,7 +601,7 @@ Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String nam
 
   final result = await askarSessionFetchKey(handle, name, forUpdate);
 
-  printAskarCallbackResult('SessionFetchKey', result);
+  printAskarResult('SessionFetchKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -622,7 +642,7 @@ Future<AskarCallbackResult> sessionFetchAllKeysTest(SessionHandle handle,
   final result = await askarSessionFetchAllKeys(
       handle, algorithm, thumbprint, tagFilter, limit, forUpdate);
 
-  printAskarCallbackResult('SessionFetchAllKeys', result);
+  printAskarResult('SessionFetchAllKeys', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -655,7 +675,7 @@ Future<AskarCallbackResult> sessionUpdateTest(
   final result =
       await askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
 
-  printAskarCallbackResult('SessionUpdate', result);
+  printAskarResult('SessionUpdate', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -668,7 +688,7 @@ Future<AskarCallbackResult> sessionRemoveAllTest(
     {required int expected}) async {
   final result = await askarSessionRemoveAll(handle, category, tags);
 
-  printAskarCallbackResult('SessionRemoveAll', result);
+  printAskarResult('SessionRemoveAll', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -697,7 +717,7 @@ Future<AskarCallbackResult> sessionFetchTest(SessionHandle handle,
     );
   }
 
-  printAskarCallbackResult('SessionFetch', result);
+  printAskarResult('SessionFetch', result);
 
   return result;
 }
@@ -812,7 +832,7 @@ AskarResult<LocalKeyHandle> keyFromSecretBytesTest(
 Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
   final result = await askarSessionClose(handle, true);
 
-  printAskarBlankResult('SessionClose', result);
+  printAskarResult('SessionClose', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -823,7 +843,7 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
 Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
   final result = await askarStoreClose(handle);
 
-  printAskarCallbackResult('StoreClose', result);
+  printAskarResult('StoreClose', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -870,7 +890,7 @@ Future<AskarCallbackResult> storeCreateProfileTest(StoreHandle handle, String pr
     {required String expectedValue}) async {
   final result = await askarStoreCreateProfile(handle, profile);
 
-  printAskarCallbackResult('StoreCreateProfile', result);
+  printAskarResult('StoreCreateProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -883,7 +903,7 @@ Future<AskarCallbackResult> storeGetDefaultProfileTest(StoreHandle handle,
     {required String expectedValue}) async {
   final result = await askarStoreGetDefaultProfile(handle);
 
-  printAskarCallbackResult('StoreGetDefaultProfile', result);
+  printAskarResult('StoreGetDefaultProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -896,7 +916,7 @@ Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
     StoreHandle handle, String profile) async {
   final result = await askarStoreSetDefaultProfile(handle, profile);
 
-  printAskarBlankResult('StoreSetDefaultProfile', result);
+  printAskarResult('StoreSetDefaultProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
@@ -904,15 +924,6 @@ Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
   return result;
 }
 
-void printAskarCallbackResult(String test, AskarCallbackResult result) {
-  print(
-      '$test Result: (${result.errorCode}, Value: ${result.value}, Finished: ${result.finished})\n');
-}
-
-void printAskarBlankResult(String test, AskarCallbackBlankResult result) {
-  print('$test Result: (${result.errorCode}, Finished: ${result.finished})\n');
-}
-
-void printAskarResult(String test, AskarResult result) {
-  print('$test Result: (${result.errorCode}, Value: ${result.value})\n');
+void printAskarResult(String test, dynamic result) {
+  print('$test: $result\n');
 }
