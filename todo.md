@@ -56,7 +56,7 @@
 
 - [ ] askar_key_derive_ecdh_1pu: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: Buffer, args_7: Buffer, args_8: number, args_9: Buffer) => number;
 
-- [ ] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
+- [x] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
 
 - [x] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
@@ -74,7 +74,7 @@
 
 - [x] askar_key_free: (args_0: Buffer) => unknown; **(required)**
 
-- [ ] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
 
 - [ ] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
@@ -90,7 +90,7 @@
 
 - [ ] askar_key_get_ephemeral: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_get_jwk_public: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
+- [x] askar_key_get_jwk_public: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
 - [ ] askar_key_get_jwk_secret: (args_0: Buffer, args_1: Buffer) => number;
 

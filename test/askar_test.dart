@@ -7,6 +7,7 @@ import 'package:convert/convert.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
+import 'package:import_so_libaskar/askar/crypto/askar_encrypted_buffer.dart';
 import 'package:import_so_libaskar/askar/enums/askar_entry_operation.dart';
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
@@ -135,8 +136,7 @@ void main() {
       String metadata = 'meta';
       Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
 
-      final keyGenerateResult =
-          keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.ed25519);
 
       final localKeyHandle = keyGenerateResult.value;
 
@@ -168,7 +168,7 @@ void main() {
 
       final algorithm = KeyAlgorithm.ed25519;
 
-      final keyGenerateResult = keyGenerateTest(algorithm, KeyBackend.software);
+      final keyGenerateResult = keyGenerateTest(algorithm);
       final localKeyHandle = keyGenerateResult.value;
 
       final thumbprintResult = keyGetJwkThumbprintTest(localKeyHandle, algorithm);
@@ -193,8 +193,7 @@ void main() {
     });
 
     test('Sign Message and Verify Signature', () async {
-      final keyGenerateResult =
-          keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.ed25519);
 
       final localKeyHandle = keyGenerateResult.value;
 
@@ -214,18 +213,63 @@ void main() {
           expectSuccess: false);
     });
 
-    test('Askar Key Wrap', () async {
-      final keyGenerateResult =
-          keyGenerateTest(KeyAlgorithm.aesA128CbcHs256, KeyBackend.software);
-      final localKeyHandle = keyGenerateResult.value;
+    test('Askar Key Wrap and Unwrap', () async {
+      final alg = "ECDH-ES+A128KW";
+      final enc = 'A256GCM';
+      final apu = "Alice";
+      final apv = "Bob";
+      final message = utf8.encode('Hello there');
 
-      final ephemeralKeyResult =
-          keyGenerateTest(KeyAlgorithm.x25519, KeyBackend.software, ephemeral: true);
-      final ephemeralKey = ephemeralKeyResult.value;
+      final bobKey = keyGenerateTest(KeyAlgorithm.x25519).value;
+      final bobJwk = keyGetJwkPublicTest(bobKey, KeyAlgorithm.x25519).value;
 
-      final randomNonceResult = keyAeadRandomNonceTest(localKeyHandle);
+      final ephemeralKey = keyGenerateTest(KeyAlgorithm.x25519, ephemeral: true).value;
+      final ephemeralJwk = keyGetJwkPublicTest(ephemeralKey, KeyAlgorithm.x25519).value;
 
-      keyWrapKeyTest(localKeyHandle, ephemeralKey, randomNonceResult.value);
+      Map<String, dynamic> protectedJson = {
+        'alg': alg,
+        'enc': enc,
+        'apu': base64Url.encode(utf8.encode(apu)),
+        'apv': base64Url.encode(utf8.encode(apv)),
+        'epk': ephemeralJwk,
+      };
+
+      final protectedB64 = base64Url.encode(utf8.encode(jsonEncode(protectedJson)));
+      final protectedB64Bytes = utf8.encode(protectedB64);
+
+      final cek = keyGenerateTest(KeyAlgorithm.aesA256Gcm).value;
+
+      final encryptedMessage =
+          keyAeadEncryptTest(cek, message, aad: protectedB64Bytes).value;
+
+      final encryptionAlgorithm = KeyAlgorithm.aesA256Gcm;
+
+      final recipientKey = keyFromJwkTest(bobJwk).value;
+
+      final senderEcdhEs = keyDeriveEcdhEsTest(encryptionAlgorithm, ephemeralKey,
+              recipientKey, utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), false)
+          .value;
+
+      final encryptedKey = keyWrapKeyTest(senderEcdhEs, cek, encryptedMessage.nonce);
+      print(encryptedKey);
+
+      final receivedEcdhEs = keyDeriveEcdhEsTest(encryptionAlgorithm, ephemeralKey,
+              bobKey, utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), true)
+          .value;
+
+      // keyUnwrapKeyTest(
+      //   receivedEcdhEs,
+      //   encryptionAlgorithm,
+      //   encryptedKey.value.ciphertext,
+      //   encryptedKey.value.nonce,
+      //   encryptedKey.value.tag,
+      // );
+
+      askarKeyFree(senderEcdhEs);
+      askarKeyFree(receivedEcdhEs);
+      askarKeyFree(bobKey);
+      askarKeyFree(recipientKey);
+      askarKeyFree(ephemeralKey);
     });
 
     test('Get Key From Secret Bytes', () async {
@@ -243,8 +287,7 @@ void main() {
     });
 
     test('Removing Key', () async {
-      final keyGenerateResult =
-          keyGenerateTest(KeyAlgorithm.ed25519, KeyBackend.software);
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.ed25519);
       final localKeyHandle = keyGenerateResult.value;
       String name = 'testEntry3';
       String metadata = 'meta';
@@ -317,8 +360,8 @@ void main() {
 
   group('Aead Encryption Tests:', () {
     test('Encryption with and without nonce and aad', () {
-      final keyGenerateResult =
-          keyGenerateTest(KeyAlgorithm.aesA256Gcm, KeyBackend.software);
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.aesA256Gcm);
+
       final localKeyHandle = keyGenerateResult.value;
 
       final message = Uint8List(4);
@@ -331,14 +374,17 @@ void main() {
   });
 }
 
-AskarResult<Uint8List> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List message,
+AskarResult<AskarEncryptedBuffer> keyAeadEncryptTest(
+    LocalKeyHandle handle, Uint8List message,
     {Uint8List? nonce, Uint8List? aad}) {
   final result = askarKeyAeadEncrypt(handle, message, nonce: nonce, aad: aad);
 
   printAskarResult('KeyAeadEncryptTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, isNotEmpty);
+  expect(result.value.buffer.isNotEmpty, equals(true));
+  expect(result.value.noncePos, greaterThan(0));
+  expect(result.value.tagPos, greaterThan(0));
 
   return result;
 }
@@ -420,14 +466,36 @@ Future<AskarCallbackResult> sessionStartTest(StoreHandle handle) async {
   return result;
 }
 
-AskarResult<LocalKeyHandle> keyGenerateTest(KeyAlgorithm algorithm, KeyBackend keyBackend,
-    {bool ephemeral = false}) {
+AskarResult<LocalKeyHandle> keyGenerateTest(KeyAlgorithm algorithm,
+    {KeyBackend keyBackend = KeyBackend.software, bool ephemeral = false}) {
   final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
 
   printAskarResult('KeyGenerate', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<String> keyGetJwkPublicTest(LocalKeyHandle handle, KeyAlgorithm algorithm) {
+  final result = askarKeyGetJwkPublic(handle, algorithm);
+
+  printAskarResult('KeyGetJwkPublic', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyFromJwkTest(String jwk) {
+  final result = askarKeyFromJwk(jwk);
+
+  printAskarResult('KeyFromJwk', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, isNot(0));
 
   return result;
 }
@@ -448,6 +516,8 @@ AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
   LocalKeyHandle other,
   Uint8List nonce,
 ) {
+  print('$handle, $other, $nonce');
+
   final result = askarKeyWrapKey(handle, other, nonce);
 
   printAskarResult('KeyWrapKeyTest', result);
@@ -456,6 +526,46 @@ AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
   expect(result.value.buffer.isNotEmpty, equals(true));
   expect(result.value.noncePos, greaterThan(0));
   expect(result.value.tagPos, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyUnwrapKeyTest(
+  LocalKeyHandle handle,
+  KeyAlgorithm algorithm,
+  Uint8List ciphertext,
+  Uint8List nonce,
+  Uint8List tag,
+) {
+  print(
+      'handle $handle, algorithm $algorithm, ciphertext $ciphertext, nonce $nonce, tag $tag');
+
+  final result = askarKeyUnwrapKey(handle, algorithm, ciphertext, nonce, tag);
+
+  printAskarResult('KeyUnwrapKeyTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyDeriveEcdhEsTest(
+  KeyAlgorithm algorithm,
+  LocalKeyHandle ephemeralKey,
+  LocalKeyHandle recipientKey,
+  Uint8List algId,
+  Uint8List apu,
+  Uint8List apv,
+  bool receive,
+) {
+  final result = askarKeyDeriveEcdhEs(
+      algorithm, ephemeralKey, recipientKey, algId, apu, apv, receive);
+
+  printAskarResult('KeyDeriveEcdhEs', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
 
   return result;
 }
