@@ -5,6 +5,7 @@ class AskarKey implements IAskarKey {
   //Obtido em this.convert, this.deriveEcdh1Pu, this.deriveEcdhEs,
   // this.fromJwk, this.fromKeyExchange, this.fromPublicBytes, this.fromSecretBytes,
   // this.fromSeed, this.generate, this.unwrapKey,
+  // ******this.generate
   // AskarKeyEntryList.loadLocal
 
   @override

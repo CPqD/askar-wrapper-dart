@@ -1,5 +1,5 @@
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/objects/askar_store/askar_store.dart';
+import 'package:import_so_libaskar/models/askar_store/askar_store.dart';
 
 import '../../askar/enums/askar_entry_operation.dart';
 import '../../askar/enums/askar_error_code.dart';
@@ -17,11 +17,10 @@ class AskarSession implements IAskarSession {
 
   @override
   Future<bool> start() async {
-    if (store.storeHandle == null) {
+    if (store.handle == null) {
       return false;
     }
-    final result =
-        await askarSessionStart(store.storeHandle!, store.profile, asTransaction);
+    final result = await askarSessionStart(store.handle!, store.profile, asTransaction);
     if (result.errorCode == ErrorCode.success) {
       handle = result.value;
       return true;

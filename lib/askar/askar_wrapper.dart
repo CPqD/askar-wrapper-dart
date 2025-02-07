@@ -1366,6 +1366,20 @@ Future<AskarCallbackResult> askarStoreGetDefaultProfile(
   return await callback.handleResult(result);
 }
 
+Future<AskarCallbackResult> askarStoreGetProfileName(
+  StoreHandle handle,
+) async {
+  final callback = newCallbackWithPtrUtf8(() => {});
+
+  final result = nativeAskarStoreGetProfileName(
+    handle,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
+  );
+
+  return await callback.handleResult(result);
+}
+
 Future<AskarCallbackBlankResult> askarStoreSetDefaultProfile(
     StoreHandle handle, String profile) async {
   final profilePointer = profile.toNativeUtf8();

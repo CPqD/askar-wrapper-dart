@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/objects/askar_session/askar_session.dart';
+import 'package:import_so_libaskar/models/askar_session/askar_session.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../askar/enums/askar_entry_operation.dart';
@@ -9,7 +9,7 @@ import '../askar/enums/askar_key_algorithm.dart';
 import '../askar/enums/askar_key_backend.dart';
 import '../askar/enums/askar_signature_algorithm.dart';
 import '../global.dart';
-import '../objects/askar_exceptions/exceptions.dart';
+import '../models/askar_exceptions/exceptions.dart';
 
 class ExecutePage extends StatefulWidget {
   final String title;

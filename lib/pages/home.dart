@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../global.dart';
-import '../objects/askar_store/askar_store.dart';
+import '../models/askar_store/askar_store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});

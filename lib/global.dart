@@ -1,7 +1,7 @@
 import 'askar/askar_callbacks.dart';
 import 'askar/askar_wrapper.dart';
 import 'askar/enums/askar_store_key_method.dart';
-import 'objects/askar_store/askar_store.dart';
+import 'models/askar_store/askar_store.dart';
 
 String? specUri;
 final String passKey = 'mySecretKey';
