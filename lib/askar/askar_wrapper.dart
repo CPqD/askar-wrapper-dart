@@ -1417,13 +1417,15 @@ Future<AskarCallbackBlankResult> askarStoreSetDefaultProfile(
   return await callback.handleResult(result);
 }
 
-ErrorCode askarStoreListProfiles(
+Future<AskarCallbackResult> askarStoreListProfiles(
   StoreHandle handle,
-  Pointer<NativeFunction<AskarStoreListProfilesCallback>> cb,
-  int cbId,
 ) {
-  final result = nativeAskarStoreListProfiles(handle, cb, cbId);
-  return ErrorCode.fromInt(result);
+  final callback = newCallbackWithHandle(() {});
+
+  final result = nativeAskarStoreListProfiles(
+      handle, callback.nativeCallable.nativeFunction, callback.id);
+
+  return callback.handleResult(result);
 }
 
 Future<AskarCallbackResult> askarStoreOpen(
