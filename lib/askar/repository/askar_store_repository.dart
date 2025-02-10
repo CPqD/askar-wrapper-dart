@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
 import 'package:import_so_libaskar/askar/repository/askar_string_repository.dart';
@@ -16,7 +17,7 @@ class AskarStoreRepository implements IAskarStore {
   final String profile;
   final bool recreate;
 
-  StoreHandle? handle;
+  AskarHandle? handle;
 
   AskarStoreRepository(
       {required this.specUri,
@@ -67,7 +68,7 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<bool> close() async {
     if (handle != null) {
-      final result = await askarStoreClose(handle!);
+      final result = await askarStoreClose(StoreHandle(handle!.toInt()));
       if (result.errorCode == ErrorCode.success) {
         handle = null;
         return true;
@@ -79,7 +80,8 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<bool> createProfile() async {
     checkStore();
-    final result = await askarStoreCreateProfile(handle!, "${profile}2");
+    final result =
+        await askarStoreCreateProfile(StoreHandle(handle!.toInt()), "${profile}2");
     if (result.errorCode == ErrorCode.duplicate) {
       throw ProfileDuplicatedException("Este Profile já existe");
     }
@@ -108,7 +110,7 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<String> getDefaultProfile() async {
     checkStore();
-    final result = await askarStoreGetDefaultProfile(handle!);
+    final result = await askarStoreGetDefaultProfile(StoreHandle(handle!.toInt()));
     if (result.errorCode == ErrorCode.success) {
       return result.value;
     }
@@ -118,7 +120,7 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<String> getProfileName() async {
     checkStore();
-    final result = await askarStoreGetProfileName(handle!);
+    final result = await askarStoreGetProfileName(StoreHandle(handle!.toInt()));
     if (result.errorCode == ErrorCode.success) {
       return result.value;
     }
@@ -128,9 +130,9 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<List<String>> listProfiles() async {
     checkStore();
-    final result = await askarStoreListProfiles(handle!);
+    final result = await askarStoreListProfiles(StoreHandle(handle!.toInt()));
     if (result.errorCode == ErrorCode.success) {
-      final stringList = AskarStringRepository(handle: handle!);
+      final stringList = AskarStringRepository(handle: handle!.toInt());
       return stringList.getAllItems();
     }
     return [];
@@ -139,7 +141,8 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<bool> rekey(String newPassKey) async {
     checkStore();
-    final result = await askarStoreRekey(handle!, method, newPassKey);
+    final result =
+        await askarStoreRekey(StoreHandle(handle!.toInt()), method, newPassKey);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }
@@ -161,7 +164,8 @@ class AskarStoreRepository implements IAskarStore {
   @override
   Future<bool> setDefaultProfile(String profileName) async {
     checkStore();
-    final result = await askarStoreSetDefaultProfile(handle!, profileName);
+    final result =
+        await askarStoreSetDefaultProfile(StoreHandle(handle!.toInt()), profileName);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }

@@ -130,14 +130,14 @@ final int Function(int max_level) nativeAskarSetMaxLogLevel = nativeLib
 typedef AskarEntryListCountNative = Int32 Function(
     NativeEntryListHandle handle, Pointer<Int32> count);
 
-final int Function(EntryListHandle handle, Pointer<Int32> count)
-    nativeAskarEntryListCount = nativeLib
+final int Function(int entryListHandle, Pointer<Int32> count) nativeAskarEntryListCount =
+    nativeLib
         .lookup<NativeFunction<AskarEntryListCountNative>>('askar_entry_list_count')
         .asFunction();
 
 typedef AskarEntryListFreeNative = Void Function(NativeEntryListHandle handle);
 
-final void Function(EntryListHandle handle) nativeAskarEntryListFree = nativeLib
+final void Function(int entryListHandle) nativeAskarEntryListFree = nativeLib
     .lookup<NativeFunction<AskarEntryListFreeNative>>('askar_entry_list_free')
     .asFunction();
 
@@ -148,7 +148,7 @@ typedef AskarEntryListGetCategoryNative = Int32 Function(
 );
 
 final int Function(
-  EntryListHandle handle,
+  int entryListHandle,
   int index,
   Pointer<Pointer<Utf8>> category,
 ) nativeAskarEntryListGetCategory = nativeLib
@@ -163,7 +163,7 @@ typedef AskarEntryListGetNameNative = Int32 Function(
 );
 
 final int Function(
-  EntryListHandle handle,
+  int entryListHandle,
   int index,
   Pointer<Pointer<Utf8>> name,
 ) nativeAskarEntryListGetName = nativeLib
@@ -177,7 +177,7 @@ typedef AskarEntryListGetTagsNative = Int32 Function(
 );
 
 final int Function(
-  EntryListHandle handle,
+  int entryListHandle,
   int index,
   Pointer<Pointer<Utf8>> tags,
 ) nativeAskarEntryListGetTags = nativeLib
@@ -191,7 +191,7 @@ typedef AskarEntryListGetValueNative = Int32 Function(
 );
 
 final int Function(
-  EntryListHandle handle,
+  int entryListHandle,
   int index,
   Pointer<NativeSecretBuffer> value,
 ) nativeAskarEntryListGetValue = nativeLib
@@ -240,7 +240,7 @@ typedef AskarKeyAeadDecryptNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   NativeByteBuffer ciphertext,
   NativeByteBuffer nonce,
   NativeByteBuffer tag,
@@ -259,7 +259,7 @@ typedef AskarKeyAeadEncryptNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   NativeByteBuffer message,
   NativeByteBuffer nonce,
   NativeByteBuffer aad,
@@ -275,7 +275,7 @@ typedef AskarKeyAeadGetPaddingNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   int msg_len,
   Pointer<Int32> out,
 ) nativeAskarKeyAeadGetPadding = nativeLib
@@ -288,7 +288,7 @@ typedef AskarKeyAeadGetParamsNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeAeadParams> out,
 ) nativeAskarKeyAeadGetParams = nativeLib
     .lookup<NativeFunction<AskarKeyAeadGetParamsNative>>('askar_key_aead_get_params')
@@ -300,7 +300,7 @@ typedef AskarKeyAeadRandomNonceNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyAeadRandomNonce = nativeLib
     .lookup<NativeFunction<AskarKeyAeadRandomNonceNative>>('askar_key_aead_random_nonce')
@@ -313,7 +313,7 @@ typedef AskarKeyConvertNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Utf8> alg,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyConvert = nativeLib
@@ -329,8 +329,8 @@ typedef AskarKeyCryptoBoxNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle recip_key,
-  LocalKeyHandle sender_key,
+  int recip_key,
+  int sender_key,
   Pointer<NativeByteBuffer> message,
   Pointer<NativeByteBuffer> nonce,
   Pointer<NativeSecretBuffer> out,
@@ -347,8 +347,8 @@ typedef AskarKeyCryptoBoxOpenNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle recip_key,
-  LocalKeyHandle sender_key,
+  int recip_key,
+  int sender_key,
   Pointer<NativeByteBuffer> message,
   Pointer<NativeByteBuffer> nonce,
   Pointer<NativeSecretBuffer> out,
@@ -374,7 +374,7 @@ typedef AskarKeyCryptoBoxSealNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeByteBuffer> message,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyCryptoBoxSeal = nativeLib
@@ -388,7 +388,7 @@ typedef AskarKeyCryptoBoxSealOpenNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeByteBuffer> ciphertext,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyCryptoBoxSealOpen = nativeLib
@@ -411,9 +411,9 @@ typedef AskarKeyDeriveEcdh1puNative = Int32 Function(
 
 final int Function(
   Pointer<Utf8> alg,
-  LocalKeyHandle ephem_key,
-  LocalKeyHandle sender_key,
-  LocalKeyHandle recip_key,
+  int ephem_key,
+  int sender_key,
+  int recip_key,
   NativeByteBuffer alg_id,
   NativeByteBuffer apu,
   NativeByteBuffer apv,
@@ -437,8 +437,8 @@ typedef AskarKeyDeriveEcdhEsNative = Int32 Function(
 
 final int Function(
   Pointer<Utf8> alg,
-  LocalKeyHandle ephem_key,
-  LocalKeyHandle recip_key,
+  int ephem_key,
+  int recip_key,
   NativeByteBuffer alg_id,
   NativeByteBuffer apu,
   NativeByteBuffer apv,
@@ -454,7 +454,7 @@ typedef AskarKeyEntryListCountNative = Int32 Function(
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   Pointer<Int32> count,
 ) nativeAskarKeyEntryListCount = nativeLib
     .lookup<NativeFunction<AskarKeyEntryListCountNative>>('askar_key_entry_list_count')
@@ -462,7 +462,7 @@ final int Function(
 
 typedef AskarKeyEntryListFreeNative = Void Function(NativeKeyEntryListHandle handle);
 
-final void Function(KeyEntryListHandle handle) nativeAskarKeyEntryListFree = nativeLib
+final void Function(int keyEntryListHandle) nativeAskarKeyEntryListFree = nativeLib
     .lookup<NativeFunction<AskarKeyEntryListFreeNative>>('askar_key_entry_list_free')
     .asFunction();
 
@@ -473,7 +473,7 @@ typedef AskarKeyEntryListGetAlgorithmNative = Int32 Function(
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   int index,
   Pointer<Pointer<Utf8>> alg,
 ) nativeAskarKeyEntryListGetAlgorithm = nativeLib
@@ -488,7 +488,7 @@ typedef AskarKeyEntryListGetMetadataNative = Int32 Function(
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   int index,
   Pointer<Pointer<Utf8>> metadata,
 ) nativeAskarKeyEntryListGetMetadata = nativeLib
@@ -503,7 +503,7 @@ typedef AskarKeyEntryListGetNameNative = Int32 Function(
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   int index,
   Pointer<Pointer<Utf8>> name,
 ) nativeAskarKeyEntryListGetName = nativeLib
@@ -518,7 +518,7 @@ typedef AskarKeyEntryListGetTagsNative = Int32 Function(
 );
 
 final int Function(
-  KeyEntryListHandle handle,
+  int keyEntryListHandle,
   int index,
   Pointer<Pointer<Utf8>> tags,
 ) nativeAskarKeyEntryListGetTags = nativeLib
@@ -543,7 +543,7 @@ final int Function(
 
 typedef AskarKeyFreeNative = Void Function(NativeLocalKeyHandle handle);
 
-final void Function(LocalKeyHandle handle) nativeAskarKeyFree =
+final void Function(int localKeyHandle) nativeAskarKeyFree =
     nativeLib.lookup<NativeFunction<AskarKeyFreeNative>>('askar_key_free').asFunction();
 
 typedef AskarKeyFromJwkNative = Int32 Function(
@@ -567,8 +567,8 @@ typedef AskarKeyFromKeyExchangeNative = Int32 Function(
 
 final int Function(
   Pointer<Utf8> alg,
-  LocalKeyHandle sk_handle,
-  LocalKeyHandle pk_handle,
+  int sk_handle,
+  int pk_handle,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyFromKeyExchange = nativeLib
     .lookup<NativeFunction<AskarKeyFromKeyExchangeNative>>('askar_key_from_key_exchange')
@@ -622,14 +622,14 @@ typedef AskarKeyGenerateNative = Int32 Function(
   Pointer<Utf8> alg,
   Pointer<Utf8> key_backend,
   Int8 ephemeral,
-  Pointer<Int64> out,
+  Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
   Pointer<Utf8> alg,
   Pointer<Utf8> key_backend,
   int ephemeral,
-  Pointer<Int64> out,
+  Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyGenerate = nativeLib
     .lookup<NativeFunction<AskarKeyGenerateNative>>('askar_key_generate')
     .asFunction();
@@ -640,7 +640,7 @@ typedef AskarKeyGetAlgorithmNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Pointer<Utf8>> out,
 ) nativeAskarKeyGetAlgorithm = nativeLib
     .lookup<NativeFunction<AskarKeyGetAlgorithmNative>>('askar_key_get_algorithm')
@@ -652,7 +652,7 @@ typedef AskarKeyGetEphemeralNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Int8> out,
 ) nativeAskarKeyGetEphemeral = nativeLib
     .lookup<NativeFunction<AskarKeyGetEphemeralNative>>('askar_key_get_ephemeral')
@@ -665,7 +665,7 @@ typedef AskarKeyGetJwkPublicNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Utf8> alg,
   Pointer<Pointer<Utf8>> out,
 ) nativeAskarKeyGetJwkPublic = nativeLib
@@ -678,7 +678,7 @@ typedef AskarKeyGetJwkSecretNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyGetJwkSecret = nativeLib
     .lookup<NativeFunction<AskarKeyGetJwkSecretNative>>('askar_key_get_jwk_secret')
@@ -691,7 +691,7 @@ typedef AskarKeyGetJwkThumbprintNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Utf8> alg,
   Pointer<Pointer<Utf8>> out,
 ) nativeAskarKeyGetJwkThumbprint = nativeLib
@@ -705,7 +705,7 @@ typedef AskarKeyGetPublicBytesNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyGetPublicBytes = nativeLib
     .lookup<NativeFunction<AskarKeyGetPublicBytesNative>>('askar_key_get_public_bytes')
@@ -717,7 +717,7 @@ typedef AskarKeyGetSecretBytesNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyGetSecretBytes = nativeLib
     .lookup<NativeFunction<AskarKeyGetSecretBytesNative>>('askar_key_get_secret_bytes')
@@ -731,7 +731,7 @@ typedef AskarKeySignMessageNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   NativeByteBuffer message,
   Pointer<Utf8> sig_type,
   Pointer<NativeSecretBuffer> out,
@@ -749,7 +749,7 @@ typedef AskarKeyUnwrapKeyNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   Pointer<Utf8> alg,
   NativeByteBuffer ciphertext,
   NativeByteBuffer nonce,
@@ -768,7 +768,7 @@ typedef AskarKeyVerifySignatureNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
+  int localKeyHandle,
   NativeByteBuffer message,
   NativeByteBuffer signature,
   Pointer<Utf8> sig_type,
@@ -785,8 +785,8 @@ typedef AskarKeyWrapKeyNative = Int32 Function(
 );
 
 final int Function(
-  LocalKeyHandle handle,
-  LocalKeyHandle other,
+  int localKeyHandle,
+  int other,
   NativeByteBuffer nonce,
   Pointer<NativeEncryptedBuffer> out,
 ) nativeAskarKeyWrapKey = nativeLib
@@ -809,7 +809,7 @@ typedef AskarScanFreeNative = Int32 Function(
 );
 
 final int Function(
-  ScanHandle handle,
+  int scanHandle,
 ) nativeAskarScanFree =
     nativeLib.lookup<NativeFunction<AskarScanFreeNative>>('askar_scan_free').asFunction();
 
@@ -826,7 +826,7 @@ typedef AskarScanNextNative = Int32 Function(
 );
 
 final int Function(
-  ScanHandle handle,
+  int scanHandle,
   Pointer<NativeFunction<AskarScanNextCallback>> cb,
   int cb_id,
 ) nativeAskarScanNext =
@@ -850,7 +850,7 @@ typedef AskarScanStartNative = Int32 Function(
 );
 
 final int Function(
-  ScanHandle handle,
+  int scanHandle,
   Pointer<Utf8> profile,
   Pointer<Utf8> category,
   Pointer<Utf8> tag_filter,
@@ -875,7 +875,7 @@ typedef AskarSessionCloseNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   int commit,
   Pointer<NativeFunction<AskarSessionCloseCallback>> cb,
   int cb_id,
@@ -898,7 +898,7 @@ typedef AskarSessionCountNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> category,
   Pointer<Utf8> tag_filter,
   Pointer<NativeFunction<AskarSessionCountCallback>> cb,
@@ -923,7 +923,7 @@ typedef AskarSessionFetchNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> category,
   Pointer<Utf8> name,
   int for_update,
@@ -950,7 +950,7 @@ typedef AskarSessionFetchAllNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> category,
   Pointer<Utf8> tag_filter,
   int limit,
@@ -979,7 +979,7 @@ typedef AskarSessionFetchAllKeysNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> alg,
   Pointer<Utf8> thumbprint,
   Pointer<Utf8> tag_filter,
@@ -1007,7 +1007,7 @@ typedef AskarSessionFetchKeyNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> name,
   int for_update,
   Pointer<NativeFunction<AskarSessionFetchKeyCallback>> cb,
@@ -1104,7 +1104,7 @@ typedef AskarSessionStartNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> profile,
   int as_transaction,
   Pointer<NativeFunction<Void Function(NativeCallbackId, Int32, NativeSessionHandle)>> cb,
@@ -1126,7 +1126,7 @@ typedef AskarSessionUpdateNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   int operation,
   Pointer<Utf8> category,
   Pointer<Utf8> name,
@@ -1155,7 +1155,7 @@ typedef AskarSessionUpdateKeyNative = Int32 Function(
 );
 
 final int Function(
-  SessionHandle handle,
+  int sessionHandle,
   Pointer<Utf8> name,
   Pointer<Utf8> metadata,
   Pointer<Utf8> tags,
@@ -1178,7 +1178,7 @@ typedef AskarStoreCloseNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<NativeFunction<AskarStoreCloseCallback>> cb,
   int cb_id,
 ) nativeAskarStoreClose = nativeLib
@@ -1202,7 +1202,7 @@ typedef AskarStoreCopyNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> target_uri,
   Pointer<Utf8> key_method,
   Pointer<Utf8> pass_key,
@@ -1227,7 +1227,7 @@ typedef AskarStoreCreateProfileNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> profile,
   Pointer<NativeFunction<AskarStoreCreateProfileCallback>> cb,
   int cb_id,
@@ -1282,7 +1282,7 @@ typedef AskarStoreGetDefaultProfileNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<NativeFunction<AskarStoreGetDefaultProfileCallback>> cb,
   int cb_id,
 ) nativeAskarStoreGetDefaultProfile = nativeLib
@@ -1375,7 +1375,7 @@ typedef AskarStoreRekeyNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> key_method,
   Pointer<Utf8> pass_key,
   Pointer<NativeFunction<AskarStoreRekeyCallback>> cb,
@@ -1418,7 +1418,7 @@ typedef AskarStoreRemoveProfileNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> profile,
   Pointer<NativeFunction<AskarStoreRemoveProfileCallback>> cb,
   int cb_id,
@@ -1439,7 +1439,7 @@ typedef AskarStoreSetDefaultProfileNative = Int32 Function(
 );
 
 final int Function(
-  StoreHandle handle,
+  int storeHandle,
   Pointer<Utf8> profile,
   Pointer<NativeFunction<AskarStoreSetDefaultProfileCallback>> cb,
   int cb_id,

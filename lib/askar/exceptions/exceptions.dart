@@ -82,3 +82,15 @@ class AskarErrorCodeException implements Exception {
     return "Invalid Error Code: $errorCode";
   }
 }
+
+class AskarException implements Exception {
+  final String? message;
+
+  AskarException([this.message]);
+
+  @override
+  String toString() {
+    if (message == null) return "Exception";
+    return "Exception: $message";
+  }
+}

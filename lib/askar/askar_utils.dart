@@ -38,7 +38,7 @@ Uint8List secretBufferToBytesList(NativeSecretBuffer secretBuffer) {
   int length = secretBuffer.len;
   Pointer<Uint8> dataPointer = secretBuffer.data;
 
-  return dataPointer.asTypedList(length);
+  return Uint8List.fromList(dataPointer.asTypedList(length));
 }
 
 int boolToInt(bool value) {

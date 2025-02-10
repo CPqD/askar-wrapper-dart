@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 import 'package:import_so_libaskar/askar/crypto/askar_encrypted_buffer.dart';
+import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
 import 'package:import_so_libaskar/askar/enums/askar_entry_operation.dart';
 import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
@@ -18,23 +19,23 @@ import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
 void main() {
   group('Askar Tests', () {
     late String storeKey;
-    StoreHandle storeHandle = 0;
-    SessionHandle sessionHandle = 0;
+    StoreHandle storeHandle = StoreHandle(0);
+    SessionHandle sessionHandle = SessionHandle(0);
 
-    bool isStoreOpen() => storeHandle != 0;
-    bool isSessionOpen() => sessionHandle != 0;
+    bool isStoreOpen() => storeHandle.toInt() != 0;
+    bool isSessionOpen() => sessionHandle.toInt() != 0;
 
     Future<void> closeStoreIfOpen() async {
       if (isStoreOpen()) {
         await storeCloseTest(storeHandle);
-        storeHandle = 0;
+        storeHandle = StoreHandle(0);
       }
     }
 
     Future<void> closeSessionIfOpen() async {
       if (isSessionOpen()) {
         await sessionCloseTest(sessionHandle);
-        sessionHandle = 0;
+        sessionHandle = SessionHandle(0);
       }
     }
 
@@ -89,7 +90,7 @@ void main() {
       final sessionFetchResult = await sessionFetchTest(sessionHandle);
       final entryListHandle = sessionFetchResult.value;
 
-      entryListGetValueTest(entryListHandle, 0, expectedValue: value);
+      entryListGetValueTest(entryListHandle, 0, expectedValue: utf8.encode(value));
       entryListGetTagsTest(entryListHandle, 0, expectedTags: tags);
       entryListGetNameTest(entryListHandle, 0, expectedName: name);
       entryListGetCategoryTest(entryListHandle, 0, expectedCategory: category);
@@ -314,9 +315,9 @@ void main() {
 
       keyUnwrapKeyTest(derivedReceiver, KeyAlgorithm.aesA256CbcHs512, encryptedKey);
 
+      askarKeyFree(cek);
       askarKeyFree(alice);
       askarKeyFree(bob);
-      askarKeyFree(cek);
     });
 
     test('Get Key From Secret Bytes', () async {
@@ -460,7 +461,7 @@ AskarResult<AskarEncryptedBuffer> keyAeadEncryptTest(
 }
 
 AskarResult<Uint8List> keyAeadDecryptTest(
-  int handle,
+  LocalKeyHandle handle,
   Uint8List ciphertext,
   Uint8List nonce,
   Uint8List tag, {
@@ -477,7 +478,7 @@ AskarResult<Uint8List> keyAeadDecryptTest(
   return result;
 }
 
-Future<AskarCallbackResult> storeProvisionTest(String passKey) async {
+Future<AskarResult<LocalKeyHandle>> storeProvisionTest(String passKey) async {
   final String specUri = 'sqlite://storage.db';
   final String profile = 'rekey';
   final bool recreate = true;
@@ -488,12 +489,12 @@ Future<AskarCallbackResult> storeProvisionTest(String passKey) async {
   printAskarResult('StoreProvision', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
 
-Future<AskarCallbackResult> storeOpenTest(String passKey) async {
+Future<AskarResult<StoreHandle>> storeOpenTest(String passKey) async {
   final String specUri = 'sqlite://storage.db';
   final String profile = 'rekey';
 
@@ -503,12 +504,12 @@ Future<AskarCallbackResult> storeOpenTest(String passKey) async {
   printAskarResult('StoreOpen', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
 
-Future<AskarCallbackResult> scanStartTest(
+Future<AskarResult<ScanHandle>> scanStartTest(
     StoreHandle handle, String category, Map tagFilter) async {
   final String profile = 'rekey';
   final int offset = 0;
@@ -520,13 +521,12 @@ Future<AskarCallbackResult> scanStartTest(
   printAskarResult('ScanStart', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
 
-Future<AskarCallbackResult> scanNextTest(
+Future<AskarResult<EntryListHandle>> scanNextTest(
   ScanHandle handle,
 ) async {
   final result = await askarScanNext(handle);
@@ -534,13 +534,12 @@ Future<AskarCallbackResult> scanNextTest(
   printAskarResult('ScanNext', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
 
-Future<AskarCallbackResult> sessionStartTest(StoreHandle handle) async {
+Future<AskarResult<SessionHandle>> sessionStartTest(StoreHandle handle) async {
   String profile = 'rekey';
   bool asTransaction = true;
 
@@ -549,7 +548,7 @@ Future<AskarCallbackResult> sessionStartTest(StoreHandle handle) async {
   printAskarResult('SessionStart', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -561,7 +560,7 @@ AskarResult<LocalKeyHandle> keyGenerateTest(KeyAlgorithm algorithm,
   printAskarResult('KeyGenerate', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -627,7 +626,7 @@ AskarResult<LocalKeyHandle> keyUnwrapKeyTest(
   printAskarResult('KeyUnwrapKeyTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -662,12 +661,13 @@ AskarResult<LocalKeyHandle> keyDeriveEcdh1puTest(
     Uint8List ccTag,
     {required bool receive}) {
   final result = askarKeyDeriveEcdh1pu(
-      algorithm, ephemeralKey, senderKey, recipientKey, algId, apu, apv, ccTag, receive);
+      algorithm, ephemeralKey, senderKey, recipientKey, algId, apu, apv,
+      ccTag: ccTag, receive: receive);
 
   printAskarResult('KeyDeriveEcdh1puTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -817,7 +817,8 @@ Future<AskarCallbackResult> sessionCountTest(
   return result;
 }
 
-Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String name,
+Future<AskarResult<KeyEntryListHandle>> sessionFetchKeyTest(
+    SessionHandle handle, String name,
     {bool expectSuccess = true}) async {
   bool forUpdate = false;
 
@@ -826,12 +827,11 @@ Future<AskarCallbackResult> sessionFetchKeyTest(SessionHandle handle, String nam
   printAskarResult('SessionFetchKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
 
   if (expectSuccess) {
-    expect(result.value, greaterThan(0));
+    expect(result.value.toInt(), greaterThan(0));
   } else {
-    expect(result.value, equals(0));
+    expect(result.value.toInt(), equals(0));
   }
 
   return result;
@@ -851,12 +851,12 @@ Future<AskarResult<EntryListHandle>> sessionFetchAllTest(
   printAskarResult('SessionFetchAll', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
 
-Future<AskarCallbackResult> sessionFetchAllKeysTest(SessionHandle handle,
+Future<AskarResult<KeyEntryListHandle>> sessionFetchAllKeysTest(SessionHandle handle,
     KeyAlgorithm algorithm, String thumbprint, Map tagFilter) async {
   int limit = 10;
   bool forUpdate = false;
@@ -867,8 +867,7 @@ Future<AskarCallbackResult> sessionFetchAllKeysTest(SessionHandle handle,
   printAskarResult('SessionFetchAllKeys', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -919,19 +918,19 @@ Future<AskarCallbackResult> sessionRemoveAllTest(
   return result;
 }
 
-Future<AskarCallbackResult> sessionFetchTest(SessionHandle handle,
+Future<AskarResult<EntryListHandle>> sessionFetchTest(SessionHandle handle,
     {bool expectSuccess = true}) async {
   String category = 'category-one';
   String name = 'testEntry';
   bool forUpdate = false;
 
-  AskarCallbackResult result = AskarCallbackResult(ErrorCode.custom, false, null);
+  AskarResult<EntryListHandle> result =
+      AskarResult<EntryListHandle>(ErrorCode.custom, EntryListHandle(0));
 
   if (expectSuccess) {
     result = await askarSessionFetch(handle, category, name, forUpdate);
     expect(result.errorCode, equals(ErrorCode.success));
-    expect(result.finished, equals(true));
-    expect(result.value, isNot(0));
+    expect(result.value.toInt(), isNot(0));
   } else {
     await expectLater(
       () async => {result = await askarSessionFetch(handle, category, name, forUpdate)},
@@ -944,8 +943,8 @@ Future<AskarCallbackResult> sessionFetchTest(SessionHandle handle,
   return result;
 }
 
-AskarResult<String> entryListGetValueTest(EntryListHandle handle, int index,
-    {required String expectedValue}) {
+AskarResult<Uint8List> entryListGetValueTest(EntryListHandle handle, int index,
+    {required Uint8List expectedValue}) {
   final result = askarEntryListGetValue(handle, index);
 
   printAskarResult('EntryListGetValue', result);
@@ -992,13 +991,14 @@ AskarResult<String> entryListGetCategoryTest(EntryListHandle handle, int index,
   return result;
 }
 
-AskarResult<int> keyEntryListLoadLocalTest(KeyEntryListHandle handle, int index) {
+AskarResult<LocalKeyHandle> keyEntryListLoadLocalTest(
+    KeyEntryListHandle handle, int index) {
   final result = askarKeyEntryListLoadLocal(handle, index);
 
   printAskarResult('KeyEntryListLoadLocalTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -1046,7 +1046,7 @@ AskarResult<LocalKeyHandle> keyFromSecretBytesTest(
   printAskarResult('KeyFromSecretBytes', result);
 
   expect(result.errorCode, ErrorCode.success);
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
@@ -1058,7 +1058,7 @@ AskarResult<LocalKeyHandle> keyFromPublicBytesTest(
   printAskarResult('KeyFromPublicBytes', result);
 
   expect(result.errorCode, ErrorCode.success);
-  expect(result.value, greaterThan(0));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }

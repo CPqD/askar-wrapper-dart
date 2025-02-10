@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
 import 'package:import_so_libaskar/askar/repository/askar_key_repository.dart';
 import 'package:import_so_libaskar/askar/repository/askar_session_repository.dart';
 
@@ -327,7 +328,7 @@ class _ExecutePageState extends State<ExecutePage> {
     await closeSession();
   }
 
-  AskarResult<int> keyGenerate(KeyAlgorithm algorithm, KeyBackend keyBackend) {
+  AskarResult<LocalKeyHandle> keyGenerate(KeyAlgorithm algorithm, KeyBackend keyBackend) {
     bool ephemeral = false;
 
     final result = askarKeyGenerate(algorithm, keyBackend, ephemeral);
@@ -346,7 +347,7 @@ class _ExecutePageState extends State<ExecutePage> {
   }
 
   Future<void> getOrGenerateKey() async {
-    if (localKeyHandle == 0) {
+    if (localKeyHandle.toInt() == 0) {
       localKeyHandle =
           AskarKeyRepository.generate(KeyAlgorithm.ed25519, KeyBackend.software, false);
 

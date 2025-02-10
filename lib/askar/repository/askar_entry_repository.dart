@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
+import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
 import 'package:import_so_libaskar/askar/models/askar_entry.dart';
 
 import '../enums/askar_error_code.dart';
@@ -64,7 +67,7 @@ class AskarEntryRepository implements IAskarEntry {
   String getValue(int index) {
     final response = askarEntryListGetValue(handle!, 0);
     if (response.errorCode == ErrorCode.success) {
-      return response.value;
+      return utf8.decode(response.value);
     }
     throw AskarEntryException("Erro ao buscar Valor - Verificar EntryListHandle");
   }
