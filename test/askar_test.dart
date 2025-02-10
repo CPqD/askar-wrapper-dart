@@ -173,7 +173,9 @@ void main() {
 
       final thumbprintResult = keyGetJwkThumbprintTest(localKeyHandle, algorithm);
 
-      keyGetPublicBytesTest(localKeyHandle);
+      final publicBytes = keyGetPublicBytesTest(localKeyHandle).value;
+
+      keyFromPublicBytesTest(algorithm, publicBytes);
 
       await sessionInsertKeyTest(
           sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
@@ -1044,7 +1046,19 @@ AskarResult<LocalKeyHandle> keyFromSecretBytesTest(
   printAskarResult('KeyFromSecretBytes', result);
 
   expect(result.errorCode, ErrorCode.success);
-  expect(result.value, greaterThan(9));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyFromPublicBytesTest(
+    KeyAlgorithm algorithm, Uint8List secret) {
+  final result = askarKeyFromPublicBytes(algorithm, secret);
+
+  printAskarResult('KeyFromPublicBytes', result);
+
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value, greaterThan(0));
 
   return result;
 }

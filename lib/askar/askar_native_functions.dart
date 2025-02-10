@@ -576,13 +576,13 @@ final int Function(
 
 typedef AskarKeyFromPublicBytesNative = Int32 Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> public_,
+  NativeByteBuffer public_,
   Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> public_,
+  NativeByteBuffer public_,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyFromPublicBytes = nativeLib
     .lookup<NativeFunction<AskarKeyFromPublicBytesNative>>('askar_key_from_public_bytes')

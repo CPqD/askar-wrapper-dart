@@ -658,22 +658,31 @@ ErrorCode askarKeyFromKeyExchange(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyFromPublicBytes(
-  String alg,
-  Pointer<NativeByteBuffer> public_,
-  Pointer<NativeLocalKeyHandle> out,
+AskarResult<LocalKeyHandle> askarKeyFromPublicBytes(
+  KeyAlgorithm algorithm,
+  Uint8List publicBytes,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<IntPtr> localKeyHandlePtr = calloc<IntPtr>();
 
-  final result = nativeAskarKeyFromPublicBytes(
+  final algPointer = algorithm.value.toNativeUtf8();
+  final byteBufferPointer = bytesListToByteBuffer(publicBytes);
+
+  final funcResult = nativeAskarKeyFromPublicBytes(
     algPointer,
-    public_,
-    out,
+    byteBufferPointer.ref,
+    localKeyHandlePtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  final localKeyHandle = (errorCode == ErrorCode.success) ? localKeyHandlePtr.value : 0;
+
+  calloc.free(algPointer);
+  calloc.free(localKeyHandlePtr);
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+
+  return AskarResult<LocalKeyHandle>(errorCode, localKeyHandle);
 }
 
 AskarResult<LocalKeyHandle> askarKeyFromSecretBytes(

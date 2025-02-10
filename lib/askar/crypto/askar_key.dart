@@ -44,16 +44,15 @@ class AskarKey {
     }
   }
 
-  // TODO
-  // static AskarKey fromPublicBytes(
-  //     {required KeyAlgorithm algorithm, required Uint8List publicKey}) {
-  //   try {
-  //     return AskarKey(
-  //         askarKeyFromPublicBytes(algorithm, secretKey).getValueOrException());
-  //   } catch (e) {
-  //     throw AskarKeyException('Failed to get key from public bytes: $e');
-  //   }
-  // }
+  static AskarKey fromPublicBytes(
+      {required KeyAlgorithm algorithm, required Uint8List publicKey}) {
+    try {
+      return AskarKey(
+          askarKeyFromPublicBytes(algorithm, publicKey).getValueOrException());
+    } catch (e) {
+      throw AskarKeyException('Failed to get key from public bytes: $e');
+    }
+  }
 
   static AskarKey fromJwk({required AskarJwk jwk}) {
     try {
