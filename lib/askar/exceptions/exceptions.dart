@@ -1,3 +1,5 @@
+import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
+
 class ProfileDuplicatedException implements Exception {
   final String? message;
 
@@ -67,5 +69,16 @@ class AskarKeyException implements Exception {
   String toString() {
     if (message == null) return "Exception";
     return "Exception: $message";
+  }
+}
+
+class AskarErrorCodeException implements Exception {
+  final ErrorCode errorCode;
+
+  AskarErrorCodeException(this.errorCode);
+
+  @override
+  String toString() {
+    return "Invalid Error Code: $errorCode";
   }
 }

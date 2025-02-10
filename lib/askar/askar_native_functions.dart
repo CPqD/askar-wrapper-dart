@@ -401,10 +401,10 @@ typedef AskarKeyDeriveEcdh1puNative = Int32 Function(
   NativeLocalKeyHandle ephem_key,
   NativeLocalKeyHandle sender_key,
   NativeLocalKeyHandle recip_key,
-  Pointer<NativeByteBuffer> alg_id,
-  Pointer<NativeByteBuffer> apu,
-  Pointer<NativeByteBuffer> apv,
-  Pointer<NativeByteBuffer> cc_tag,
+  NativeByteBuffer alg_id,
+  NativeByteBuffer apu,
+  NativeByteBuffer apv,
+  NativeByteBuffer cc_tag,
   Int8 receive,
   Pointer<NativeLocalKeyHandle> out,
 );
@@ -414,10 +414,10 @@ final int Function(
   LocalKeyHandle ephem_key,
   LocalKeyHandle sender_key,
   LocalKeyHandle recip_key,
-  Pointer<NativeByteBuffer> alg_id,
-  Pointer<NativeByteBuffer> apu,
-  Pointer<NativeByteBuffer> apv,
-  Pointer<NativeByteBuffer> cc_tag,
+  NativeByteBuffer alg_id,
+  NativeByteBuffer apu,
+  NativeByteBuffer apv,
+  NativeByteBuffer cc_tag,
   int receive,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyDeriveEcdh1pu = nativeLib
@@ -576,13 +576,13 @@ final int Function(
 
 typedef AskarKeyFromPublicBytesNative = Int32 Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> public_,
+  NativeByteBuffer public_,
   Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> public_,
+  NativeByteBuffer public_,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyFromPublicBytes = nativeLib
     .lookup<NativeFunction<AskarKeyFromPublicBytesNative>>('askar_key_from_public_bytes')

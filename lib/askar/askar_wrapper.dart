@@ -12,6 +12,7 @@ import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
 import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
+import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
 
 import 'askar_native_functions.dart';
 import 'askar_utils.dart';
@@ -25,6 +26,13 @@ final class AskarResult<T> {
   @override
   String toString() {
     return "AskarResult($errorCode, $value)";
+  }
+
+  T getValueOrException() {
+    if (errorCode == ErrorCode.success) {
+      return value;
+    }
+    throw AskarErrorCodeException(errorCode);
   }
 }
 
@@ -211,8 +219,8 @@ AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
 }
 
 AskarResult<Uint8List> askarKeyAeadDecrypt(
-    LocalKeyHandle handle, Uint8List ciphertext, Uint8List nonce, Uint8List tag,
-    {Uint8List? aad}) {
+    LocalKeyHandle handle, Uint8List ciphertext, Uint8List nonce,
+    {Uint8List? tag, Uint8List? aad}) {
   aad ??= Uint8List(0);
 
   Pointer<NativeByteBuffer> ciphertextPtr = bytesListToByteBuffer(ciphertext);
@@ -421,36 +429,54 @@ ErrorCode askarKeyCryptoBoxSealOpen(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyDeriveEcdh1pu(
-  String alg,
-  LocalKeyHandle ephemKey,
+AskarResult<LocalKeyHandle> askarKeyDeriveEcdh1pu(
+  KeyAlgorithm algorithm,
+  LocalKeyHandle ephemeralKey,
   LocalKeyHandle senderKey,
-  LocalKeyHandle recipKey,
-  Pointer<NativeByteBuffer> algId,
-  Pointer<NativeByteBuffer> apu,
-  Pointer<NativeByteBuffer> apv,
-  Pointer<NativeByteBuffer> ccTag,
-  int receive,
-  Pointer<NativeLocalKeyHandle> out,
+  LocalKeyHandle recipientKey,
+  Uint8List algId,
+  Uint8List apu,
+  Uint8List apv,
+  Uint8List ccTag,
+  bool receive,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<NativeLocalKeyHandle> outPtr = calloc<NativeLocalKeyHandle>();
 
-  final result = nativeAskarKeyDeriveEcdh1pu(
+  final algPointer = algorithm.value.toNativeUtf8();
+  final algIdByteBufferPtr = bytesListToByteBuffer(algId);
+  final apuByteBufferPtr = bytesListToByteBuffer(apu);
+  final apvByteBufferPtr = bytesListToByteBuffer(apv);
+  final ccTagByteBufferPtr = bytesListToByteBuffer(ccTag);
+
+  final funcResult = nativeAskarKeyDeriveEcdh1pu(
     algPointer,
-    ephemKey,
+    ephemeralKey,
     senderKey,
-    recipKey,
-    algId,
-    apu,
-    apv,
-    ccTag,
-    receive,
-    out,
+    recipientKey,
+    algIdByteBufferPtr.ref,
+    apuByteBufferPtr.ref,
+    apvByteBufferPtr.ref,
+    ccTagByteBufferPtr.ref,
+    boolToInt(receive),
+    outPtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  LocalKeyHandle value = (errorCode == ErrorCode.success ? outPtr.value : 0);
+
+  calloc.free(algIdByteBufferPtr.ref.data);
+  calloc.free(algIdByteBufferPtr);
+  calloc.free(apuByteBufferPtr.ref.data);
+  calloc.free(apuByteBufferPtr);
+  calloc.free(apvByteBufferPtr.ref.data);
+  calloc.free(apvByteBufferPtr);
+  calloc.free(ccTagByteBufferPtr.ref.data);
+  calloc.free(ccTagByteBufferPtr);
+  calloc.free(algPointer);
+  calloc.free(outPtr);
+
+  return AskarResult<LocalKeyHandle>(errorCode, value);
 }
 
 AskarResult<LocalKeyHandle> askarKeyDeriveEcdhEs(
@@ -632,22 +658,31 @@ ErrorCode askarKeyFromKeyExchange(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyFromPublicBytes(
-  String alg,
-  Pointer<NativeByteBuffer> public_,
-  Pointer<NativeLocalKeyHandle> out,
+AskarResult<LocalKeyHandle> askarKeyFromPublicBytes(
+  KeyAlgorithm algorithm,
+  Uint8List publicBytes,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<IntPtr> localKeyHandlePtr = calloc<IntPtr>();
 
-  final result = nativeAskarKeyFromPublicBytes(
+  final algPointer = algorithm.value.toNativeUtf8();
+  final byteBufferPointer = bytesListToByteBuffer(publicBytes);
+
+  final funcResult = nativeAskarKeyFromPublicBytes(
     algPointer,
-    public_,
-    out,
+    byteBufferPointer.ref,
+    localKeyHandlePtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(funcResult);
 
-  return ErrorCode.fromInt(result);
+  final localKeyHandle = (errorCode == ErrorCode.success) ? localKeyHandlePtr.value : 0;
+
+  calloc.free(algPointer);
+  calloc.free(localKeyHandlePtr);
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+
+  return AskarResult<LocalKeyHandle>(errorCode, localKeyHandle);
 }
 
 AskarResult<LocalKeyHandle> askarKeyFromSecretBytes(
@@ -804,16 +839,22 @@ AskarResult<String> askarKeyGetJwkThumbprint(
   return AskarResult<String>(errorCode, value);
 }
 
-ErrorCode askarKeyGetPublicBytes(
-  LocalKeyHandle handle,
-  Pointer<NativeSecretBuffer> out,
-) {
-  final result = nativeAskarKeyGetPublicBytes(
+AskarResult<Uint8List> askarKeyGetPublicBytes(LocalKeyHandle handle) {
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
+
+  final funcResult = nativeAskarKeyGetPublicBytes(
     handle,
-    out,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(funcResult);
+
+  final value = Uint8List.fromList(secretBufferToBytesList(secretBufferPtr.ref));
+
+  calloc.free(secretBufferPtr.ref.data);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 AskarResult<Uint8List> askarKeyGetSecretBytes(LocalKeyHandle handle) {
@@ -867,12 +908,8 @@ AskarResult<Uint8List> askarKeySignMessage(
 }
 
 AskarResult<LocalKeyHandle> askarKeyUnwrapKey(
-  LocalKeyHandle handle,
-  KeyAlgorithm algorithm,
-  Uint8List ciphertext,
-  Uint8List nonce,
-  Uint8List tag,
-) {
+    LocalKeyHandle handle, KeyAlgorithm algorithm, Uint8List ciphertext,
+    {Uint8List? nonce, Uint8List? tag}) {
   Pointer<NativeLocalKeyHandle> out = calloc<NativeLocalKeyHandle>();
 
   final algPtr = algorithm.value.toNativeUtf8();
@@ -941,13 +978,11 @@ AskarResult<bool> askarKeyVerifySignature(
 }
 
 AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
-  LocalKeyHandle handle,
-  LocalKeyHandle other,
-  Uint8List nonce,
-) {
-  final byteBufferPointer = bytesListToByteBuffer(nonce);
-
+    LocalKeyHandle handle, LocalKeyHandle other,
+    {Uint8List? nonce}) {
   Pointer<NativeEncryptedBuffer> encryptedBufferPtr = calloc<NativeEncryptedBuffer>();
+
+  final byteBufferPointer = bytesListToByteBuffer(nonce);
 
   final errorCode = ErrorCode.fromInt(nativeAskarKeyWrapKey(
     handle,
