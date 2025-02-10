@@ -12,6 +12,7 @@ import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
 import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
+import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
 
 import 'askar_native_functions.dart';
 import 'askar_utils.dart';
@@ -25,6 +26,13 @@ final class AskarResult<T> {
   @override
   String toString() {
     return "AskarResult($errorCode, $value)";
+  }
+
+  T getValueOrException() {
+    if (errorCode == ErrorCode.success) {
+      return value;
+    }
+    throw AskarErrorCodeException(errorCode);
   }
 }
 
@@ -211,8 +219,8 @@ AskarResult<String> askarStringListGetItem(StringListHandle handle, int index) {
 }
 
 AskarResult<Uint8List> askarKeyAeadDecrypt(
-    LocalKeyHandle handle, Uint8List ciphertext, Uint8List nonce, Uint8List tag,
-    {Uint8List? aad}) {
+    LocalKeyHandle handle, Uint8List ciphertext, Uint8List nonce,
+    {Uint8List? tag, Uint8List? aad}) {
   aad ??= Uint8List(0);
 
   Pointer<NativeByteBuffer> ciphertextPtr = bytesListToByteBuffer(ciphertext);

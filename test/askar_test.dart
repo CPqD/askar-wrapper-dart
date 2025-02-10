@@ -465,7 +465,7 @@ AskarResult<Uint8List> keyAeadDecryptTest(
   Uint8List? aad,
   required Uint8List expected,
 }) {
-  final result = askarKeyAeadDecrypt(handle, ciphertext, nonce, tag, aad: aad);
+  final result = askarKeyAeadDecrypt(handle, ciphertext, nonce, tag: tag, aad: aad);
 
   printAskarResult('KeyAeadDecryptTest', result);
 

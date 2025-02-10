@@ -18,4 +18,11 @@ enum KeyAlgorithm {
 
   final String value;
   const KeyAlgorithm(this.value);
+
+  static KeyAlgorithm fromString(String algorithm) {
+    return KeyAlgorithm.values.firstWhere(
+      (e) => e.value == algorithm,
+      orElse: () => throw ArgumentError('Invalid KeyAlgorithm: $algorithm'),
+    );
+  }
 }
