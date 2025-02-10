@@ -96,7 +96,7 @@
 
 - [x] askar_key_get_jwk_thumbprint: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
-- [ ] askar_key_get_public_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
+- [x] askar_key_get_public_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
 - [x] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 

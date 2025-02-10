@@ -173,6 +173,8 @@ void main() {
 
       final thumbprintResult = keyGetJwkThumbprintTest(localKeyHandle, algorithm);
 
+      keyGetPublicBytesTest(localKeyHandle);
+
       await sessionInsertKeyTest(
           sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
 
@@ -308,8 +310,7 @@ void main() {
               receive: true)
           .value;
 
-      keyUnwrapKeyTest(
-          derivedReceiver, KeyAlgorithm.aesA256CbcHs512, encryptedKey);
+      keyUnwrapKeyTest(derivedReceiver, KeyAlgorithm.aesA256CbcHs512, encryptedKey);
 
       askarKeyFree(alice);
       askarKeyFree(bob);
@@ -417,26 +418,26 @@ void main() {
     });
   });
 
-   group('Key Aead Decryption Tests:', () {
+  group('Key Aead Decryption Tests:', () {
     test('Decryption with and without aad', () {
       final keyGenerateResult = keyGenerateTest(KeyAlgorithm.aesA256Gcm);
       final localKeyHandle = keyGenerateResult.value;
       final nonce = askarKeyAeadRandomNonce(localKeyHandle);
       final aad = Uint8List(0);
       final Uint8List message = Uint8List.fromList([1, 2, 3, 4]);
-      
+
       final encryptedBuffer = askarKeyAeadEncrypt(
         localKeyHandle,
         message,
         nonce: nonce.value,
       );
 
-      keyAeadDecryptTest(
-          localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value, encryptedBuffer.value.tag, aad: aad,
-          expected: message);  
-      keyAeadDecryptTest(
-          localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value, encryptedBuffer.value.tag,
-          expected: message); 
+      keyAeadDecryptTest(localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value,
+          encryptedBuffer.value.tag,
+          aad: aad, expected: message);
+      keyAeadDecryptTest(localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value,
+          encryptedBuffer.value.tag,
+          expected: message);
     });
   });
 }
@@ -467,7 +468,7 @@ AskarResult<Uint8List> keyAeadDecryptTest(
   final result = askarKeyAeadDecrypt(handle, ciphertext, nonce, tag, aad: aad);
 
   printAskarResult('KeyAeadDecryptTest', result);
-  
+
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expected));
 
@@ -699,6 +700,16 @@ AskarResult<Uint8List> keyGetSecretBytesTest(LocalKeyHandle handle,
   printAskarResult('KeyGetSecretBytes', result);
   expect(result.errorCode, ErrorCode.success);
   expect(result.value, expected);
+
+  return result;
+}
+
+AskarResult<Uint8List> keyGetPublicBytesTest(LocalKeyHandle handle) {
+  final result = askarKeyGetPublicBytes(handle);
+
+  printAskarResult('KeyGetPublicBytes', result);
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value.isNotEmpty, equals(true));
 
   return result;
 }
