@@ -7,7 +7,6 @@ import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
 import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
-import 'package:import_so_libaskar/global.dart';
 
 class AskarKey {
   final LocalKeyHandle localKeyHandle;
