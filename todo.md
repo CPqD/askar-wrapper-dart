@@ -42,7 +42,7 @@
 
 - [x] askar_key_aead_random_nonce: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_convert: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
+- [x] askar_key_convert: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
 - [ ] askar_key_crypto_box: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer) => number;
 
@@ -76,7 +76,7 @@
 
 - [x] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
+- [x] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
 - [ ] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
 

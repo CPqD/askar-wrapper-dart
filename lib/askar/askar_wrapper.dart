@@ -336,22 +336,28 @@ AskarResult<Uint8List> askarKeyAeadRandomNonce(
   return AskarResult<Uint8List>(errorCode, value);
 }
 
-ErrorCode askarKeyConvert(
+AskarResult<LocalKeyHandle> askarKeyConvert(
   LocalKeyHandle handle,
-  String alg,
-  Pointer<NativeLocalKeyHandle> out,
+  KeyAlgorithm alg,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<NativeLocalKeyHandle> localKeyHandlePtr = calloc<NativeLocalKeyHandle>();
+
+  final algPointer = alg.value.toNativeUtf8();
 
   final result = nativeAskarKeyConvert(
     handle.toInt(),
     algPointer,
-    out,
+    localKeyHandlePtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(result);
 
-  return ErrorCode.fromInt(result);
+  final localKeyHandle = LocalKeyHandle.fromPointer(errorCode, localKeyHandlePtr);
+
+  calloc.free(algPointer);
+  calloc.free(localKeyHandlePtr);
+
+  return AskarResult<LocalKeyHandle>(errorCode, localKeyHandle);
 }
 
 ErrorCode askarKeyCryptoBox(
@@ -640,24 +646,30 @@ AskarResult<LocalKeyHandle> askarKeyFromJwk(String jwk) {
   return AskarResult<LocalKeyHandle>(errorCode, value);
 }
 
-ErrorCode askarKeyFromKeyExchange(
-  String alg,
+AskarResult<LocalKeyHandle> askarKeyFromKeyExchange(
+  KeyAlgorithm alg,
   LocalKeyHandle skHandle,
   LocalKeyHandle pkHandle,
-  Pointer<NativeLocalKeyHandle> out,
 ) {
-  final algPointer = alg.toNativeUtf8();
+  Pointer<NativeLocalKeyHandle> localKeyHandlePtr = calloc<NativeLocalKeyHandle>();
+
+  final algPointer = alg.value.toNativeUtf8();
 
   final result = nativeAskarKeyFromKeyExchange(
     algPointer,
     skHandle.toInt(),
     pkHandle.toInt(),
-    out,
+    localKeyHandlePtr,
   );
 
-  calloc.free(algPointer);
+  final errorCode = ErrorCode.fromInt(result);
 
-  return ErrorCode.fromInt(result);
+  final localKeyHandle = LocalKeyHandle.fromPointer(errorCode, localKeyHandlePtr);
+
+  calloc.free(algPointer);
+  calloc.free(localKeyHandlePtr);
+
+  return AskarResult<LocalKeyHandle>(errorCode, localKeyHandle);
 }
 
 AskarResult<LocalKeyHandle> askarKeyFromPublicBytes(

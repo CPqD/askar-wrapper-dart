@@ -176,7 +176,22 @@ void main() {
 
       final publicBytes = keyGetPublicBytesTest(localKeyHandle).value;
 
-      keyFromPublicBytesTest(algorithm, publicBytes);
+      keyFromPublicBytesTest(algorithm, publicBytes).value;
+
+      // Início do keyFromKeyExchangeTest
+      final convertedAlgorithm = KeyAlgorithm.x25519;
+      final convertedKeyHandle = keyConvertTest(localKeyHandle, convertedAlgorithm).value;
+
+      final convertedKeyGenerateResult = keyGenerateTest(convertedAlgorithm);
+      final newKeyHandle = convertedKeyGenerateResult.value;
+      keyGetAlgorithmTest(newKeyHandle, expected: convertedAlgorithm);
+
+      final exchangeAlgorithm = KeyAlgorithm.chacha20XC20P;
+      final exchangedKeyHandle =
+          keyFromKeyExchangeTest(exchangeAlgorithm, convertedKeyHandle, newKeyHandle)
+              .value;
+      keyGetAlgorithmTest(exchangedKeyHandle, expected: exchangeAlgorithm);
+      // Fim do keyFromKeyExchangeTest
 
       await sessionInsertKeyTest(
           sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
@@ -443,6 +458,17 @@ void main() {
           expected: message);
     });
   });
+}
+
+AskarResult<LocalKeyHandle> keyConvertTest(
+    LocalKeyHandle handle, KeyAlgorithm algorithm) {
+  final result = askarKeyConvert(handle, algorithm);
+
+  printAskarResult('KeyConvertTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+
+  return result;
 }
 
 AskarResult<AskarEncryptedBuffer> keyAeadEncryptTest(
@@ -1056,6 +1082,20 @@ AskarResult<LocalKeyHandle> keyFromPublicBytesTest(
   final result = askarKeyFromPublicBytes(algorithm, secret);
 
   printAskarResult('KeyFromPublicBytes', result);
+
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value.toInt(), greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyFromKeyExchangeTest(
+  KeyAlgorithm algorithm,
+  LocalKeyHandle secretKeyHandle,
+  LocalKeyHandle publicKeyHandle,
+) {
+  final result = askarKeyFromKeyExchange(algorithm, secretKeyHandle, publicKeyHandle);
+  printAskarResult('KeyFromKeyExchange', result);
 
   expect(result.errorCode, ErrorCode.success);
   expect(result.value.toInt(), greaterThan(0));

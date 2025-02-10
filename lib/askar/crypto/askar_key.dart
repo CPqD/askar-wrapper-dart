@@ -7,6 +7,7 @@ import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
 import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
 import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
 import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
+import 'package:import_so_libaskar/global.dart';
 
 class AskarKey {
   final LocalKeyHandle localKeyHandle;
@@ -63,17 +64,26 @@ class AskarKey {
     }
   }
 
-  // TODO
-  // AskarKey convertKey({required KeyAlgorithm algorithm}) {
-  //   return AskarKey(askar.keyConvert(localKeyHandle: handle, algorithm: algorithm));
-  // }
+  AskarKey convertKey({required KeyAlgorithm algorithm}) {
+    try {
+      return AskarKey(askarKeyConvert(localKeyHandle, algorithm).getValueOrException());
+    } catch (e) {
+      throw AskarKeyException('Failed to convert key from algorithm: $e');
+    }
+  }
 
-  // TODO
-  // AskarKey keyFromKeyExchange(
-  //     {required KeyAlgorithm algorithm, required AskarKey publicKey}) {
-  //   return AskarKey(askar.keyFromKeyExchange(
-  //       skHandle: handle, pkHandle: publicKey.handle, algorithm: algorithm));
-  // }
+  AskarKey keyFromKeyExchange(
+      {required KeyAlgorithm algorithm,
+      required AskarKey secretKey,
+      required AskarKey publicKey}) {
+    try {
+      return AskarKey(
+          askarKeyFromKeyExchange(algorithm, secretKey.handle, publicKey.handle)
+              .getValueOrException());
+    } catch (e) {
+      throw AskarKeyException('Failed to get key from key exchange: $e');
+    }
+  }
 
   LocalKeyHandle get handle => localKeyHandle;
 
