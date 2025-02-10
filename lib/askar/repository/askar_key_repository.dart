@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 
 import '../askar_wrapper.dart';
 import '../enums/askar_error_code.dart';
+import '../enums/askar_key_algorithm.dart';
+import '../enums/askar_key_backend.dart';
 import '../exceptions/exceptions.dart';
 import '../interface/askar_key_interface.dart';
 
@@ -164,9 +166,13 @@ class AskarKeyRepository implements IAskarKey {
   }
 
   @override
-  Future<bool> getJwkThumbprint() {
-    // TODO: implement getJwkThumbprint
-    throw UnimplementedError();
+  String getJwkThumbprint(KeyAlgorithm alg) {
+    checkHandle();
+    final result = askarKeyGetJwkThumbprint(handle!, alg);
+    if (result.errorCode == ErrorCode.success) {
+      return result.value;
+    }
+    throw AskarKeyException("Erro ao gerar Thumbprint");
   }
 
   @override
@@ -209,6 +215,15 @@ class AskarKeyRepository implements IAskarKey {
   Future<bool> wrapKey() {
     // TODO: implement wrapKey
     throw UnimplementedError();
+  }
+
+  static LocalKeyHandle generate(
+      KeyAlgorithm alg, KeyBackend keyBackend, bool ephemeral) {
+    final result = askarKeyGenerate(alg, keyBackend, ephemeral);
+    if (result.errorCode == ErrorCode.success) {
+      return result.value;
+    }
+    throw AskarKeyException("Erro ao gerar chave");
   }
 
   checkHandle() {

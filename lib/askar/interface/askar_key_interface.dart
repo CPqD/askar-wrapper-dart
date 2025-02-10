@@ -1,11 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
-
-import '../enums/askar_error_code.dart';
-import '../exceptions/exceptions.dart';
+import '../enums/askar_key_algorithm.dart';
 
 abstract class IAskarKey {
   Future<bool> aeadDecrypt();
@@ -32,7 +27,7 @@ abstract class IAskarKey {
   Future<bool> getEphemeral();
   Future<bool> getJwkPublic();
   Future<bool> getJwkSecret();
-  Future<bool> getJwkThumbprint();
+  String getJwkThumbprint(KeyAlgorithm alg);
   Future<bool> getPublicBytes();
   Future<bool> getSecretBytes();
   Future<bool> getSupportedBackends(); //Sem Entrada de LocalKeyHandle nem saída
@@ -42,12 +37,6 @@ abstract class IAskarKey {
   Future<bool> wrapKey();
 
   //Sem Entrada de LocalKeyHandle -- SAIDA
-  static LocalKeyHandle generate(
-      KeyAlgorithm alg, KeyBackend keyBackend, bool ephemeral) {
-    final result = askarKeyGenerate(alg, keyBackend, ephemeral);
-    if (result.errorCode == ErrorCode.success) {
-      return result.value;
-    }
-    throw AskarKeyException("Erro ao gerar chave");
-  }
+  //Implementação Estática no Repositório
+  //LocalKeyHandle generate();
 }

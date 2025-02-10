@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:import_so_libaskar/askar/repository/askar_key_repository.dart';
 import 'package:import_so_libaskar/askar/repository/askar_session_repository.dart';
 
 import '../askar/askar_wrapper.dart';
@@ -346,11 +347,10 @@ class _ExecutePageState extends State<ExecutePage> {
 
   Future<void> getOrGenerateKey() async {
     if (localKeyHandle == 0) {
-      final keyGenerateResult = keyGenerate(KeyAlgorithm.ed25519, KeyBackend.software);
+      localKeyHandle =
+          AskarKeyRepository.generate(KeyAlgorithm.ed25519, KeyBackend.software, false);
 
-      await show('KeyGenerate', keyGenerateResult);
-
-      localKeyHandle = keyGenerateResult.value;
+      await show('KeyGenerate', localKeyHandle);
 
       final thumbprintResult =
           askarKeyGetJwkThumbprint(localKeyHandle, KeyAlgorithm.ed25519);
