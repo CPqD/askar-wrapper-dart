@@ -11,7 +11,11 @@ Pointer<NativeByteBuffer> stringToByteBuffer(String value) {
   return bytesListToByteBuffer(utf8.encode(value));
 }
 
-Pointer<NativeByteBuffer> bytesListToByteBuffer(Uint8List bytesList) {
+Pointer<NativeByteBuffer> bytesListToByteBuffer(Uint8List? bytesList) {
+  if (bytesList == null) {
+    return calloc<NativeByteBuffer>();
+  }
+
   Pointer<Uint8> dataPointer = calloc<Uint8>(bytesList.length);
 
   for (int i = 0; i < bytesList.length; i++) {

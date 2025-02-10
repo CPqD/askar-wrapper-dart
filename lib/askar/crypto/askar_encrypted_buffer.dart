@@ -45,5 +45,7 @@ AskarEncryptedBuffer readNativeEncryptedBuffer(NativeEncryptedBuffer encryptedBu
   int tagPos = encryptedBuffer.tag_pos;
 
   return AskarEncryptedBuffer(
-      secretBufferToBytesList(encryptedBuffer.buffer), tagPos, noncePos);
+      Uint8List.fromList(secretBufferToBytesList(encryptedBuffer.buffer)),
+      tagPos,
+      noncePos);
 }

@@ -214,62 +214,106 @@ void main() {
     });
 
     test('Askar Key Wrap and Unwrap', () async {
-      final alg = "ECDH-ES+A128KW";
-      final enc = 'A256GCM';
-      final apu = "Alice";
-      final apv = "Bob";
-      final message = utf8.encode('Hello there');
-
-      final bobKey = keyGenerateTest(KeyAlgorithm.x25519).value;
-      final bobJwk = keyGetJwkPublicTest(bobKey, KeyAlgorithm.x25519).value;
-
-      final ephemeralKey = keyGenerateTest(KeyAlgorithm.x25519, ephemeral: true).value;
-      final ephemeralJwk = keyGetJwkPublicTest(ephemeralKey, KeyAlgorithm.x25519).value;
-
-      Map<String, dynamic> protectedJson = {
-        'alg': alg,
-        'enc': enc,
-        'apu': base64Url.encode(utf8.encode(apu)),
-        'apv': base64Url.encode(utf8.encode(apv)),
-        'epk': ephemeralJwk,
+      Map<String, String> ephemeralJwk = {
+        'crv': 'X25519',
+        'kty': 'OKP',
+        'd': 'x8EVZH4Fwk673_mUujnliJoSrLz0zYzzCWp5GUX2fc8',
+        'x': 'k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc',
       };
 
-      final protectedB64 = base64Url.encode(utf8.encode(jsonEncode(protectedJson)));
+      Map<String, String> aliceJwk = {
+        'crv': 'X25519',
+        'kty': 'OKP',
+        'd': 'i9KuFhSzEBsiv3PKVL5115OCdsqQai5nj_Flzfkw5jU',
+        'x': 'Knbm_BcdQr7WIoz-uqit9M0wbcfEr6y-9UfIZ8QnBD4',
+      };
+
+      Map<String, String> bobJwk = {
+        'crv': 'X25519',
+        'kty': 'OKP',
+        'd': '1gDirl_r_Y3-qUa3WXHgEXrrEHngWThU3c9zj9A2uBg',
+        'x': 'BT7aR0ItXfeDAldeeOlXL_wXqp-j5FltT0vRSG16kRw',
+      };
+
+      final ephemeral = askarKeyFromJwk(jsonEncode(ephemeralJwk)).value;
+      final alice = askarKeyFromJwk(jsonEncode(aliceJwk)).value;
+      final bob = askarKeyFromJwk(jsonEncode(bobJwk)).value;
+
+      final alg = "ECDH-1PU+A128KW";
+      final apu = "Alice";
+      final apv = "Bob and Charlie";
+
+      final base64urlApu = toBase64Url(utf8.encode(apu));
+      final base64urlApv = toBase64Url(utf8.encode(apv));
+
+      expect(base64urlApu, equals('QWxpY2U'));
+      expect(base64urlApv, equals('Qm9iIGFuZCBDaGFybGll'));
+
+      Map<String, dynamic> protectedJson = {
+        'alg': 'ECDH-1PU+A128KW',
+        'enc': 'A256CBC-HS512',
+        'apu': 'QWxpY2U',
+        'apv': 'Qm9iIGFuZCBDaGFybGll',
+        'epk': {
+          'kty': 'OKP',
+          'crv': 'X25519',
+          'x': 'k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc'
+        },
+      };
+
+      final protectedB64 = toBase64Url(utf8.encode(jsonEncode(protectedJson)));
       final protectedB64Bytes = utf8.encode(protectedB64);
 
-      final cek = keyGenerateTest(KeyAlgorithm.aesA256Gcm).value;
-
-      final encryptedMessage =
-          keyAeadEncryptTest(cek, message, aad: protectedB64Bytes).value;
-
-      final encryptionAlgorithm = KeyAlgorithm.aesA256Gcm;
-
-      final recipientKey = keyFromJwkTest(bobJwk).value;
-
-      final senderEcdhEs = keyDeriveEcdhEsTest(encryptionAlgorithm, ephemeralKey,
-              recipientKey, utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), false)
+      final cek = keyFromSecretBytesTest(
+              KeyAlgorithm.aesA256CbcHs512,
+              Uint8List.fromList(hex.decode(
+                  'fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0efeeedecebeae9e8e7e6e5e4e3e2e1e0dfdedddcdbdad9d8d7d6d5d4d3d2d1d0cfcecdcccbcac9c8c7c6c5c4c3c2c1c0')))
           .value;
 
-      final encryptedKey = keyWrapKeyTest(senderEcdhEs, cek, encryptedMessage.nonce);
-      print(encryptedKey);
+      final iv =
+          Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
-      final receivedEcdhEs = keyDeriveEcdhEsTest(encryptionAlgorithm, ephemeralKey,
-              bobKey, utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), true)
+      final message = utf8.encode('Three is a magic number.');
+
+      final enc =
+          keyAeadEncryptTest(cek, message, nonce: iv, aad: protectedB64Bytes).value;
+
+      final ciphertext = enc.ciphertext;
+      final ccTag = enc.tag;
+
+      expect(
+          toBase64Url(ciphertext), equals('Az2IWsISEMDJvyc5XRL-3-d-RgNBOGolCsxFFoUXFYw'));
+
+      expect(toBase64Url(ccTag), equals('HLb4fTlm8spGmij3RyOs2gJ4DpHM4hhVRwdF_hGb3WQ'));
+
+      expect(toBase64Url(enc.nonce), equals('AAECAwQFBgcICQoLDA0ODw'));
+
+      final derived = keyDeriveEcdh1puTest(KeyAlgorithm.aesA128Kw, ephemeral, alice, bob,
+              utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), ccTag,
+              receive: false)
           .value;
 
-      // keyUnwrapKeyTest(
-      //   receivedEcdhEs,
-      //   encryptionAlgorithm,
-      //   encryptedKey.value.ciphertext,
-      //   encryptedKey.value.nonce,
-      //   encryptedKey.value.tag,
-      // );
+      keyGetSecretBytesTest(derived,
+          expected: Uint8List.fromList(hex.decode('df4c37a0668306a11e3d6b0074b5d8df')));
 
-      askarKeyFree(senderEcdhEs);
-      askarKeyFree(receivedEcdhEs);
-      askarKeyFree(bobKey);
-      askarKeyFree(recipientKey);
-      askarKeyFree(ephemeralKey);
+      final encryptedKey = keyWrapKeyTest(derived, cek).value.buffer;
+
+      final expectedEncryptedKey = base64Url.decode(
+          "pOMVA9_PtoRe7xXW1139NzzN1UhiFoio8lGto9cf0t8PyU-sjNXH8-LIRLycq8CHJQbDwvQeU1cSl55cQ0hGezJu2N9IY0QN");
+
+      expect(encryptedKey, equals(expectedEncryptedKey));
+
+      final derivedReceiver = keyDeriveEcdh1puTest(KeyAlgorithm.aesA128Kw, ephemeral,
+              alice, bob, utf8.encode(alg), utf8.encode(apu), utf8.encode(apv), ccTag,
+              receive: true)
+          .value;
+
+      keyUnwrapKeyTest(
+          derivedReceiver, KeyAlgorithm.aesA256CbcHs512, encryptedKey);
+
+      askarKeyFree(alice);
+      askarKeyFree(bob);
+      askarKeyFree(cek);
     });
 
     test('Get Key From Secret Bytes', () async {
@@ -553,13 +597,11 @@ AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
 }
 
 AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
-  LocalKeyHandle handle,
-  LocalKeyHandle other,
-  Uint8List nonce,
-) {
+    LocalKeyHandle handle, LocalKeyHandle other,
+    {Uint8List? nonce}) {
   print('$handle, $other, $nonce');
 
-  final result = askarKeyWrapKey(handle, other, nonce);
+  final result = askarKeyWrapKey(handle, other, nonce: nonce);
 
   printAskarResult('KeyWrapKeyTest', result);
 
@@ -572,16 +614,12 @@ AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
 }
 
 AskarResult<LocalKeyHandle> keyUnwrapKeyTest(
-  LocalKeyHandle handle,
-  KeyAlgorithm algorithm,
-  Uint8List ciphertext,
-  Uint8List nonce,
-  Uint8List tag,
-) {
+    LocalKeyHandle handle, KeyAlgorithm algorithm, Uint8List ciphertext,
+    {Uint8List? nonce, Uint8List? tag}) {
   print(
       'handle $handle, algorithm $algorithm, ciphertext $ciphertext, nonce $nonce, tag $tag');
 
-  final result = askarKeyUnwrapKey(handle, algorithm, ciphertext, nonce, tag);
+  final result = askarKeyUnwrapKey(handle, algorithm, ciphertext, nonce: nonce, tag: tag);
 
   printAskarResult('KeyUnwrapKeyTest', result);
 
@@ -592,18 +630,38 @@ AskarResult<LocalKeyHandle> keyUnwrapKeyTest(
 }
 
 AskarResult<LocalKeyHandle> keyDeriveEcdhEsTest(
-  KeyAlgorithm algorithm,
-  LocalKeyHandle ephemeralKey,
-  LocalKeyHandle recipientKey,
-  Uint8List algId,
-  Uint8List apu,
-  Uint8List apv,
-  bool receive,
-) {
+    KeyAlgorithm algorithm,
+    LocalKeyHandle ephemeralKey,
+    LocalKeyHandle recipientKey,
+    Uint8List algId,
+    Uint8List apu,
+    Uint8List apv,
+    {required bool receive}) {
   final result = askarKeyDeriveEcdhEs(
       algorithm, ephemeralKey, recipientKey, algId, apu, apv, receive);
 
   printAskarResult('KeyDeriveEcdhEs', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyDeriveEcdh1puTest(
+    KeyAlgorithm algorithm,
+    LocalKeyHandle ephemeralKey,
+    LocalKeyHandle senderKey,
+    LocalKeyHandle recipientKey,
+    Uint8List algId,
+    Uint8List apu,
+    Uint8List apv,
+    Uint8List ccTag,
+    {required bool receive}) {
+  final result = askarKeyDeriveEcdh1pu(
+      algorithm, ephemeralKey, senderKey, recipientKey, algId, apu, apv, ccTag, receive);
+
+  printAskarResult('KeyDeriveEcdh1puTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, greaterThan(0));
@@ -1073,6 +1131,24 @@ Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
   expect(result.finished, equals(true));
 
   return result;
+}
+
+String toBase64Url(Uint8List data) {
+  return base64Url.encode(data).replaceAll('=', '');
+}
+
+Uint8List fromBase64Url(String base64UrlString) {
+  // Add padding if necessary
+  String normalized = base64UrlString.replaceAll('-', '+').replaceAll('_', '/');
+  switch (normalized.length % 4) {
+    case 2:
+      normalized += '==';
+      break;
+    case 3:
+      normalized += '=';
+      break;
+  }
+  return base64.decode(normalized);
 }
 
 void printAskarResult(String test, dynamic result) {

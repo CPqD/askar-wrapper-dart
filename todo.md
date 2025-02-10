@@ -54,7 +54,7 @@
 
 - [ ] askar_key_crypto_box_seal_open: (args_0: Buffer, args_1: Buffer, args_2: Buffer) => number;
 
-- [ ] askar_key_derive_ecdh_1pu: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: Buffer, args_7: Buffer, args_8: number, args_9: Buffer) => number;
+- [x] askar_key_derive_ecdh_1pu: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: Buffer, args_7: Buffer, args_8: number, args_9: Buffer) => number;
 
 - [x] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
 
@@ -102,7 +102,7 @@
 
 - [x] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 
-- [ ] askar_key_unwrap_key: (args_0: Buffer, args_1: string, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
+- [x] askar_key_unwrap_key: (args_0: Buffer, args_1: string, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
 
 - [x] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
 
