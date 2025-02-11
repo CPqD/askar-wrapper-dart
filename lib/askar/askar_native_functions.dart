@@ -4,7 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:ffi/ffi.dart';
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
+import '../../askar/askar_wrapper.dart';
 
 base class NativeByteBuffer extends Struct {
   @Int64()

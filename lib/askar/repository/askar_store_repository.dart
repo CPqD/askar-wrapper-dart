@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
-import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
-import 'package:import_so_libaskar/askar/repository/askar_string_repository.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/enums/askar_error_code.dart';
+import '../../askar/exceptions/exceptions.dart';
+import '../../askar/repository/askar_string_repository.dart';
 
 import '../askar_wrapper.dart';
 import '../enums/askar_store_key_method.dart';

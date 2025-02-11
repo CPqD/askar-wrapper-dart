@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="import_so_libaskar"
+        android:label="askar_flutter_sdk"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

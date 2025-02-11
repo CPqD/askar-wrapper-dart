@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 
-import 'package:import_so_libaskar/askar/askar_native_functions.dart';
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
-import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
+import '../askar_native_functions.dart';
+import '../askar_wrapper.dart';
+import '../enums/askar_error_code.dart';
+import '../exceptions/exceptions.dart';
 
 class StoreHandle extends AskarHandle {
   StoreHandle(super.handle);

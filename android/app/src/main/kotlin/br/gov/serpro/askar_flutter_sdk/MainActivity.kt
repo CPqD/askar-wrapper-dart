@@ -1,4 +1,4 @@
-package com.example.import_so_libaskar
+package br.gov.serpro.askar_flutter_sdk
 
 import io.flutter.embedding.android.FlutterActivity
 

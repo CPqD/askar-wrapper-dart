@@ -1,12 +1,12 @@
 import 'dart:typed_data';
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_encrypted_buffer.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_jwk.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
-import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
-import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
+import '../../askar/askar_wrapper.dart';
+import 'askar_encrypted_buffer.dart';
+import 'askar_handles.dart';
+import 'askar_jwk.dart';
+import '../../askar/enums/askar_key_algorithm.dart';
+import '../../askar/enums/askar_key_backend.dart';
+import '../../askar/enums/askar_signature_algorithm.dart';
+import '../../askar/exceptions/exceptions.dart';
 
 class AskarKey {
   final LocalKeyHandle localKeyHandle;

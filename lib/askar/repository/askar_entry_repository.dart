@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/models/askar_entry.dart';
+import '../../askar/askar_wrapper.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/models/askar_entry.dart';
 
 import '../enums/askar_error_code.dart';
 import '../exceptions/exceptions.dart';

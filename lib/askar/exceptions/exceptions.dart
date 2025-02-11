@@ -1,4 +1,4 @@
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
+import '../../askar/enums/askar_error_code.dart';
 
 class ProfileDuplicatedException implements Exception {
   final String? message;

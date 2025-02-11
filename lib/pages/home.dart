@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/pages/execute_page.dart';
+import '../../pages/execute_page.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../askar/askar_wrapper.dart';

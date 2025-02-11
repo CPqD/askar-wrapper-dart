@@ -1,4 +1,4 @@
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
+import '../../askar/crypto/askar_handles.dart';
 
 import 'askar/enums/askar_store_key_method.dart';
 import 'askar/repository/askar_store_repository.dart';

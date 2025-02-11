@@ -1,5 +1,5 @@
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/models/askar_key_entry.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/models/askar_key_entry.dart';
 
 import '../askar_wrapper.dart';
 import '../enums/askar_error_code.dart';

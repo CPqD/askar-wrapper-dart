@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:import_so_libaskar/askar/askar_native_functions.dart';
-import 'package:import_so_libaskar/askar/askar_utils.dart';
+import '../askar_native_functions.dart';
+import '../askar_utils.dart';
 
 final class AskarEncryptedBuffer {
   final Uint8List buffer;

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/repository/askar_key_repository.dart';
-import 'package:import_so_libaskar/askar/repository/askar_session_repository.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/repository/askar_key_repository.dart';
+import '../../askar/repository/askar_session_repository.dart';
 
 import '../askar/askar_wrapper.dart';
 import '../askar/enums/askar_entry_operation.dart';

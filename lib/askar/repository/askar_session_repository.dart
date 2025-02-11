@@ -1,6 +1,6 @@
-import 'package:import_so_libaskar/askar/askar_wrapper.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/repository/askar_store_repository.dart';
+import '../../askar/askar_wrapper.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/repository/askar_store_repository.dart';
 
 import '../enums/askar_entry_operation.dart';
 import '../enums/askar_error_code.dart';
@@ -21,7 +21,8 @@ class AskarSessionRepository implements IAskarSession {
     if (store.handle == null) {
       return false;
     }
-    final result = await askarSessionStart(StoreHandle(store.handle!.toInt()), store.profile, asTransaction);
+    final result = await askarSessionStart(
+        StoreHandle(store.handle!.toInt()), store.profile, asTransaction);
     if (result.errorCode == ErrorCode.success) {
       handle = result.value;
       return true;

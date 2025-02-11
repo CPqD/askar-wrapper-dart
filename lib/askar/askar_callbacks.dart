@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
-import 'package:import_so_libaskar/askar/askar_native_functions.dart';
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
+import '../../askar/askar_native_functions.dart';
+import '../../askar/enums/askar_error_code.dart';
 
 base class AskarCallbackBlankResult {
   final ErrorCode errorCode;

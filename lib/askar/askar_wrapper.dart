@@ -4,16 +4,16 @@ import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
-import 'package:import_so_libaskar/askar/askar_callbacks.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_encrypted_buffer.dart';
-import 'package:import_so_libaskar/askar/crypto/askar_handles.dart';
-import 'package:import_so_libaskar/askar/enums/askar_entry_operation.dart';
-import 'package:import_so_libaskar/askar/enums/askar_error_code.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_algorithm.dart';
-import 'package:import_so_libaskar/askar/enums/askar_key_backend.dart';
-import 'package:import_so_libaskar/askar/enums/askar_signature_algorithm.dart';
-import 'package:import_so_libaskar/askar/enums/askar_store_key_method.dart';
-import 'package:import_so_libaskar/askar/exceptions/exceptions.dart';
+import '../../askar/askar_callbacks.dart';
+import '../../askar/crypto/askar_encrypted_buffer.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/enums/askar_entry_operation.dart';
+import '../../askar/enums/askar_error_code.dart';
+import '../../askar/enums/askar_key_algorithm.dart';
+import '../../askar/enums/askar_key_backend.dart';
+import '../../askar/enums/askar_signature_algorithm.dart';
+import '../../askar/enums/askar_store_key_method.dart';
+import '../../askar/exceptions/exceptions.dart';
 
 import 'askar_native_functions.dart';
 import 'askar_utils.dart';
