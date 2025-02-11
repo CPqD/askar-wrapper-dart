@@ -1,0 +1,29 @@
+PODS:
+  - aries_askar (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - aries_askar (from `aries_askar.podspec`)
+  - Flutter (from `Flutter`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+
+EXTERNAL SOURCES:
+  aries_askar:
+    :path: aries_askar.podspec
+  Flutter:
+    :path: Flutter
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+
+SPEC CHECKSUMS:
+  aries_askar: 9b93001a8c1cc75ec8c0e0b1f052c8727ce6724e
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+
+PODFILE CHECKSUM: f4e292eb2518988fe283aff7b3abf47a23cb1f2d
+
+COCOAPODS: 1.15.2
