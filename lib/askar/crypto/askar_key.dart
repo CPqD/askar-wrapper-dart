@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import '../../askar/askar_wrapper.dart';
-import 'askar_encrypted_buffer.dart';
-import 'askar_handles.dart';
-import 'askar_jwk.dart';
+import '../../askar/crypto/askar_encrypted_buffer.dart';
+import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/askar_jwk.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/enums/askar_key_backend.dart';
 import '../../askar/enums/askar_signature_algorithm.dart';

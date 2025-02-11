@@ -231,6 +231,22 @@ void main() {
       keyVerifySignatureTest(
           localKeyHandle, otherMessage, signResult.value, signAlgorithm,
           expectSuccess: false);
+
+      askarKeyFree(localKeyHandle);
+    });
+
+    test('Crypto Box', () async {
+      final recipKey = keyGenerateTest(KeyAlgorithm.x25519).value;
+      final senderKey = keyGenerateTest(KeyAlgorithm.x25519).value;
+
+      final nonce = keyCryptoBoxRandomNonceTest().value;
+
+      final message = utf8.encode("foobar");
+
+      keyCryptoBoxTest(recipKey, senderKey, message, nonce);
+
+      askarKeyFree(recipKey);
+      askarKeyFree(senderKey);
     });
 
     test('Askar Key Wrap and Unwrap', () async {
@@ -1194,6 +1210,32 @@ Future<AskarCallbackBlankResult> storeSetDefaultProfileTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxTest(
+  LocalKeyHandle recipKey,
+  LocalKeyHandle senderKey,
+  Uint8List message,
+  Uint8List nonce,
+) {
+  final result = askarKeyCryptoBox(recipKey, senderKey, message, nonce);
+
+  printAskarResult('KeyCryptoBox', result);
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxRandomNonceTest() {
+  final result = askarKeyCryptoBoxRandomNonce();
+
+  printAskarResult('KeyCryptoBoxRandomNonce', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
 
   return result;
 }
