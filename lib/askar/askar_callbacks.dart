@@ -32,9 +32,8 @@ base class Callback<T extends Function> {
   final int id;
   final NativeCallable<T> nativeCallable;
   final Completer<AskarCallbackResult> completer;
-  final void Function() cleanupPointers;
 
-  Callback(this.nativeCallable, this.completer, this.id, this.cleanupPointers);
+  Callback(this.nativeCallable, this.completer, this.id);
 
   Future<AskarCallbackResult> handleResult(int initialResult) {
     final initialErrorCode = ErrorCode.fromInt(initialResult);
@@ -42,7 +41,6 @@ base class Callback<T extends Function> {
     if (initialErrorCode != ErrorCode.success) {
       completer.complete(AskarCallbackResult(initialErrorCode, false, null));
 
-      this.cleanupPointers();
       this.nativeCallable.close();
     }
 
@@ -58,62 +56,58 @@ int nextCallbackId() {
 
 typedef CbFuncWithHandle = Void Function(NativeCallbackId, Int32, NativeSessionHandle);
 
-Callback<CbFuncWithHandle> newCallbackWithHandle(void Function() cleanup) {
+Callback<CbFuncWithHandle> newCallbackWithHandle() {
   final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
     completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, handle));
-    cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithHandle>.listener(callback);
 
-  return Callback<CbFuncWithHandle>(nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithHandle>(nativeCallable, completer, nextCallbackId());
 }
 
 typedef CbFuncWithInt64 = Void Function(NativeCallbackId, Int32, Int64);
 
-Callback<CbFuncWithInt64> newCallbackWithInt64(void Function() cleanup) {
+Callback<CbFuncWithInt64> newCallbackWithInt64() {
   final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithInt64> nativeCallable;
 
   void callback(int callbackId, int errorCode, int handle) {
     completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, handle));
-    cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithInt64>.listener(callback);
 
-  return Callback<CbFuncWithInt64>(nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithInt64>(nativeCallable, completer, nextCallbackId());
 }
 
 typedef CbFuncWithoutHandle = Void Function(NativeCallbackId, Int32);
 
-Callback<CbFuncWithoutHandle> newCallbackWithoutHandle(void Function() cleanup) {
+Callback<CbFuncWithoutHandle> newCallbackWithoutHandle() {
   final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithoutHandle> nativeCallable;
 
   void callback(int callbackId, int errorCode) {
     completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, null));
-    cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithoutHandle>.listener(callback);
 
-  return Callback<CbFuncWithoutHandle>(
-      nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithoutHandle>(nativeCallable, completer, nextCallbackId());
 }
 
 typedef CbFuncWithPtrUft8 = Void Function(NativeCallbackId, Int32, Pointer<Utf8>);
 
-Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
+Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8() {
   final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
@@ -122,12 +116,10 @@ Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8(void Function() cleanup) {
     completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true,
         utf8 == nullptr ? null : utf8.toDartString()));
     calloc.free(utf8);
-    cleanup();
     nativeCallable.close();
   }
 
   nativeCallable = NativeCallable<CbFuncWithPtrUft8>.listener(callback);
 
-  return Callback<CbFuncWithPtrUft8>(
-      nativeCallable, completer, nextCallbackId(), cleanup);
+  return Callback<CbFuncWithPtrUft8>(nativeCallable, completer, nextCallbackId());
 }
