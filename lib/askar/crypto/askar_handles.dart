@@ -13,6 +13,11 @@ class StoreHandle extends AskarHandle {
   Future<void> close() async {
     await askarStoreClose(this);
   }
+
+  @override
+  String toString() {
+    return "StoreHandle($handle)";
+  }
 }
 
 class ScanHandle extends AskarHandle {
@@ -21,6 +26,11 @@ class ScanHandle extends AskarHandle {
   void free() {
     askarScanFree(this);
   }
+
+  @override
+  String toString() {
+    return "ScanHandle($handle)";
+  }
 }
 
 class SessionHandle extends AskarHandle {
@@ -28,6 +38,11 @@ class SessionHandle extends AskarHandle {
 
   Future<void> close(bool commit) async {
     await askarSessionClose(this, commit);
+  }
+
+  @override
+  String toString() {
+    return "SessionHandle($handle)";
   }
 }
 
@@ -68,6 +83,11 @@ class EntryListHandle extends AskarHandle {
 
   void free() {
     askarEntryListFree(this);
+  }
+
+  @override
+  String toString() {
+    return "EntryListHandle($handle)";
   }
 }
 
@@ -117,6 +137,11 @@ class KeyEntryListHandle extends AskarHandle {
   void free() {
     askarKeyEntryListFree(this);
   }
+
+  @override
+  String toString() {
+    return "KeyEntryListHandle($handle)";
+  }
 }
 
 class LocalKeyHandle extends AskarHandle {
@@ -130,6 +155,11 @@ class LocalKeyHandle extends AskarHandle {
       ErrorCode errorCode, Pointer<NativeLocalKeyHandle> ptr) {
     return LocalKeyHandle(errorCode == ErrorCode.success ? ptr.value : 0);
   }
+
+  @override
+  String toString() {
+    return "LocalKeyHandle($handle)";
+  }
 }
 
 class AskarHandle {
@@ -139,5 +169,10 @@ class AskarHandle {
 
   int toInt() {
     return handle;
+  }
+
+  @override
+  String toString() {
+    return "AskarHandle($handle)";
   }
 }
