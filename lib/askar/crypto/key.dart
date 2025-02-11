@@ -1,22 +1,24 @@
 import 'dart:typed_data';
+
+import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
+import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
+import 'package:askar_flutter_sdk/askar/crypto/jwk.dart';
+
 import '../../askar/askar_wrapper.dart';
-import '../../askar/crypto/askar_encrypted_buffer.dart';
-import '../../askar/crypto/askar_handles.dart';
-import '../../askar/crypto/askar_jwk.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/enums/askar_key_backend.dart';
 import '../../askar/enums/askar_signature_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
 
-class AskarKey {
+class Key {
   final LocalKeyHandle localKeyHandle;
 
-  AskarKey(this.localKeyHandle);
+  Key(this.localKeyHandle);
 
-  static AskarKey generate(KeyAlgorithm algorithm, KeyBackend keyBackend,
+  static Key generate(KeyAlgorithm algorithm, KeyBackend keyBackend,
       {bool ephemeral = false}) {
     try {
-      return AskarKey(
+      return Key(
           askarKeyGenerate(algorithm, keyBackend, ephemeral).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Error generating key: $e');
@@ -35,50 +37,45 @@ class AskarKey {
   //   }
   // }
 
-  static AskarKey fromSecretBytes(
+  static Key fromSecretBytes(
       {required KeyAlgorithm algorithm, required Uint8List secretKey}) {
     try {
-      return AskarKey(
-          askarKeyFromSecretBytes(algorithm, secretKey).getValueOrException());
+      return Key(askarKeyFromSecretBytes(algorithm, secretKey).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to get key from secret bytes: $e');
     }
   }
 
-  static AskarKey fromPublicBytes(
+  static Key fromPublicBytes(
       {required KeyAlgorithm algorithm, required Uint8List publicKey}) {
     try {
-      return AskarKey(
-          askarKeyFromPublicBytes(algorithm, publicKey).getValueOrException());
+      return Key(askarKeyFromPublicBytes(algorithm, publicKey).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to get key from public bytes: $e');
     }
   }
 
-  static AskarKey fromJwk({required AskarJwk jwk}) {
+  static Key fromJwk({required Jwk jwk}) {
     try {
-      return AskarKey(askarKeyFromJwk(jwk.toString()).getValueOrException());
+      return Key(askarKeyFromJwk(jwk.toString()).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to get key from JWK: $e');
     }
   }
 
-  AskarKey convertKey({required KeyAlgorithm algorithm}) {
+  Key convertKey({required KeyAlgorithm algorithm}) {
     try {
-      return AskarKey(askarKeyConvert(localKeyHandle, algorithm).getValueOrException());
+      return Key(askarKeyConvert(localKeyHandle, algorithm).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to convert key from algorithm: $e');
     }
   }
 
-  AskarKey keyFromKeyExchange(
-      {required KeyAlgorithm algorithm,
-      required AskarKey secretKey,
-      required AskarKey publicKey}) {
+  Key keyFromKeyExchange(
+      {required KeyAlgorithm algorithm, required Key secretKey, required Key publicKey}) {
     try {
-      return AskarKey(
-          askarKeyFromKeyExchange(algorithm, secretKey.handle, publicKey.handle)
-              .getValueOrException());
+      return Key(askarKeyFromKeyExchange(algorithm, secretKey.handle, publicKey.handle)
+          .getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to get key from key exchange: $e');
     }
@@ -114,9 +111,9 @@ class AskarKey {
     }
   }
 
-  AskarJwk get jwkPublic {
+  Jwk get jwkPublic {
     try {
-      return AskarJwk.fromString(
+      return Jwk.fromString(
           askarKeyGetJwkPublic(localKeyHandle, algorithm).getValueOrException());
     } catch (e) {
       throw AskarKeyException('Failed to get JWK public: $e');
@@ -148,7 +145,7 @@ class AskarKey {
     }
   }
 
-  AskarEncryptedBuffer aeadEncrypt(
+  EncryptedBuffer aeadEncrypt(
       {required Uint8List message, Uint8List? nonce, Uint8List? aad}) {
     try {
       return askarKeyAeadEncrypt(localKeyHandle, message, nonce: nonce, aad: aad)
@@ -192,7 +189,7 @@ class AskarKey {
     }
   }
 
-  AskarEncryptedBuffer wrapKey({required AskarKey other, Uint8List? nonce}) {
+  EncryptedBuffer wrapKey({required Key other, Uint8List? nonce}) {
     try {
       return askarKeyWrapKey(localKeyHandle, other.handle, nonce: nonce)
           .getValueOrException();
@@ -201,13 +198,13 @@ class AskarKey {
     }
   }
 
-  AskarKey unwrapKey(
+  Key unwrapKey(
       {required KeyAlgorithm algorithm,
       Uint8List? tag,
       required Uint8List ciphertext,
       Uint8List? nonce}) {
     try {
-      return AskarKey(
+      return Key(
           askarKeyUnwrapKey(localKeyHandle, algorithm, ciphertext, nonce: nonce, tag: tag)
               .getValueOrException());
     } catch (e) {

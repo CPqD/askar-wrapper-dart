@@ -4,20 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
         {
-            "name": "aries-flutter-sdk",
+            "name": "askar-wrapper-dart",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "aries-flutter-sdk (profile mode)",
+            "name": "askar-wrapper-dart (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "aries-flutter-sdk (release mode)",
+            "name": "askar-wrapper-dart (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

@@ -2,9 +2,8 @@
 import 'dart:convert';
 
 import '../../askar/askar_wrapper.dart';
-import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/handles.dart';
 import '../../askar/models/askar_entry.dart';
-
 import '../enums/askar_error_code.dart';
 import '../exceptions/exceptions.dart';
 import '../interface/askar_entry_interface.dart';

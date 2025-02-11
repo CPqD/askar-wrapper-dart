@@ -1,30 +1,29 @@
 import 'dart:typed_data';
+
+import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
+
 import '../../askar/askar_wrapper.dart';
-import '../../askar/crypto/askar_encrypted_buffer.dart';
-import '../../askar/crypto/askar_key.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
+import 'key.dart';
 
-class Ecdh1PU {
+class EcdhEs {
   final Uint8List algId;
   final Uint8List apu;
   final Uint8List apv;
 
-  Ecdh1PU({required this.algId, required this.apu, required this.apv});
+  EcdhEs({required this.algId, required this.apu, required this.apv});
 
-  AskarKey deriveKey({
+  Key deriveKey({
     required KeyAlgorithm encryptionAlgorithm,
-    required AskarKey ephemeralKey,
-    required AskarKey senderKey,
-    required AskarKey recipientKey,
+    required Key ephemeralKey,
+    required Key recipientKey,
     required bool receive,
-    Uint8List? ccTag,
   }) {
     try {
-      return AskarKey(
-        askarKeyDeriveEcdh1pu(encryptionAlgorithm, ephemeralKey.handle, senderKey.handle,
-                recipientKey.handle, algId, apu, apv,
-                ccTag: ccTag, receive: receive)
+      return Key(
+        askarKeyDeriveEcdhEs(encryptionAlgorithm, ephemeralKey.handle,
+                recipientKey.handle, algId, apu, apv, receive)
             .getValueOrException(),
       );
     } catch (e) {
@@ -32,11 +31,10 @@ class Ecdh1PU {
     }
   }
 
-  AskarEncryptedBuffer encryptDirect({
+  EncryptedBuffer encryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
-    required AskarKey recipientKey,
-    required AskarKey ephemeralKey,
-    required AskarKey senderKey,
+    required Key recipientKey,
+    required Key ephemeralKey,
     required Uint8List message,
     Uint8List? aad,
     Uint8List? nonce,
@@ -45,7 +43,6 @@ class Ecdh1PU {
       encryptionAlgorithm: encryptionAlgorithm,
       ephemeralKey: ephemeralKey,
       recipientKey: recipientKey,
-      senderKey: senderKey,
       receive: false,
     );
     final encryptedBuffer = derived.aeadEncrypt(message: message, aad: aad, nonce: nonce);
@@ -55,10 +52,9 @@ class Ecdh1PU {
 
   Uint8List decryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
-    required AskarKey recipientKey,
-    required AskarKey ephemeralKey,
-    required AskarKey senderKey,
+    required Key recipientKey,
     required Uint8List ciphertext,
+    required Key ephemeralKey,
     required Uint8List nonce,
     required Uint8List tag,
     Uint8List? aad,
@@ -67,7 +63,6 @@ class Ecdh1PU {
       encryptionAlgorithm: encryptionAlgorithm,
       ephemeralKey: ephemeralKey,
       recipientKey: recipientKey,
-      senderKey: senderKey,
       receive: true,
     );
     final decryptedBuffer =
@@ -76,49 +71,41 @@ class Ecdh1PU {
     return decryptedBuffer;
   }
 
-  AskarEncryptedBuffer senderWrapKey({
+  EncryptedBuffer senderWrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
-    required AskarKey ephemeralKey,
-    required AskarKey recipientKey,
-    required AskarKey senderKey,
-    required AskarKey cek,
-    required Uint8List ccTag,
+    required Key ephemeralKey,
+    required Key recipientKey,
+    required Key cek,
   }) {
     final derived = deriveKey(
       encryptionAlgorithm: keyWrappingAlgorithm,
       ephemeralKey: ephemeralKey,
       recipientKey: recipientKey,
-      senderKey: senderKey,
       receive: false,
-      ccTag: ccTag,
     );
     final encryptedBuffer = derived.wrapKey(other: cek);
     derived.handle.free();
     return encryptedBuffer;
   }
 
-  AskarKey receiverUnwrapKey({
+  Key receiverUnwrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
     required KeyAlgorithm encryptionAlgorithm,
-    required AskarKey recipientKey,
-    required AskarKey ephemeralKey,
-    required AskarKey senderKey,
+    required Key ephemeralKey,
+    required Key recipientKey,
     required Uint8List ciphertext,
     Uint8List? nonce,
     Uint8List? tag,
-    required Uint8List ccTag,
   }) {
     final derived = deriveKey(
       encryptionAlgorithm: keyWrappingAlgorithm,
       ephemeralKey: ephemeralKey,
       recipientKey: recipientKey,
       receive: true,
-      senderKey: senderKey,
-      ccTag: ccTag,
     );
-    final unwrappedKey = derived.unwrapKey(
+    final encryptedBuffer = derived.unwrapKey(
         tag: tag, nonce: nonce, ciphertext: ciphertext, algorithm: encryptionAlgorithm);
     derived.handle.free();
-    return unwrappedKey;
+    return encryptedBuffer;
   }
 }

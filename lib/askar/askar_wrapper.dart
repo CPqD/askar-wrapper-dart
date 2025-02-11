@@ -5,8 +5,8 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import '../../askar/askar_callbacks.dart';
-import '../../askar/crypto/askar_encrypted_buffer.dart';
-import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/encrypted_buffer.dart';
+import '../../askar/crypto/handles.dart';
 import '../../askar/enums/askar_entry_operation.dart';
 import '../../askar/enums/askar_error_code.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
@@ -271,7 +271,7 @@ AskarResult<Uint8List> askarKeyAeadDecrypt(
   }
 }
 
-AskarResult<AskarEncryptedBuffer> askarKeyAeadEncrypt(
+AskarResult<EncryptedBuffer> askarKeyAeadEncrypt(
     LocalKeyHandle localKeyHandle, Uint8List message,
     {Uint8List? nonce, Uint8List? aad}) {
   Pointer<NativeEncryptedBuffer> outPtr = calloc<NativeEncryptedBuffer>();
@@ -297,9 +297,9 @@ AskarResult<AskarEncryptedBuffer> askarKeyAeadEncrypt(
 
     final value = (errorCode == ErrorCode.success)
         ? readNativeEncryptedBuffer(outPtr.ref)
-        : AskarEncryptedBuffer(Uint8List.fromList([]), 0, 0);
+        : EncryptedBuffer(Uint8List.fromList([]), 0, 0);
 
-    return AskarResult<AskarEncryptedBuffer>(errorCode, value);
+    return AskarResult<EncryptedBuffer>(errorCode, value);
   } finally {
     freeEncryptedBufferPointer(outPtr);
     freeByteBufferPointer(messagePtr);
@@ -1112,8 +1112,7 @@ AskarResult<bool> askarKeyVerifySignature(
   }
 }
 
-AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
-    LocalKeyHandle handle, LocalKeyHandle other,
+AskarResult<EncryptedBuffer> askarKeyWrapKey(LocalKeyHandle handle, LocalKeyHandle other,
     {Uint8List? nonce}) {
   Pointer<NativeEncryptedBuffer> encryptedBufferPtr = calloc<NativeEncryptedBuffer>();
 
@@ -1131,9 +1130,9 @@ AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
 
     final value = (errorCode == ErrorCode.success)
         ? readNativeEncryptedBuffer(encryptedBufferPtr.ref)
-        : AskarEncryptedBuffer(Uint8List.fromList([]), 0, 0);
+        : EncryptedBuffer(Uint8List.fromList([]), 0, 0);
 
-    return AskarResult<AskarEncryptedBuffer>(errorCode, value);
+    return AskarResult<EncryptedBuffer>(errorCode, value);
   } finally {
     freeEncryptedBufferPointer(encryptedBufferPtr);
     freeByteBufferPointer(byteBufferPointer);

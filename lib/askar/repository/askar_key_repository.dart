@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
-import '../../askar/crypto/askar_handles.dart';
 
+import '../../askar/crypto/handles.dart';
 import '../askar_wrapper.dart';
 import '../enums/askar_error_code.dart';
 import '../enums/askar_key_algorithm.dart';

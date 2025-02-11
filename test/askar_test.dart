@@ -3,18 +3,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:convert/convert.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
 import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
-import 'package:askar_flutter_sdk/askar/crypto/askar_encrypted_buffer.dart';
-import 'package:askar_flutter_sdk/askar/crypto/askar_handles.dart';
+import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
+import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_entry_operation.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_error_code.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_backend.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_signature_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_store_key_method.dart';
+import 'package:convert/convert.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Askar Tests', () {
@@ -487,8 +487,7 @@ AskarResult<LocalKeyHandle> keyConvertTest(
   return result;
 }
 
-AskarResult<AskarEncryptedBuffer> keyAeadEncryptTest(
-    LocalKeyHandle handle, Uint8List message,
+AskarResult<EncryptedBuffer> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List message,
     {Uint8List? nonce, Uint8List? aad}) {
   final result = askarKeyAeadEncrypt(handle, message, nonce: nonce, aad: aad);
 
@@ -640,8 +639,7 @@ AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
   return result;
 }
 
-AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
-    LocalKeyHandle handle, LocalKeyHandle other,
+AskarResult<EncryptedBuffer> keyWrapKeyTest(LocalKeyHandle handle, LocalKeyHandle other,
     {Uint8List? nonce}) {
   print('$handle, $other, $nonce');
 

@@ -1,4 +1,4 @@
-import '../../askar/crypto/askar_handles.dart';
+import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 
 import 'askar/enums/askar_store_key_method.dart';
 import 'askar/repository/askar_store_repository.dart';
