@@ -73,9 +73,9 @@ class EntryListHandle extends AskarHandle {
     }
   }
 
-  List<String> getTags(int index) {
+  Map<String, dynamic> getTags(int index) {
     try {
-      return askarEntryListGetTags(this, index).getValueOrException().keys.toList();
+      return askarEntryListGetTags(this, index).getValueOrException();
     } catch (e) {
       throw AskarException('Failed to get tags: $e');
     }

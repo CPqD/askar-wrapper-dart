@@ -1,9 +1,10 @@
 import 'dart:typed_data';
-import '../../askar/askar_wrapper.dart';
-import '../../askar/crypto/askar_key.dart';
-import '../../askar/exceptions/exceptions.dart';
 
-class AskarCryptoBox {
+import '../../askar/askar_wrapper.dart';
+import '../../askar/exceptions/exceptions.dart';
+import 'key.dart';
+
+class CryptoBox {
   static Uint8List randomNonce() {
     try {
       return askarKeyCryptoBoxRandomNonce().getValueOrException();
@@ -13,8 +14,8 @@ class AskarCryptoBox {
   }
 
   static Uint8List cryptoBox({
-    required AskarKey recipientKey,
-    required AskarKey senderKey,
+    required Key recipientKey,
+    required Key senderKey,
     required Uint8List message,
     required Uint8List nonce,
   }) {

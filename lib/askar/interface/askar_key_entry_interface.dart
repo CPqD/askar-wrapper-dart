@@ -1,5 +1,4 @@
-import '../../askar/crypto/askar_handles.dart';
-
+import '../../askar/crypto/handles.dart';
 import '../enums/askar_key_algorithm.dart';
 import '../models/askar_key_entry.dart';
 

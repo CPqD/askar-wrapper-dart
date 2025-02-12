@@ -5,8 +5,8 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import '../../askar/askar_callbacks.dart';
-import '../../askar/crypto/askar_encrypted_buffer.dart';
-import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/encrypted_buffer.dart';
+import '../../askar/crypto/handles.dart';
 import '../../askar/enums/askar_entry_operation.dart';
 import '../../askar/enums/askar_error_code.dart';
 import '../../askar/enums/askar_key_algorithm.dart';
@@ -271,7 +271,7 @@ AskarResult<Uint8List> askarKeyAeadDecrypt(
   }
 }
 
-AskarResult<AskarEncryptedBuffer> askarKeyAeadEncrypt(
+AskarResult<EncryptedBuffer> askarKeyAeadEncrypt(
     LocalKeyHandle localKeyHandle, Uint8List message,
     {Uint8List? nonce, Uint8List? aad}) {
   Pointer<NativeEncryptedBuffer> outPtr = calloc<NativeEncryptedBuffer>();
@@ -297,9 +297,9 @@ AskarResult<AskarEncryptedBuffer> askarKeyAeadEncrypt(
 
     final value = (errorCode == ErrorCode.success)
         ? readNativeEncryptedBuffer(outPtr.ref)
-        : AskarEncryptedBuffer(Uint8List.fromList([]), 0, 0);
+        : EncryptedBuffer(Uint8List.fromList([]), 0, 0);
 
-    return AskarResult<AskarEncryptedBuffer>(errorCode, value);
+    return AskarResult<EncryptedBuffer>(errorCode, value);
   } finally {
     freeEncryptedBufferPointer(outPtr);
     freeByteBufferPointer(messagePtr);
@@ -455,32 +455,45 @@ AskarResult<Uint8List> askarKeyCryptoBoxRandomNonce() {
   }
 }
 
-ErrorCode askarKeyCryptoBoxSeal(
+AskarResult<Uint8List> askarKeyCryptoBoxSeal(
   LocalKeyHandle handle,
-  Pointer<NativeByteBuffer> message,
-  Pointer<NativeSecretBuffer> out,
+  Uint8List message,
 ) {
+  Pointer<NativeByteBuffer> messagePtr = bytesListToByteBuffer(message);
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
+
   final result = nativeAskarKeyCryptoBoxSeal(
     handle.toInt(),
-    message,
-    out,
+    messagePtr.ref,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(result);
+  final value = secretBufferToBytesList(secretBufferPtr.ref);
+
+  calloc.free(messagePtr.ref.data);
+  calloc.free(messagePtr);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
-ErrorCode askarKeyCryptoBoxSealOpen(
-  LocalKeyHandle handle,
-  Pointer<NativeByteBuffer> ciphertext,
-  Pointer<NativeSecretBuffer> out,
-) {
-  final result = nativeAskarKeyCryptoBoxSealOpen(
-    handle.toInt(),
-    ciphertext,
-    out,
-  );
+AskarResult<Uint8List> askarKeyCryptoBoxSealOpen(
+    LocalKeyHandle localKeyHandle, Uint8List ciphertext) {
+  Pointer<NativeByteBuffer> byteBufferPointer = bytesListToByteBuffer(ciphertext);
+  Pointer<NativeSecretBuffer> secretBufferPointer = calloc<NativeSecretBuffer>();
 
-  return ErrorCode.fromInt(result);
+  final funcResult = nativeAskarKeyCryptoBoxSealOpen(
+      localKeyHandle.toInt(), byteBufferPointer.ref, secretBufferPointer);
+
+  final errorCode = ErrorCode.fromInt(funcResult);
+  final value = secretBufferToBytesList(secretBufferPointer.ref);
+
+  calloc.free(byteBufferPointer.ref.data);
+  calloc.free(byteBufferPointer);
+  calloc.free(secretBufferPointer);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 AskarResult<LocalKeyHandle> askarKeyDeriveEcdh1pu(
@@ -1112,8 +1125,7 @@ AskarResult<bool> askarKeyVerifySignature(
   }
 }
 
-AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
-    LocalKeyHandle handle, LocalKeyHandle other,
+AskarResult<EncryptedBuffer> askarKeyWrapKey(LocalKeyHandle handle, LocalKeyHandle other,
     {Uint8List? nonce}) {
   Pointer<NativeEncryptedBuffer> encryptedBufferPtr = calloc<NativeEncryptedBuffer>();
 
@@ -1131,9 +1143,9 @@ AskarResult<AskarEncryptedBuffer> askarKeyWrapKey(
 
     final value = (errorCode == ErrorCode.success)
         ? readNativeEncryptedBuffer(encryptedBufferPtr.ref)
-        : AskarEncryptedBuffer(Uint8List.fromList([]), 0, 0);
+        : EncryptedBuffer(Uint8List.fromList([]), 0, 0);
 
-    return AskarResult<AskarEncryptedBuffer>(errorCode, value);
+    return AskarResult<EncryptedBuffer>(errorCode, value);
   } finally {
     freeEncryptedBufferPointer(encryptedBufferPtr);
     freeByteBufferPointer(byteBufferPointer);

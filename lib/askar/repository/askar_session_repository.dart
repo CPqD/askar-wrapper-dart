@@ -1,7 +1,6 @@
 import '../../askar/askar_wrapper.dart';
-import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/handles.dart';
 import '../../askar/repository/askar_store_repository.dart';
-
 import '../enums/askar_entry_operation.dart';
 import '../enums/askar_error_code.dart';
 import '../enums/askar_key_algorithm.dart';

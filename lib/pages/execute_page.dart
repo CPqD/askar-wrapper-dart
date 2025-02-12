@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import '../../askar/crypto/askar_handles.dart';
+import '../../askar/crypto/handles.dart';
 import '../../askar/repository/askar_key_repository.dart';
 import '../../askar/repository/askar_session_repository.dart';
 

@@ -3,18 +3,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:convert/convert.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
 import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
-import 'package:askar_flutter_sdk/askar/crypto/askar_encrypted_buffer.dart';
-import 'package:askar_flutter_sdk/askar/crypto/askar_handles.dart';
+import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
+import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_entry_operation.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_error_code.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_backend.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_signature_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_store_key_method.dart';
+import 'package:convert/convert.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Askar Tests', () {
@@ -474,6 +474,22 @@ void main() {
           expected: message);
     });
   });
+
+  group('Crypto Box Seal Tests:', () {
+    test('Crypto Box Seal', () {
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.x25519);
+
+      final localKeyHandle = keyGenerateResult.value;
+
+      final Uint8List message = Uint8List.fromList([1, 2, 3, 4]);
+
+      final sealed = keyCryptoBoxSealTest(localKeyHandle, message);
+
+      final opened = keyCryptoBoxSealOpenTest(localKeyHandle, sealed.value);
+
+      expect(opened.value, equals(message));
+    });
+  });
 }
 
 AskarResult<LocalKeyHandle> keyConvertTest(
@@ -487,8 +503,7 @@ AskarResult<LocalKeyHandle> keyConvertTest(
   return result;
 }
 
-AskarResult<AskarEncryptedBuffer> keyAeadEncryptTest(
-    LocalKeyHandle handle, Uint8List message,
+AskarResult<EncryptedBuffer> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List message,
     {Uint8List? nonce, Uint8List? aad}) {
   final result = askarKeyAeadEncrypt(handle, message, nonce: nonce, aad: aad);
 
@@ -640,8 +655,7 @@ AskarResult<Uint8List> keyAeadRandomNonceTest(LocalKeyHandle handle) {
   return result;
 }
 
-AskarResult<AskarEncryptedBuffer> keyWrapKeyTest(
-    LocalKeyHandle handle, LocalKeyHandle other,
+AskarResult<EncryptedBuffer> keyWrapKeyTest(LocalKeyHandle handle, LocalKeyHandle other,
     {Uint8List? nonce}) {
   print('$handle, $other, $nonce');
 
@@ -1224,6 +1238,29 @@ AskarResult<Uint8List> keyCryptoBoxTest(
 
   printAskarResult('KeyCryptoBox', result);
   expect(result.errorCode, ErrorCode.success);
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxSealTest(LocalKeyHandle handle, Uint8List message) {
+  final result = askarKeyCryptoBoxSeal(handle, message);
+
+  printAskarResult('KeyCryptoBoxSeal', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxSealOpenTest(
+    LocalKeyHandle handle, Uint8List ciphertext) {
+  final result = askarKeyCryptoBoxSealOpen(handle, ciphertext);
+
+  printAskarResult('KeyCryptoBoxSealOpenTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));
 
   return result;
