@@ -1237,11 +1237,8 @@ Future<AskarCallbackBlankResult> askarSessionClose(
   return await callback.handleResult(result);
 }
 
-Future<AskarCallbackResult> askarSessionCount(
-  SessionHandle handle,
-  String category,
-  Map<String, dynamic> tagFilter,
-) async {
+Future<AskarResult<int>> askarSessionCount(SessionHandle handle, String category,
+    {Map<String, dynamic>? tagFilter}) async {
   Pointer<Utf8> categoryPointer = nullptr;
   Pointer<Utf8> tagFilterPointer = nullptr;
 
@@ -1259,7 +1256,9 @@ Future<AskarCallbackResult> askarSessionCount(
       callback.id,
     );
 
-    return await callback.handleResult(result);
+    final callbackResult = await callback.handleResult(result);
+
+    return AskarResult(callbackResult.errorCode, callbackResult.value);
   } finally {
     freePointer(categoryPointer);
     freePointer(tagFilterPointer);
@@ -1306,14 +1305,12 @@ Future<AskarResult<EntryListHandle>> askarSessionFetch(
 }
 
 Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
-  SessionHandle handle,
-  String category,
-  Map tagFilter,
-  int limit,
-  bool forUpdate,
-) async {
+    SessionHandle handle, String category,
+    {required bool forUpdate, Map? tagFilter, int? limit}) async {
   Pointer<Utf8> categoryPtr = nullptr;
   Pointer<Utf8> tagFilterPtr = nullptr;
+
+  limit ??= 0;
 
   try {
     categoryPtr = category.toNativeUtf8();
@@ -1341,22 +1338,22 @@ Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
   }
 }
 
-Future<AskarResult<KeyEntryListHandle>> askarSessionFetchAllKeys(
-  SessionHandle handle,
-  KeyAlgorithm algorithm,
-  String thumbprint,
-  Map tagFilter,
-  int limit,
-  bool forUpdate,
-) async {
+Future<AskarResult<KeyEntryListHandle>> askarSessionFetchAllKeys(SessionHandle handle,
+    {required bool forUpdate,
+    KeyAlgorithm? algorithm,
+    String? thumbprint,
+    Map? tagFilter,
+    int? limit}) async {
   Pointer<Utf8> algPointer = nullptr;
   Pointer<Utf8> thumbprintPointer = nullptr;
   Pointer<Utf8> tagFilterPointer = nullptr;
 
+  limit ??= 0;
+
   try {
-    algPointer = algorithm.value.toNativeUtf8();
-    thumbprintPointer = thumbprint.toNativeUtf8();
-    tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+    if (algorithm != null) algPointer = algorithm.value.toNativeUtf8();
+    if (thumbprint != null) thumbprintPointer = thumbprint.toNativeUtf8();
+    if (tagFilter != null) tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
@@ -1409,21 +1406,19 @@ Future<AskarResult<KeyEntryListHandle>> askarSessionFetchKey(
 }
 
 Future<AskarCallbackResult> askarSessionInsertKey(
-  SessionHandle handle,
-  LocalKeyHandle localKeyHandle,
-  String name,
-  String metadata,
-  Map tags,
-  int expiryMs,
-) async {
+    SessionHandle handle, LocalKeyHandle localKeyHandle, String name,
+    {String? metadata, Map<String, dynamic>? tags, int? expiryMs}) async {
   Pointer<Utf8> namePointer = nullptr;
   Pointer<Utf8> metadataPointer = nullptr;
   Pointer<Utf8> tagsJsonPointer = nullptr;
 
+  expiryMs ??= 0;
+
   try {
     namePointer = name.toNativeUtf8();
-    metadataPointer = metadata.toNativeUtf8();
     tagsJsonPointer = jsonEncode(tags).toNativeUtf8();
+
+    if (metadata != null) metadataPointer = metadata.toNativeUtf8();
 
     final callback = newCallbackWithoutHandle();
 
@@ -1441,16 +1436,13 @@ Future<AskarCallbackResult> askarSessionInsertKey(
     return await callback.handleResult(result);
   } finally {
     freePointer(namePointer);
-    freePointer(metadataPointer);
     freePointer(tagsJsonPointer);
+    freePointer(metadataPointer);
   }
 }
 
-Future<AskarCallbackResult> askarSessionRemoveAll(
-  SessionHandle handle,
-  String category,
-  Map tagFilter,
-) async {
+Future<AskarCallbackResult> askarSessionRemoveAll(SessionHandle handle, String category,
+    {Map<String, dynamic>? tagFilter}) async {
   Pointer<Utf8> categoryPointer = nullptr;
   Pointer<Utf8> tagFilterPointer = nullptr;
 
@@ -1528,18 +1520,16 @@ Future<AskarResult<SessionHandle>> askarSessionStart(
 }
 
 Future<AskarCallbackResult> askarSessionUpdate(
-  SessionHandle handle,
-  EntryOperation operation,
-  String category,
-  String name,
-  String value,
-  Map<String, String> tags,
-  int expiryMs,
-) async {
+    SessionHandle handle, EntryOperation operation, String category, String name,
+    {String? value, Map<String, dynamic>? tags, int? expiryMs}) async {
   Pointer<Utf8> categoryPointer = nullptr;
   Pointer<Utf8> namePointer = nullptr;
   Pointer<Utf8> tagsPointer = nullptr;
   Pointer<NativeByteBuffer> byteBufferPointer = nullptr;
+
+  value ??= "";
+  tags ??= {};
+  expiryMs ??= 0;
 
   try {
     categoryPointer = category.toNativeUtf8();
@@ -1572,19 +1562,22 @@ Future<AskarCallbackResult> askarSessionUpdate(
 
 Future<AskarCallbackResult> askarSessionUpdateKey(
   SessionHandle handle,
-  String name,
-  String metadata,
-  String tags,
-  int expiryMs,
-) async {
+  String name, {
+  String? metadata,
+  Map<String, dynamic>? tags,
+  int? expiryMs,
+}) async {
   Pointer<Utf8> namePointer = nullptr;
   Pointer<Utf8> metadataPointer = nullptr;
   Pointer<Utf8> tagsPointer = nullptr;
 
+  expiryMs ??= 0;
+
   try {
     namePointer = name.toNativeUtf8();
-    metadataPointer = metadata.toNativeUtf8();
-    tagsPointer = tags.toNativeUtf8();
+
+    if (metadata != null) metadataPointer = metadata.toNativeUtf8();
+    if (tags != null) tagsPointer = jsonEncode(tags).toNativeUtf8();
 
     final callback = newCallbackWithoutHandle();
 

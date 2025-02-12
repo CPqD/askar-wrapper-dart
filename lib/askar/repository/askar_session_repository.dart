@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../askar/askar_wrapper.dart';
 import '../../askar/crypto/handles.dart';
 import '../../askar/repository/askar_store_repository.dart';
@@ -54,8 +56,8 @@ class AskarSessionRepository implements IAskarSession {
   Future<EntryListHandle?> fetchAll(
       String category, Map tagFilter, int limit, bool forUpdate) async {
     checkSession();
-    final result =
-        await askarSessionFetchAll(handle!, category, tagFilter, limit, forUpdate);
+    final result = await askarSessionFetchAll(handle!, category,
+        tagFilter: tagFilter, limit: limit, forUpdate: forUpdate);
     if (result.errorCode == ErrorCode.success) {
       return result.value;
     }
@@ -66,8 +68,12 @@ class AskarSessionRepository implements IAskarSession {
   Future<KeyEntryListHandle?> fetchAllKeys(KeyAlgorithm algorithm, String thumbprint,
       Map tagFilter, int limit, bool forUpdate) async {
     checkSession();
-    final result = await askarSessionFetchAllKeys(
-        handle!, algorithm, thumbprint, tagFilter, limit, forUpdate);
+    final result = await askarSessionFetchAllKeys(handle!,
+        algorithm: algorithm,
+        thumbprint: thumbprint,
+        tagFilter: tagFilter,
+        limit: limit,
+        forUpdate: forUpdate);
     if (result.errorCode == ErrorCode.success) {
       return result.value;
     }
@@ -86,10 +92,10 @@ class AskarSessionRepository implements IAskarSession {
 
   @override
   Future<bool> insertKeys(LocalKeyHandle localKeyHandle, String name, String metadata,
-      Map tags, int expiryMs) async {
+      Map<String, dynamic> tags, int expiryMs) async {
     checkSession();
-    final result = await askarSessionInsertKey(
-        handle!, localKeyHandle, name, metadata, tags, expiryMs);
+    final result = await askarSessionInsertKey(handle!, localKeyHandle, name,
+        metadata: metadata, tags: tags, expiryMs: expiryMs);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }
@@ -97,9 +103,9 @@ class AskarSessionRepository implements IAskarSession {
   }
 
   @override
-  Future<bool> removeAll(String category, Map tagFilter) async {
+  Future<bool> removeAll(String category, Map<String, dynamic> tagFilter) async {
     checkSession();
-    final result = await askarSessionRemoveAll(handle!, category, tagFilter);
+    final result = await askarSessionRemoveAll(handle!, category, tagFilter: tagFilter);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }
@@ -117,9 +123,9 @@ class AskarSessionRepository implements IAskarSession {
   }
 
   @override
-  Future<int> sessionCount(String category, Map<String, String> tagFilter) async {
+  Future<int> sessionCount(String category, Map<String, dynamic> tagFilter) async {
     checkSession();
-    final result = await askarSessionCount(handle!, category, tagFilter);
+    final result = await askarSessionCount(handle!, category, tagFilter: tagFilter);
     if (result.errorCode == ErrorCode.success) {
       return result.value;
     }
@@ -130,8 +136,8 @@ class AskarSessionRepository implements IAskarSession {
   Future<bool> update(EntryOperation operation, String category, String name,
       String value, Map<String, String> tags, int expiryMs) async {
     checkSession();
-    final result = await askarSessionUpdate(
-        handle!, operation, category, name, value, tags, expiryMs);
+    final result = await askarSessionUpdate(handle!, operation, category, name,
+        value: value, tags: tags, expiryMs: expiryMs);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }
@@ -141,7 +147,8 @@ class AskarSessionRepository implements IAskarSession {
   @override
   Future<bool> updateKey(String name, String metadata, String tags, int expiryMs) async {
     checkSession();
-    final result = await askarSessionUpdateKey(handle!, name, metadata, tags, expiryMs);
+    final result = await askarSessionUpdateKey(handle!, name,
+        metadata: metadata, tags: jsonDecode(tags), expiryMs: expiryMs);
     if (result.errorCode == ErrorCode.success) {
       return true;
     }

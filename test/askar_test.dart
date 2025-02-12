@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-
 import 'dart:typed_data';
 
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
@@ -866,7 +865,13 @@ Future<AskarCallbackResult> sessionInsertKeyTest(
   int expiryMs = 2000;
 
   final result = await askarSessionInsertKey(
-      sessionHandle, localKeyHandle, name, metadata, tags, expiryMs);
+    sessionHandle,
+    localKeyHandle,
+    name,
+    metadata: metadata,
+    tags: tags,
+    expiryMs: expiryMs,
+  );
 
   printAskarResult('SessionInsertKey', result);
 
@@ -888,14 +893,13 @@ Future<AskarCallbackResult> sessionRemoveKeyTest(
   return result;
 }
 
-Future<AskarCallbackResult> sessionCountTest(
+Future<AskarResult<int>> sessionCountTest(
     SessionHandle handle, String category, Map<String, String> tagFilter) async {
-  final result = await askarSessionCount(handle, category, tagFilter);
+  final result = await askarSessionCount(handle, category, tagFilter: tagFilter);
 
   printAskarResult('SessionCount', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
   expect(result.value, greaterThan(0));
 
   return result;
@@ -929,8 +933,13 @@ Future<AskarResult<EntryListHandle>> sessionFetchAllTest(
   int limit = 10;
   bool forUpdate = false;
 
-  final result =
-      await askarSessionFetchAll(handle, category, tagFilter, limit, forUpdate);
+  final result = await askarSessionFetchAll(
+    handle,
+    category,
+    forUpdate: forUpdate,
+    tagFilter: tagFilter,
+    limit: limit,
+  );
 
   printAskarResult('SessionFetchAll', result);
 
@@ -946,7 +955,13 @@ Future<AskarResult<KeyEntryListHandle>> sessionFetchAllKeysTest(SessionHandle ha
   bool forUpdate = false;
 
   final result = await askarSessionFetchAllKeys(
-      handle, algorithm, thumbprint, tagFilter, limit, forUpdate);
+    handle,
+    forUpdate: forUpdate,
+    algorithm: algorithm,
+    thumbprint: thumbprint,
+    tagFilter: tagFilter,
+    limit: limit,
+  );
 
   printAskarResult('SessionFetchAllKeys', result);
 
@@ -977,8 +992,15 @@ Future<AskarCallbackResult> sessionUpdateTest(
     String category) async {
   int expiryMs = 2000;
 
-  final result =
-      await askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
+  final result = await askarSessionUpdate(
+    handle,
+    operation,
+    category,
+    name,
+    value: value,
+    tags: tags,
+    expiryMs: expiryMs,
+  );
 
   printAskarResult('SessionUpdate', result);
 
@@ -991,7 +1013,7 @@ Future<AskarCallbackResult> sessionUpdateTest(
 Future<AskarCallbackResult> sessionRemoveAllTest(
     SessionHandle handle, String category, Map<String, String> tags,
     {required int expected}) async {
-  final result = await askarSessionRemoveAll(handle, category, tags);
+  final result = await askarSessionRemoveAll(handle, category, tagFilter: tags);
 
   printAskarResult('SessionRemoveAll', result);
 
