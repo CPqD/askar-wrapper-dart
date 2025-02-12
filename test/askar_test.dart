@@ -475,18 +475,21 @@ void main() {
     });
   });
 
-   group('Crypto Box Seal Tests:', () {
+  group('Crypto Box Seal Tests:', () {
     test('Crypto Box Seal', () {
       final keyGenerateResult = keyGenerateTest(KeyAlgorithm.x25519);
 
       final localKeyHandle = keyGenerateResult.value;
 
-       final Uint8List message = Uint8List.fromList([1, 2, 3, 4]);
+      final Uint8List message = Uint8List.fromList([1, 2, 3, 4]);
 
-      keyCryptoBoxSealTest(localKeyHandle, message);
+      final sealed = keyCryptoBoxSealTest(localKeyHandle, message);
 
+      final opened = keyCryptoBoxSealOpenTest(localKeyHandle, sealed.value);
+
+      expect(opened.value, equals(message));
     });
-    });
+  });
 }
 
 AskarResult<LocalKeyHandle> keyConvertTest(
@@ -1240,11 +1243,22 @@ AskarResult<Uint8List> keyCryptoBoxTest(
   return result;
 }
 
-AskarResult<Uint8List> keyCryptoBoxSealTest(LocalKeyHandle handle, 
-  Uint8List message) {
+AskarResult<Uint8List> keyCryptoBoxSealTest(LocalKeyHandle handle, Uint8List message) {
   final result = askarKeyCryptoBoxSeal(handle, message);
 
   printAskarResult('KeyCryptoBoxSeal', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxSealOpenTest(
+    LocalKeyHandle handle, Uint8List ciphertext) {
+  final result = askarKeyCryptoBoxSealOpen(handle, ciphertext);
+
+  printAskarResult('KeyCryptoBoxSealOpenTest', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));

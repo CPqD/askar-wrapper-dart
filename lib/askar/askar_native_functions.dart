@@ -383,13 +383,13 @@ final int Function(
 
 typedef AskarKeyCryptoBoxSealOpenNative = Int32 Function(
   NativeLocalKeyHandle handle,
-  Pointer<NativeByteBuffer> ciphertext,
+  NativeByteBuffer ciphertext,
   Pointer<NativeSecretBuffer> out,
 );
 
 final int Function(
   int localKeyHandle,
-  Pointer<NativeByteBuffer> ciphertext,
+  NativeByteBuffer ciphertext,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyCryptoBoxSealOpen = nativeLib
     .lookup<NativeFunction<AskarKeyCryptoBoxSealOpenNative>>(
