@@ -455,18 +455,27 @@ AskarResult<Uint8List> askarKeyCryptoBoxRandomNonce() {
   }
 }
 
-ErrorCode askarKeyCryptoBoxSeal(
+AskarResult<Uint8List> askarKeyCryptoBoxSeal(
   LocalKeyHandle handle,
-  Pointer<NativeByteBuffer> message,
-  Pointer<NativeSecretBuffer> out,
+  Uint8List message,
 ) {
+  Pointer<NativeByteBuffer> messagePtr = bytesListToByteBuffer(message);
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
+
   final result = nativeAskarKeyCryptoBoxSeal(
     handle.toInt(),
-    message,
-    out,
+    messagePtr.ref,
+    secretBufferPtr,
   );
 
-  return ErrorCode.fromInt(result);
+  final errorCode = ErrorCode.fromInt(result);
+  final value = secretBufferToBytesList(secretBufferPtr.ref);
+
+  calloc.free(messagePtr.ref.data);
+  calloc.free(messagePtr);
+  calloc.free(secretBufferPtr);
+
+  return AskarResult<Uint8List>(errorCode, value);
 }
 
 ErrorCode askarKeyCryptoBoxSealOpen(
