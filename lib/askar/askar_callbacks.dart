@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:askar_flutter_sdk/askar/exceptions/exceptions.dart';
 import 'package:ffi/ffi.dart';
 import '../../askar/askar_native_functions.dart';
 import '../../askar/enums/askar_error_code.dart';
@@ -14,6 +15,12 @@ base class AskarCallbackBlankResult {
   @override
   String toString() {
     return "AskarCallbackBlankResult($errorCode, finished: $finished)";
+  }
+
+  void throwOnError() {
+    if (errorCode != ErrorCode.success) {
+      throw AskarErrorCodeException(errorCode);
+    }
   }
 }
 

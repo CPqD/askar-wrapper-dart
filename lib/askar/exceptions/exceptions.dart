@@ -1,78 +1,38 @@
 import '../../askar/enums/askar_error_code.dart';
 
-class ProfileDuplicatedException implements Exception {
-  final String? message;
-
-  ProfileDuplicatedException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class ProfileDuplicatedException extends AskarException {
+  ProfileDuplicatedException([super.message]);
 }
 
-class AskarSessionException implements Exception {
-  final String? message;
-
-  AskarSessionException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class AskarSessionException extends AskarException {
+  AskarSessionException([super.message]);
 }
 
-class AskarStoreException implements Exception {
-  final String? message;
-
-  AskarStoreException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class AskarStoreException extends AskarException {
+  AskarStoreException([super.message]);
 }
 
-class AskarKeyEntryListException implements Exception {
-  final String? message;
-
-  AskarKeyEntryListException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class AskarScanException extends AskarException {
+  AskarScanException([super.message]);
 }
 
-class AskarEntryException implements Exception {
-  final String? message;
-
-  AskarEntryException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class AskarKeyEntryListException extends AskarException {
+  AskarKeyEntryListException([super.message]);
 }
 
-class AskarKeyException implements Exception {
-  final String? message;
-
-  AskarKeyException([this.message]);
-
-  @override
-  String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
-  }
+class AskarEntryException extends AskarException {
+  AskarEntryException([super.message]);
 }
 
-class AskarErrorCodeException implements Exception {
+class AskarEntryListException extends AskarException {
+  AskarEntryListException([super.message]);
+}
+
+class AskarKeyException extends AskarException {
+  AskarKeyException([super.message]);
+}
+
+class AskarErrorCodeException extends AskarException {
   final ErrorCode errorCode;
 
   AskarErrorCodeException(this.errorCode);
@@ -90,7 +50,7 @@ class AskarException implements Exception {
 
   @override
   String toString() {
-    if (message == null) return "Exception";
-    return "Exception: $message";
+    if (message == null) return "Askar Exception";
+    return "Askar Exception: $message";
   }
 }

@@ -11,7 +11,11 @@ class StoreHandle extends AskarHandle {
   StoreHandle(super.handle);
 
   Future<void> close() async {
-    await askarStoreClose(this);
+    try {
+      (await askarStoreClose(this)).throwOnError();
+    } catch (e) {
+      throw AskarStoreException('Failed to close store: $e');
+    }
   }
 
   @override
@@ -24,7 +28,11 @@ class ScanHandle extends AskarHandle {
   ScanHandle(super.handle);
 
   void free() {
-    askarScanFree(this);
+    try {
+      askarScanFree(this);
+    } catch (e) {
+      throw AskarScanException('Failed to free scan: $e');
+    }
   }
 
   @override
@@ -37,7 +45,11 @@ class SessionHandle extends AskarHandle {
   SessionHandle(super.handle);
 
   Future<void> close(bool commit) async {
-    await askarSessionClose(this, commit);
+    try {
+      (await askarSessionClose(this, commit)).throwOnError();
+    } catch (e) {
+      throw AskarSessionException('Failed to close session: $e');
+    }
   }
 
   @override
@@ -53,7 +65,7 @@ class EntryListHandle extends AskarHandle {
     try {
       return askarEntryListGetCategory(this, index).getValueOrException();
     } catch (e) {
-      throw AskarException('Failed to get category: $e');
+      throw AskarEntryListException('Failed to get category: $e');
     }
   }
 
@@ -61,7 +73,7 @@ class EntryListHandle extends AskarHandle {
     try {
       return askarEntryListGetName(this, index).getValueOrException();
     } catch (e) {
-      throw AskarException('Failed to get name: $e');
+      throw AskarEntryListException('Failed to get name: $e');
     }
   }
 
@@ -69,7 +81,7 @@ class EntryListHandle extends AskarHandle {
     try {
       return askarEntryListGetValue(this, index).getValueOrException();
     } catch (e) {
-      throw AskarException('Failed to get value: $e');
+      throw AskarEntryListException('Failed to get value: $e');
     }
   }
 
@@ -77,12 +89,16 @@ class EntryListHandle extends AskarHandle {
     try {
       return askarEntryListGetTags(this, index).getValueOrException();
     } catch (e) {
-      throw AskarException('Failed to get tags: $e');
+      throw AskarEntryListException('Failed to get tags: $e');
     }
   }
 
   void free() {
-    askarEntryListFree(this);
+    try {
+      askarEntryListFree(this);
+    } catch (e) {
+      throw AskarEntryListException('Failed to free entry list: $e');
+    }
   }
 
   @override
@@ -135,7 +151,11 @@ class KeyEntryListHandle extends AskarHandle {
   }
 
   void free() {
-    askarKeyEntryListFree(this);
+    try {
+      askarKeyEntryListFree(this);
+    } catch (e) {
+      throw AskarKeyEntryListException('Failed to free key entry list: $e');
+    }
   }
 
   @override
@@ -148,7 +168,11 @@ class LocalKeyHandle extends AskarHandle {
   LocalKeyHandle(super.handle);
 
   void free() {
-    askarKeyFree(this);
+    try {
+      askarKeyFree(this);
+    } catch (e) {
+      throw AskarKeyException('Failed to free key: $e');
+    }
   }
 
   static LocalKeyHandle fromPointer(

@@ -12,7 +12,7 @@ class EntryList {
     try {
       return askarEntryListCount(handle).getValueOrException();
     } catch (e) {
-      throw AskarKeyEntryListException('Failed to count: $e');
+      throw AskarEntryListException('Failed to count entry list: $e');
     }
   }
 
