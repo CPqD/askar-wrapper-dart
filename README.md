@@ -15,9 +15,8 @@ Wrapper for Dart around https://github.com/openwallet-foundation/askar
 ```
 
 ### Windows
-
 ```bash
-./build_askar_android_dos.sh 
+sh ./build_askar_android_dos.sh
 ```
 
 ## Rodar testes
