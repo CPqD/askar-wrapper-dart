@@ -604,14 +604,14 @@ final int Function(
 
 typedef AskarKeyFromSeedNative = Int32 Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> seed,
+  NativeByteBuffer seed,
   Pointer<Utf8> method,
   Pointer<NativeLocalKeyHandle> out,
 );
 
 final int Function(
   Pointer<Utf8> alg,
-  Pointer<NativeByteBuffer> seed,
+  NativeByteBuffer seed,
   Pointer<Utf8> method,
   Pointer<NativeLocalKeyHandle> out,
 ) nativeAskarKeyFromSeed = nativeLib

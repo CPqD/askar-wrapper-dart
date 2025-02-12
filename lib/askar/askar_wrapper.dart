@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:askar_flutter_sdk/askar/enums/askar_key_method.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import '../../askar/askar_callbacks.dart';
@@ -828,26 +829,34 @@ AskarResult<LocalKeyHandle> askarKeyFromSecretBytes(
   }
 }
 
-ErrorCode askarKeyFromSeed(
-  String alg,
-  Pointer<NativeByteBuffer> seed,
-  String method,
-  Pointer<NativeLocalKeyHandle> out,
-) {
-  final algPointer = alg.toNativeUtf8();
-  final methodPointer = method.toNativeUtf8();
+AskarResult<LocalKeyHandle> askarKeyFromSeed(
+    KeyAlgorithm alg, Uint8List seed, KeyMethod method) {
+  Pointer<NativeLocalKeyHandle> localKeyHandlePtr = calloc<NativeLocalKeyHandle>();
+  Pointer<Utf8> algPointer = nullptr;
+  Pointer<NativeByteBuffer> byteBufferPointer = nullptr;
+  Pointer<Utf8> methodPointer = nullptr;
 
-  final result = nativeAskarKeyFromSeed(
-    algPointer,
-    seed,
-    methodPointer,
-    out,
-  );
+  try {
+    algPointer = alg.value.toNativeUtf8();
+    byteBufferPointer = bytesListToByteBuffer(seed);
+    methodPointer = method.value.toNativeUtf8();
 
-  calloc.free(algPointer);
-  calloc.free(methodPointer);
+    final result = nativeAskarKeyFromSeed(
+      algPointer,
+      byteBufferPointer.ref,
+      methodPointer,
+      localKeyHandlePtr,
+    );
 
-  return ErrorCode.fromInt(result);
+    final errorCode = ErrorCode.fromInt(result);
+    final localKeyHandle = LocalKeyHandle.fromPointer(errorCode, localKeyHandlePtr);
+    return AskarResult<LocalKeyHandle>(errorCode, localKeyHandle);
+  } finally {
+    freePointer(algPointer);
+    freePointer(methodPointer);
+    freeByteBufferPointer(byteBufferPointer);
+    freePointer(localKeyHandlePtr);
+  }
 }
 
 AskarResult<LocalKeyHandle> askarKeyGenerate(

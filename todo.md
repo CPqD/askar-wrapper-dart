@@ -78,11 +78,11 @@
 
 - [x] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
-- [ ] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
+- [x] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
 
 - [x] askar_key_from_secret_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number; **(required)**
 
-- [ ] askar_key_from_seed: (args_0: string, args_1: Buffer, args_2: string, args_3: Buffer) => number;
+- [x] askar_key_from_seed: (args_0: string, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 
 - [x] askar_key_generate: (args_0: string, args_1: string, args_2: number, args_3: Buffer) => number; **(required)**
 

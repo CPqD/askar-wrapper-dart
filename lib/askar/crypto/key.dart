@@ -9,6 +9,7 @@ import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/enums/askar_key_backend.dart';
 import '../../askar/enums/askar_signature_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
+import '../enums/askar_key_method.dart';
 
 class Key {
   final LocalKeyHandle localKeyHandle;
@@ -25,17 +26,16 @@ class Key {
     }
   }
 
-  // TODO
-  // static AskarKey fromSeed(
-  //     {required KeyAlgorithm algorithm,
-  //     required Uint8List seed,
-  //     KeyMethod method = KeyMethod.none}) {
-  //   try {
-  //     return AskarKey(askarKeyFromSeed(algorithm, seed, method).value);
-  //   } catch (e) {
-  //     throw AskarKeyException('Error getting key from seed: $e');
-  //   }
-  // }
+  static Key fromSeed(
+      {required KeyAlgorithm algorithm,
+      required Uint8List seed,
+      KeyMethod method = KeyMethod.none}) {
+    try {
+      return Key(askarKeyFromSeed(algorithm, seed, method).value);
+    } catch (e) {
+      throw AskarKeyException('Error getting key from seed: $e');
+    }
+  }
 
   static Key fromSecretBytes(
       {required KeyAlgorithm algorithm, required Uint8List secretKey}) {

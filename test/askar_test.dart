@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+
 import 'dart:typed_data';
 
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
@@ -11,6 +12,7 @@ import 'package:askar_flutter_sdk/askar/enums/askar_entry_operation.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_error_code.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_key_backend.dart';
+import 'package:askar_flutter_sdk/askar/enums/askar_key_method.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_signature_algorithm.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_store_key_method.dart';
 import 'package:convert/convert.dart';
@@ -70,6 +72,30 @@ void main() {
       askarStoreGenerateRawKeyTest();
 
       askarStoreGenerateRawKeyTest(seed: utf8.encode("00000000000000000000000000000My1"));
+    });
+
+    test('Key From Seed Test', () async {
+      final seed1 = utf8.encode("testseed000000000000000000000001");
+
+      final resultKey1None =
+          keyFromSeedTest(KeyAlgorithm.bls12381G1, seed1, KeyMethod.none);
+      final resultKey2None = keyFromSeedTest(KeyAlgorithm.bls12381G1, seed1);
+      final resultKey3Bls =
+          keyFromSeedTest(KeyAlgorithm.bls12381G1, seed1, KeyMethod.blsKeygen);
+      final resultKey4Bls =
+          keyFromSeedTest(KeyAlgorithm.bls12381G1, seed1, KeyMethod.blsKeygen);
+
+      final a1 =
+          keyGetJwkThumbprintTest(resultKey1None.value, KeyAlgorithm.bls12381G1).value;
+      final a2 =
+          keyGetJwkThumbprintTest(resultKey2None.value, KeyAlgorithm.bls12381G1).value;
+      final a3 =
+          keyGetJwkThumbprintTest(resultKey3Bls.value, KeyAlgorithm.bls12381G1).value;
+      final a4 =
+          keyGetJwkThumbprintTest(resultKey4Bls.value, KeyAlgorithm.bls12381G1).value;
+
+      expect(a1, equals(a2));
+      expect(a3, equals(a4));
     });
 
     test('Attempt to read from an unexisting category', () async {
@@ -1126,6 +1152,17 @@ AskarResult<LocalKeyHandle> keyFromKeyExchangeTest(
 ) {
   final result = askarKeyFromKeyExchange(algorithm, secretKeyHandle, publicKeyHandle);
   printAskarResult('KeyFromKeyExchange', result);
+
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value.toInt(), greaterThan(0));
+
+  return result;
+}
+
+AskarResult<LocalKeyHandle> keyFromSeedTest(KeyAlgorithm algorithm, Uint8List seed,
+    [KeyMethod method = KeyMethod.none]) {
+  final result = askarKeyFromSeed(algorithm, seed, method);
+  printAskarResult('KeyFromSeed', result);
 
   expect(result.errorCode, ErrorCode.success);
   expect(result.value.toInt(), greaterThan(0));
