@@ -3,7 +3,9 @@ ASKAR_URL="https://github.com/openwallet-foundation/askar/releases/download/v0.3
 TARGET_DIR="android/app/src/main/jniLibs"
 
 # Create the target directory if it doesn't exist
-mkdir -p $TARGET_DIR
+if [ ! -d "$TARGET_DIR" ]; then
+  mkdir -p "$TARGET_DIR"
+fi
 
 # Download the tar.gz file
 echo "Downloading $ASKAR_URL..."

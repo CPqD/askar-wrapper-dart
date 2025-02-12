@@ -8,8 +8,15 @@ Wrapper for Dart around https://github.com/openwallet-foundation/askar
 
 ## Build Askar for Android
 
+### Linux
+
 ```bash
-./build_askar_android.sh 
+./build_askar_android_unix.sh 
+```
+
+### Windows
+```bash
+sh ./build_askar_android_dos.sh
 ```
 
 ## Rodar testes
