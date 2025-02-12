@@ -47,21 +47,24 @@ class CryptoBox {
     required Uint8List message,
   }) {
     try {
-        return askarKeyCryptoBoxSeal( recipientKey.handle, message,)
-            .getValueOrException();
+      return askarKeyCryptoBoxSeal(
+        recipientKey.handle,
+        message,
+      ).getValueOrException();
     } catch (e) {
       throw AskarKeyException('Error on crypto box seal: $e');
     }
   }
 
-// TODO
-  // static Uint8List sealOpen({
-  //   required AskarKey recipientKey,
-  //   required Uint8List ciphertext,
-  // }) {
-  //   return askarKeyCryptoBoxSealOpen(
-  //     ciphertext: ciphertext,
-  //     localKeyHandle: recipientKey.handle,
-  //   ).getValueOrException();
-  // }
+  static Uint8List sealOpen({
+    required Key recipientKey,
+    required Uint8List ciphertext,
+  }) {
+    try {
+      return askarKeyCryptoBoxSealOpen(recipientKey.handle, ciphertext)
+          .getValueOrException();
+    } catch (e) {
+      throw AskarKeyException('Error on crypto box seal open: $e');
+    }
+  }
 }
