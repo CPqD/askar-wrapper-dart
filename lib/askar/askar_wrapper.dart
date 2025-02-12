@@ -471,7 +471,7 @@ AskarResult<Uint8List> askarKeyCryptoBoxSeal(
     );
 
     final errorCode = ErrorCode.fromInt(result);
-    
+
     final value = secretBufferToBytesList(secretBufferPtr.ref);
 
     return AskarResult<Uint8List>(errorCode, value);
@@ -486,17 +486,19 @@ AskarResult<Uint8List> askarKeyCryptoBoxSealOpen(
   Pointer<NativeByteBuffer> byteBufferPointer = bytesListToByteBuffer(ciphertext);
   Pointer<NativeSecretBuffer> secretBufferPointer = calloc<NativeSecretBuffer>();
 
-  final funcResult = nativeAskarKeyCryptoBoxSealOpen(
-      localKeyHandle.toInt(), byteBufferPointer.ref, secretBufferPointer);
+  try {
+    final funcResult = nativeAskarKeyCryptoBoxSealOpen(
+        localKeyHandle.toInt(), byteBufferPointer.ref, secretBufferPointer);
 
-  final errorCode = ErrorCode.fromInt(funcResult);
-  final value = secretBufferToBytesList(secretBufferPointer.ref);
+    final errorCode = ErrorCode.fromInt(funcResult);
 
-  calloc.free(byteBufferPointer.ref.data);
-  calloc.free(byteBufferPointer);
-  calloc.free(secretBufferPointer);
+    final value = secretBufferToBytesList(secretBufferPointer.ref);
 
-  return AskarResult<Uint8List>(errorCode, value);
+    return AskarResult<Uint8List>(errorCode, value);
+  } finally {
+    freeByteBufferPointer(byteBufferPointer);
+    freeSecretBufferPointer(secretBufferPointer);
+  }
 }
 
 AskarResult<LocalKeyHandle> askarKeyDeriveEcdh1pu(
