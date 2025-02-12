@@ -1,40 +1,75 @@
 import 'dart:typed_data';
 
+import '../crypto/askar_encrypted_buffer.dart';
+import '../crypto/askar_handles.dart';
 import '../enums/askar_key_algorithm.dart';
+import '../enums/askar_signature_algorithm.dart';
 
 abstract class IAskarKey {
-  Future<bool> aeadDecrypt();
-  Future<bool> aeadEncrypt();
+  Uint8List aeadDecrypt(Uint8List ciphertext, Uint8List nonce);
+  AskarEncryptedBuffer aeadEncrypt(Uint8List message, {Uint8List? nonce, Uint8List? aad});
   Future<bool> aeadGetPadding();
   Future<bool> aeadGetParams();
   Uint8List aeadRandomNonce();
-  Future<bool> convert();
-  Future<bool> cryptoBox();
+  LocalKeyHandle convert(KeyAlgorithm alg);
+  Uint8List cryptoBox(LocalKeyHandle recipKey, LocalKeyHandle senderKey,
+      Uint8List message, Uint8List nonce);
   Future<bool> cryptoBoxOpen();
-  Future<bool> cryptoBoxRandomNonce(); //Sem Entrada de LocalKeyHandle
+  Uint8List cryptoBoxRandomNonce(); //Sem Entrada de LocalKeyHandle
   Future<bool> cryptoBoxSeal();
   Future<bool> cryptoBoxSealOpen();
-  Future<bool> deriveEcdh1Pu();
-  Future<bool> deriveEcdhEs();
-  Future<bool> free();
-  Future<bool> fromJwk(); //Sem Entrada de LocalKeyHandle -- SAIDA
-  Future<bool> fromKeyExchange();
-  Future<bool> fromPublicBytes(); //Sem Entrada de LocalKeyHandle -- SAIDA
-  Future<bool> fromSecretBytes(); //Sem Entrada de LocalKeyHandle -- SAIDA
-  Future<bool> fromSeed(); //Sem Entrada de LocalKeyHandle -- SAIDA
+  LocalKeyHandle deriveEcdh1Pu(
+      KeyAlgorithm algorithm,
+      LocalKeyHandle ephemeralKey,
+      LocalKeyHandle senderKey,
+      LocalKeyHandle recipientKey,
+      Uint8List algId,
+      Uint8List apu,
+      Uint8List apv,
+      {Uint8List? ccTag,
+      required bool receive});
+  LocalKeyHandle deriveEcdhEs(
+      KeyAlgorithm algorithm,
+      LocalKeyHandle ephemeralKey,
+      LocalKeyHandle recipientKey,
+      Uint8List algId,
+      Uint8List apu,
+      Uint8List apv,
+      bool receive);
+  void free(LocalKeyHandle handle);
 
-  Future<bool> getAlgorithm();
+  //implementação Estática????
+  // LocalKeyHandle fromJwk(); //Sem Entrada de LocalKeyHandle -- SAIDA
+  LocalKeyHandle fromKeyExchange(
+      KeyAlgorithm alg, LocalKeyHandle skHandle, LocalKeyHandle pkHandle);
+
+  //implementação Estática????
+  // LocalKeyHandle fromPublicBytes(KeyAlgorithm algorithm,
+  // Uint8List publicBytes); //Sem Entrada de LocalKeyHandle -- SAIDA
+
+  //implementação Estática????
+  // Future<bool> fromSecretBytes(); //Sem Entrada de LocalKeyHandle -- SAIDA
+
+  //implementação Estática????
+  // Future<bool> fromSeed(); //Sem Entrada de LocalKeyHandle -- SAIDA
+
+  KeyAlgorithm getAlgorithm();
   Future<bool> getEphemeral();
-  Future<bool> getJwkPublic();
+  String getJwkPublic(KeyAlgorithm algorithm);
   Future<bool> getJwkSecret();
   String getJwkThumbprint(KeyAlgorithm alg);
-  Future<bool> getPublicBytes();
-  Future<bool> getSecretBytes();
-  Future<bool> getSupportedBackends(); //Sem Entrada de LocalKeyHandle nem saída
-  Future<bool> signMessage();
-  Future<bool> unwrapKey();
-  Future<bool> verifySignature();
-  Future<bool> wrapKey();
+  Uint8List getPublicBytes();
+  Uint8List getSecretBytes();
+
+  //implementação Estática???
+  // StringListHandle getSupportedBackends();
+  //Sem Entrada de LocalKeyHandle nem saída
+  Uint8List signMessage(Uint8List message, SignatureAlgorithm sigType);
+  LocalKeyHandle unwrapKey(KeyAlgorithm algorithm, Uint8List ciphertext,
+      {Uint8List? nonce, Uint8List? tag});
+  bool verifySignature(
+      Uint8List message, Uint8List signature, SignatureAlgorithm sigType);
+  AskarEncryptedBuffer wrapKey(LocalKeyHandle other, {Uint8List? nonce});
 
   //Sem Entrada de LocalKeyHandle -- SAIDA
   //Implementação Estática no Repositório
