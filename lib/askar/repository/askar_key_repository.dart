@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../askar/crypto/handles.dart';
 import '../askar_wrapper.dart';
-import '../crypto/askar_encrypted_buffer.dart';
+import '../crypto/encrypted_buffer.dart';
 import '../enums/askar_error_code.dart';
 import '../enums/askar_key_algorithm.dart';
 import '../enums/askar_key_backend.dart';
@@ -33,8 +33,7 @@ class AskarKeyRepository implements IAskarKey {
   }
 
   @override
-  AskarEncryptedBuffer aeadEncrypt(Uint8List message,
-      {Uint8List? nonce, Uint8List? aad}) {
+  EncryptedBuffer aeadEncrypt(Uint8List message, {Uint8List? nonce, Uint8List? aad}) {
     final result = askarKeyAeadEncrypt(handle!, message, nonce: nonce, aad: aad);
     if (result.errorCode == ErrorCode.success) {
       return result.value;
@@ -315,7 +314,7 @@ class AskarKeyRepository implements IAskarKey {
   }
 
   @override
-  AskarEncryptedBuffer wrapKey(LocalKeyHandle other, {Uint8List? nonce}) {
+  EncryptedBuffer wrapKey(LocalKeyHandle other, {Uint8List? nonce}) {
     final result = askarKeyWrapKey(handle!, other);
     if (result.errorCode == ErrorCode.success) {
       return result.value;

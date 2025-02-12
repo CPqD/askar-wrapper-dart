@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import '../crypto/askar_encrypted_buffer.dart';
-import '../crypto/askar_handles.dart';
+import '../crypto/encrypted_buffer.dart';
+import '../crypto/handles.dart';
 import '../enums/askar_key_algorithm.dart';
 import '../enums/askar_signature_algorithm.dart';
 
 abstract class IAskarKey {
   Uint8List aeadDecrypt(Uint8List ciphertext, Uint8List nonce);
-  AskarEncryptedBuffer aeadEncrypt(Uint8List message, {Uint8List? nonce, Uint8List? aad});
+  EncryptedBuffer aeadEncrypt(Uint8List message, {Uint8List? nonce, Uint8List? aad});
   Future<bool> aeadGetPadding();
   Future<bool> aeadGetParams();
   Uint8List aeadRandomNonce();
@@ -69,7 +69,7 @@ abstract class IAskarKey {
       {Uint8List? nonce, Uint8List? tag});
   bool verifySignature(
       Uint8List message, Uint8List signature, SignatureAlgorithm sigType);
-  AskarEncryptedBuffer wrapKey(LocalKeyHandle other, {Uint8List? nonce});
+  EncryptedBuffer wrapKey(LocalKeyHandle other, {Uint8List? nonce});
 
   //Sem Entrada de LocalKeyHandle -- SAIDA
   //Implementação Estática no Repositório
