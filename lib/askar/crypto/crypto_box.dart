@@ -42,16 +42,17 @@ class CryptoBox {
   //   ).getValueOrException();
   // }
 
-// TODO
-  // static Uint8List seal({
-  //   required AskarKey recipientKey,
-  //   required Uint8List message,
-  // }) {
-  //   return askarKeyCryptoBoxSeal(
-  //     message: message,
-  //     localKeyHandle: recipientKey.handle,
-  //   ).getValueOrException();
-  // }
+  static Uint8List seal({
+    required Key recipientKey,
+    required Uint8List message,
+  }) {
+    try {
+        return askarKeyCryptoBoxSeal( recipientKey.handle, message,)
+            .getValueOrException();
+    } catch (e) {
+      throw AskarKeyException('Error on crypto box seal: $e');
+    }
+  }
 
 // TODO
   // static Uint8List sealOpen({

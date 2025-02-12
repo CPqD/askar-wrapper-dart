@@ -462,20 +462,22 @@ AskarResult<Uint8List> askarKeyCryptoBoxSeal(
   Pointer<NativeByteBuffer> messagePtr = bytesListToByteBuffer(message);
   Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
 
-  final result = nativeAskarKeyCryptoBoxSeal(
-    handle.toInt(),
-    messagePtr.ref,
-    secretBufferPtr,
-  );
+  try {
+    final result = nativeAskarKeyCryptoBoxSeal(
+      handle.toInt(),
+      messagePtr.ref,
+      secretBufferPtr,
+    );
 
-  final errorCode = ErrorCode.fromInt(result);
-  final value = secretBufferToBytesList(secretBufferPtr.ref);
+    final errorCode = ErrorCode.fromInt(result);
+    
+    final value = secretBufferToBytesList(secretBufferPtr.ref);
 
-  calloc.free(messagePtr.ref.data);
-  calloc.free(messagePtr);
-  calloc.free(secretBufferPtr);
-
-  return AskarResult<Uint8List>(errorCode, value);
+    return AskarResult<Uint8List>(errorCode, value);
+  } finally {
+    freeByteBufferPointer(messagePtr);
+    freeSecretBufferPointer(secretBufferPtr);
+  }
 }
 
 AskarResult<Uint8List> askarKeyCryptoBoxSealOpen(
