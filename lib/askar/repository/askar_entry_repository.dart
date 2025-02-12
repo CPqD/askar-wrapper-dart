@@ -57,7 +57,7 @@ class AskarEntryRepository implements IAskarEntry {
   Map getTags(int index) {
     final response = askarEntryListGetTags(handle!, 0);
     if (response.errorCode == ErrorCode.success) {
-      return response.value;
+      return jsonDecode(response.value);
     }
     throw AskarEntryException("Erro ao buscar Tags - Verificar EntryListHandle");
   }

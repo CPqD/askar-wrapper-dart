@@ -34,7 +34,8 @@ class Entry {
   Uint8List get rawValue => _list.getValue(_pos);
 
   Map<String, dynamic> get tags {
-    return _list.getTags(_pos);
+    final tags = _list.getTags(_pos);
+    return (tags.isEmpty) ? {} : jsonDecode(tags);
   }
 
   EntryObject toJson({bool shouldParseValueToJson = false}) {

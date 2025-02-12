@@ -157,8 +157,7 @@ AskarResult<String> askarEntryListGetName(EntryListHandle handle, int index) {
   }
 }
 
-AskarResult<Map<String, dynamic>> askarEntryListGetTags(
-    EntryListHandle handle, int index) {
+AskarResult<String> askarEntryListGetTags(EntryListHandle handle, int index) {
   Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
   try {
@@ -166,14 +165,10 @@ AskarResult<Map<String, dynamic>> askarEntryListGetTags(
 
     final errorCode = ErrorCode.fromInt(funcResult);
 
-    Map<String, dynamic> value = {};
+    final value =
+        (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
 
-    if (errorCode == ErrorCode.success) {
-      String mapString = utf8PtPointer.value.toDartString();
-      value = jsonDecode(mapString);
-    }
-
-    return AskarResult<Map<String, dynamic>>(errorCode, value);
+    return AskarResult<String>(errorCode, value);
   } finally {
     freeDoublePointer(utf8PtPointer);
   }
@@ -676,8 +671,7 @@ AskarResult<String> askarKeyEntryListGetName(KeyEntryListHandle handle, int inde
   }
 }
 
-AskarResult<Map<String, dynamic>> askarKeyEntryListGetTags(
-    KeyEntryListHandle handle, int index) {
+AskarResult<String> askarKeyEntryListGetTags(KeyEntryListHandle handle, int index) {
   Pointer<Pointer<Utf8>> utf8PtPointer = calloc<Pointer<Utf8>>();
 
   try {
@@ -685,14 +679,10 @@ AskarResult<Map<String, dynamic>> askarKeyEntryListGetTags(
 
     final errorCode = ErrorCode.fromInt(result);
 
-    Map<String, dynamic> value = {};
+    final value =
+        (errorCode == ErrorCode.success) ? utf8PtPointer.value.toDartString() : "";
 
-    if (errorCode == ErrorCode.success) {
-      String mapString = utf8PtPointer.value.toDartString();
-      value = jsonDecode(mapString);
-    }
-
-    return AskarResult<Map<String, dynamic>>(errorCode, value);
+    return AskarResult<String>(errorCode, value);
   } finally {
     freeDoublePointer(utf8PtPointer);
   }

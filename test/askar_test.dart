@@ -813,11 +813,13 @@ AskarResult<Map> keyEntryListGetTagsTest(KeyEntryListHandle handle, int index,
     {required Map<dynamic, dynamic> expectedValue}) {
   final result = askarKeyEntryListGetTags(handle, index);
 
+  final value = jsonDecode(result.value);
+
   printAskarResult('KeyEntryListGetTags', result);
   expect(result.errorCode, ErrorCode.success);
-  expect(result.value, expectedValue);
+  expect(value, expectedValue);
 
-  return result;
+  return AskarResult(result.errorCode, value);
 }
 
 AskarResult<String> keyEntryListGetAlgorithmTest(KeyEntryListHandle handle, int index,
@@ -1041,12 +1043,14 @@ AskarResult<Map> entryListGetTagsTest(EntryListHandle handle, int index,
     {required Map expectedTags}) {
   final result = askarEntryListGetTags(handle, index);
 
+  final value = jsonDecode(result.value);
+
   printAskarResult('EntryListGetTags', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.value, equals(expectedTags));
+  expect(value, equals(expectedTags));
 
-  return result;
+  return AskarResult(result.errorCode, value);
 }
 
 AskarResult<String> entryListGetNameTest(EntryListHandle handle, int index,

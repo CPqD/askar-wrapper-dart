@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 
@@ -85,7 +84,7 @@ class EntryListHandle extends AskarHandle {
     }
   }
 
-  Map<String, dynamic> getTags(int index) {
+  String getTags(int index) {
     try {
       return askarEntryListGetTags(this, index).getValueOrException();
     } catch (e) {
@@ -126,17 +125,17 @@ class KeyEntryListHandle extends AskarHandle {
     }
   }
 
-  List<String> getTags(int index) {
+  String getTags(int index) {
     try {
-      return askarKeyEntryListGetTags(this, index).getValueOrException().keys.toList();
+      return askarKeyEntryListGetTags(this, index).getValueOrException();
     } catch (e) {
       throw AskarKeyEntryListException('Failed to get tags: $e');
     }
   }
 
-  Map<String, dynamic> getMetadata(int index) {
+  String getMetadata(int index) {
     try {
-      return jsonDecode(askarKeyEntryListGetMetadata(this, index).getValueOrException());
+      return askarKeyEntryListGetMetadata(this, index).getValueOrException();
     } catch (e) {
       throw AskarKeyEntryListException('Failed to get metadata: $e');
     }

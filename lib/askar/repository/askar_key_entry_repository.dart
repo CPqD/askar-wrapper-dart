@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../askar/crypto/handles.dart';
 import '../../askar/models/askar_key_entry.dart';
 import '../askar_wrapper.dart';
@@ -74,7 +76,7 @@ class AskarKeyEntryRepository implements IAskarKeyEntry {
     checkHandle();
     final response = askarKeyEntryListGetTags(handle!, index);
     if (response.errorCode == ErrorCode.success) {
-      return response.value;
+      return jsonDecode(response.value);
     }
     throw AskarKeyEntryListException("Erro buscar Tags - Verificar KeyEntryListHandle");
   }
