@@ -28,7 +28,7 @@ class ScanHandle extends AskarHandle {
 
   void free() {
     try {
-      askarScanFree(this);
+      askarScanFree(this).throwOnError();
     } catch (e) {
       throw AskarScanException('Failed to free scan: $e');
     }

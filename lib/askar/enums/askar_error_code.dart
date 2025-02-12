@@ -1,3 +1,5 @@
+import 'package:askar_flutter_sdk/askar/exceptions/exceptions.dart';
+
 enum ErrorCode {
   success(0),
   backend(1),
@@ -18,5 +20,15 @@ enum ErrorCode {
       (e) => e.code == code,
       orElse: () => throw ArgumentError('Invalid error code: $code'),
     );
+  }
+
+  bool isSuccess() {
+    return (code == ErrorCode.success.code);
+  }
+
+  void throwOnError() {
+    if (!isSuccess()) {
+      throw AskarErrorCodeException(ErrorCode.fromInt(code));
+    }
   }
 }
