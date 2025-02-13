@@ -92,6 +92,23 @@ Callback<CbFuncWithInt64> newCallbackWithInt64() {
   return Callback<CbFuncWithInt64>(nativeCallable, completer, nextCallbackId());
 }
 
+typedef CbFuncWithInt8 = Void Function(NativeCallbackId, Int32, Int8);
+
+Callback<CbFuncWithInt8> newCallbackWithInt8() {
+  final completer = Completer<AskarCallbackResult>();
+
+  late final NativeCallable<CbFuncWithInt8> nativeCallable;
+
+  void callback(int callbackId, int errorCode, int handle) {
+    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true, handle));
+    nativeCallable.close();
+  }
+
+  nativeCallable = NativeCallable<CbFuncWithInt8>.listener(callback);
+
+  return Callback<CbFuncWithInt8>(nativeCallable, completer, nextCallbackId());
+}
+
 typedef CbFuncWithoutHandle = Void Function(NativeCallbackId, Int32);
 
 Callback<CbFuncWithoutHandle> newCallbackWithoutHandle() {

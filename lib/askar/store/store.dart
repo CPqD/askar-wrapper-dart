@@ -76,10 +76,11 @@ class Store {
     }
   }
 
-  // TODO
-  Future<void> removeProfile(String name) async {
+  Future<bool> removeProfile(String name) async {
     try {
-      // (await askarStoreRemoveProfile(handle, name)).getValueOrException();
+      final result = await askarStoreRemoveProfile(handle, name);
+      result.throwOnError();
+      return result.value;
     } catch (e) {
       throw AskarStoreException('Failed to remove profile: $e');
     }

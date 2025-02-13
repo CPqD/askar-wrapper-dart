@@ -1913,25 +1913,25 @@ ErrorCode askarStoreRemove(
   }
 }
 
-ErrorCode askarStoreRemoveProfile(
+Future<AskarCallbackResult> askarStoreRemoveProfile(
   StoreHandle handle,
   String profile,
-  Pointer<NativeFunction<AskarStoreRemoveProfileCallback>> cb,
-  int cbId,
-) {
+) async {
   Pointer<Utf8> profilePointer = nullptr;
 
   try {
     profilePointer = profile.toNativeUtf8();
 
+    final callback = newCallbackWithInt8();
+
     final result = nativeAskarStoreRemoveProfile(
       handle.toInt(),
       profilePointer,
-      cb,
-      cbId,
+      callback.nativeCallable.nativeFunction,
+      callback.id,
     );
 
-    return ErrorCode.fromInt(result);
+    return await callback.handleResult(result);
   } finally {
     freePointer(profilePointer);
   }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
+import 'package:askar_flutter_sdk/askar/askar_utils.dart';
 import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
 import 'package:askar_flutter_sdk/askar/crypto/aead_params.dart';
 import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
@@ -449,7 +450,7 @@ void main() {
   group('Store Profile Tests:', () {
     late StoreHandle storeHandle;
     late String storeKey;
-    test('Store Create Profile', () async {
+    test('Store Create and Remove Profile', () async {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
@@ -463,6 +464,8 @@ void main() {
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
 
       await askarStoreListProfilesTest(storeHandle);
+
+      await storeRemoveProfileTest(storeHandle, profile);
 
       await storeCloseTest(storeHandle);
     });
@@ -1278,6 +1281,19 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
   return result;
 }
 
+Future<AskarCallbackResult> storeRemoveProfileTest(
+    StoreHandle handle, String profile) async {
+  final result = await askarStoreRemoveProfile(handle, profile);
+
+  printAskarResult('StoreRemoveProfile', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(intToBool(result.value), equals(true));
+
+  return result;
+}
+
 Future<AskarCallbackResult> storeCloseTest(StoreHandle handle) async {
   final result = await askarStoreClose(handle);
 
@@ -1337,7 +1353,8 @@ Future<AskarCallbackResult> storeCreateProfileTest(StoreHandle handle, String pr
   return result;
 }
 
-Future<AskarResult<int>> askarStoreListProfilesTest(StoreHandle handle) async {
+Future<AskarResult<StringListHandle>> askarStoreListProfilesTest(
+    StoreHandle handle) async {
   final result = await askarStoreListProfiles(handle);
 
   printAskarResult('StoreListProfiles', result);

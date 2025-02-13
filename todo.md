@@ -162,7 +162,7 @@
 
 - [ ] askar_store_remove: (args_0: string, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_remove_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_store_remove_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
 - [x] askar_store_set_default_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
