@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:askar_flutter_sdk/askar/askar_callbacks.dart';
 import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
+import 'package:askar_flutter_sdk/askar/crypto/aead_params.dart';
 import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
 import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_entry_operation.dart';
@@ -604,6 +605,18 @@ AskarResult<Uint8List> keyAeadDecryptTest(
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expected));
+
+  return result;
+}
+
+AskarResult<AeadParams> keyAeadGetParamsTest(LocalKeyHandle handle) {
+  final result = askarKeyAeadGetParams(handle);
+
+  printAskarResult('KeyAeadGetParamsTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.tagLength, greaterThan(0));
+  expect(result.value.nonceLength, greaterThan(0));
 
   return result;
 }

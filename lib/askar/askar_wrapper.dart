@@ -18,6 +18,7 @@ import '../../askar/exceptions/exceptions.dart';
 
 import 'askar_native_functions.dart';
 import 'askar_utils.dart';
+import 'crypto/aead_params.dart';
 
 final class AskarResult<T> {
   final ErrorCode errorCode;
@@ -318,16 +319,25 @@ ErrorCode askarKeyAeadGetPadding(
   return ErrorCode.fromInt(result);
 }
 
-ErrorCode askarKeyAeadGetParams(
-  LocalKeyHandle handle,
-  Pointer<NativeAeadParams> out,
-) {
-  final result = nativeAskarKeyAeadGetParams(
-    handle.toInt(),
-    out,
-  );
+AskarResult<AeadParams> askarKeyAeadGetParams(LocalKeyHandle handle) {
+  Pointer<NativeAeadParams> aeadParamsPtr = calloc<NativeAeadParams>();
 
-  return ErrorCode.fromInt(result);
+  try {
+    final result = nativeAskarKeyAeadGetParams(
+      handle.toInt(),
+      aeadParamsPtr,
+    );
+
+    final errorCode = ErrorCode.fromInt(result);
+
+    final value = (errorCode == ErrorCode.success)
+        ? readNativAeadParams(aeadParamsPtr.ref)
+        : AeadParams(0, 0);
+
+    return AskarResult<AeadParams>(errorCode, value);
+  } finally {
+    freePointer(aeadParamsPtr);
+  }
 }
 
 AskarResult<Uint8List> askarKeyAeadRandomNonce(LocalKeyHandle handle) {
