@@ -92,8 +92,13 @@ class Key {
     }
   }
 
-  // TODO
-  // bool get ephemeral => askar.keyGetEphemeral(localKeyHandle: handle);
+  bool get ephemeral {
+    try {
+      return askarKeyGetEphemeral(localKeyHandle).getValueOrException();
+    } catch (e) {
+      throw AskarKeyException('Failed to get key ephemeral: $e');
+    }
+  }
 
   Uint8List get publicBytes {
     try {

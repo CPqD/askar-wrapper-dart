@@ -423,6 +423,16 @@ void main() {
 
       askarStringListFree(stringListHandle);
     });
+
+    test('Key Get Ephemeral', () async {
+      final keyGenerateResult = keyGenerateTest(KeyAlgorithm.ed25519);
+      final localKeyHandle = keyGenerateResult.value;
+      keyGetEphemeralTest(localKeyHandle, false);
+
+      final keyGenerateResult2 = keyGenerateTest(KeyAlgorithm.ed25519, ephemeral: true);
+      final localKeyHandle2 = keyGenerateResult2.value;
+      keyGetEphemeralTest(localKeyHandle2, true);
+    });
   });
 
   group('Store Profile Tests:', () {
@@ -517,11 +527,22 @@ void main() {
   });
 }
 
+AskarResult<bool> keyGetEphemeralTest(LocalKeyHandle handle,
+    [bool expectedValue = false]) {
+  final result = askarKeyGetEphemeral(handle);
+  printAskarResult('KeyGetEphemeral', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, expectedValue);
+
+  return result;
+}
+
 AskarResult<LocalKeyHandle> keyConvertTest(
     LocalKeyHandle handle, KeyAlgorithm algorithm) {
   final result = askarKeyConvert(handle, algorithm);
 
-  printAskarResult('KeyConvertTest', result);
+  printAskarResult('KeyConvert', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
 
@@ -532,7 +553,7 @@ AskarResult<EncryptedBuffer> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List
     {Uint8List? nonce, Uint8List? aad}) {
   final result = askarKeyAeadEncrypt(handle, message, nonce: nonce, aad: aad);
 
-  printAskarResult('KeyAeadEncryptTest', result);
+  printAskarResult('KeyAeadEncrypt', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.buffer.isNotEmpty, equals(true));
@@ -552,7 +573,7 @@ AskarResult<Uint8List> keyAeadDecryptTest(
 }) {
   final result = askarKeyAeadDecrypt(handle, ciphertext, nonce, tag: tag, aad: aad);
 
-  printAskarResult('KeyAeadDecryptTest', result);
+  printAskarResult('KeyAeadDecrypt', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expected));
@@ -686,7 +707,7 @@ AskarResult<EncryptedBuffer> keyWrapKeyTest(LocalKeyHandle handle, LocalKeyHandl
 
   final result = askarKeyWrapKey(handle, other, nonce: nonce);
 
-  printAskarResult('KeyWrapKeyTest', result);
+  printAskarResult('KeyWrapKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.buffer.isNotEmpty, equals(true));
@@ -704,7 +725,7 @@ AskarResult<LocalKeyHandle> keyUnwrapKeyTest(
 
   final result = askarKeyUnwrapKey(handle, algorithm, ciphertext, nonce: nonce, tag: tag);
 
-  printAskarResult('KeyUnwrapKeyTest', result);
+  printAskarResult('KeyUnwrapKey', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.toInt(), greaterThan(0));
@@ -745,7 +766,7 @@ AskarResult<LocalKeyHandle> keyDeriveEcdh1puTest(
       algorithm, ephemeralKey, senderKey, recipientKey, algId, apu, apv,
       ccTag: ccTag, receive: receive);
 
-  printAskarResult('KeyDeriveEcdh1puTest', result);
+  printAskarResult('KeyDeriveEcdh1pu', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.toInt(), greaterThan(0));
@@ -1103,7 +1124,7 @@ AskarResult<LocalKeyHandle> keyEntryListLoadLocalTest(
     KeyEntryListHandle handle, int index) {
   final result = askarKeyEntryListLoadLocal(handle, index);
 
-  printAskarResult('KeyEntryListLoadLocalTest', result);
+  printAskarResult('KeyEntryListLoadLocal', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.toInt(), greaterThan(0));
@@ -1245,7 +1266,7 @@ AskarResult<String> stringListGetItemTest(StringListHandle handle, int index,
     {required String expected}) {
   final result = askarStringListGetItem(handle, index);
 
-  printAskarResult('StringListGetItemTest', result);
+  printAskarResult('StringListGetItem', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, equals(expected));
@@ -1321,7 +1342,7 @@ AskarResult<Uint8List> keyCryptoBoxSealOpenTest(
     LocalKeyHandle handle, Uint8List ciphertext) {
   final result = askarKeyCryptoBoxSealOpen(handle, ciphertext);
 
-  printAskarResult('KeyCryptoBoxSealOpenTest', result);
+  printAskarResult('KeyCryptoBoxSealOpen', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));

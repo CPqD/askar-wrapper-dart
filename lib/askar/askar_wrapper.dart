@@ -898,9 +898,21 @@ AskarResult<String> askarKeyGetAlgorithm(LocalKeyHandle handle) {
   }
 }
 
-ErrorCode askarKeyGetEphemeral(LocalKeyHandle handle, Pointer<Int8> out) {
-  final result = nativeAskarKeyGetEphemeral(handle.toInt(), out);
-  return ErrorCode.fromInt(result);
+AskarResult<bool> askarKeyGetEphemeral(
+  LocalKeyHandle handle,
+) {
+  Pointer<Int8> intPointer = calloc<Int8>();
+  try {
+    final result = nativeAskarKeyGetEphemeral(handle.toInt(), intPointer);
+
+    final errorCode = ErrorCode.fromInt(result);
+
+    final int output = (errorCode == ErrorCode.success) ? intPointer.value.toInt() : 0;
+
+    return AskarResult<bool>(errorCode, intToBool(output));
+  } finally {
+    freePointer(intPointer);
+  }
 }
 
 AskarResult<String> askarKeyGetJwkPublic(
