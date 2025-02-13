@@ -4,6 +4,7 @@ import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
 import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/enums/askar_store_key_method.dart';
 import 'package:askar_flutter_sdk/askar/exceptions/exceptions.dart';
+import 'package:askar_flutter_sdk/askar/store/scan.dart';
 import 'package:askar_flutter_sdk/askar/store/session.dart';
 import 'open_session.dart';
 
@@ -160,31 +161,26 @@ class Store {
     return await _opener!.open();
   }
 
-  // // TODO
-  // Scan scan({
-  //   required String category,
-  //   Map<String, dynamic>? tagFilter,
-  //   int? offset,
-  //   int? limit,
-  //   String? profile,
-  //   String? orderBy,
-  //   bool? descending,
-  // }) {
-  //   return Scan(
-  //     store: this,
-  //     category: category,
-  //     tagFilter: tagFilter,
-  //     offset: offset,
-  //     limit: limit,
-  //     profile: profile,
-  //     orderBy: orderBy,
-  //     descending: descending,
-  //   );
-
-  //   try {} catch (e) {
-  //     throw AskarStoreException('Failed to scan: $e');
-  //   }
-  // }
+  Scan scan({
+    required String category,
+    Map<String, dynamic>? tagFilter,
+    int? offset,
+    int? limit,
+    String? profile,
+    String? orderBy,
+    bool? descending,
+  }) {
+    return Scan(
+      store: this,
+      category: category,
+      tagFilter: tagFilter,
+      offset: offset,
+      limit: limit,
+      profile: profile,
+      orderBy: orderBy,
+      descending: descending,
+    );
+  }
 
   // // TODO
   // Future<void> copyTo({
