@@ -460,10 +460,13 @@ void main() {
       storeHandle = storeOpenResult.value;
 
       String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
+      String specUri = '';
 
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
 
       await askarStoreListProfilesTest(storeHandle);
+
+      await storeRemoveTest(specUri);
 
       await storeRemoveProfileTest(storeHandle, profile);
 
@@ -1277,6 +1280,19 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+Future<AskarCallbackResult> storeRemoveTest(
+    String profile) async {
+  final result = await askarStoreRemoveProfile(specUri, profile);
+
+  printAskarResult('StoreRemove', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(intToBool(result.value), equals(true));
 
   return result;
 }
