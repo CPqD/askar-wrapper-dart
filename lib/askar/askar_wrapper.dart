@@ -1891,23 +1891,24 @@ Future<AskarCallbackResult> askarStoreRekey(StoreHandle handle, String passKey,
   }
 }
 
-ErrorCode askarStoreRemove(
+Future<AskarCallbackResult> askarStoreRemove(
   String specUri,
-  Pointer<NativeFunction<AskarStoreRemoveCallback>> cb,
-  int cbId,
-) {
+) async {
   Pointer<Utf8> specUriPointer = nullptr;
 
   try {
     specUriPointer = specUri.toNativeUtf8();
 
+    final callback = newCallbackWithInt8();
+
     final result = nativeAskarStoreRemove(
       specUriPointer,
-      cb,
-      cbId,
+      callback.nativeCallable.nativeFunction,
+      callback.id,
     );
 
-    return ErrorCode.fromInt(result);
+    return await callback.handleResult(result);
+
   } finally {
     freePointer(specUriPointer);
   }
