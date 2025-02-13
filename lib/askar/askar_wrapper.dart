@@ -415,22 +415,38 @@ AskarResult<Uint8List> askarKeyCryptoBox(
   }
 }
 
-ErrorCode askarKeyCryptoBoxOpen(
+AskarResult<Uint8List> askarKeyCryptoBoxOpen(
   LocalKeyHandle recipKey,
   LocalKeyHandle senderKey,
-  Pointer<NativeByteBuffer> message,
-  Pointer<NativeByteBuffer> nonce,
-  Pointer<NativeSecretBuffer> out,
+  Uint8List message,
+  Uint8List nonce,
 ) {
-  final result = nativeAskarKeyCryptoBoxOpen(
-    recipKey.toInt(),
-    senderKey.toInt(),
-    message,
-    nonce,
-    out,
-  );
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
+  Pointer<NativeByteBuffer> messageByteBufferPtr = nullptr;
+  Pointer<NativeByteBuffer> nonceByteBufferPtr = nullptr;
+  try {
+    messageByteBufferPtr = bytesListToByteBuffer(message);
+    nonceByteBufferPtr = bytesListToByteBuffer(nonce);
 
-  return ErrorCode.fromInt(result);
+    final result = nativeAskarKeyCryptoBoxOpen(
+      recipKey.toInt(),
+      senderKey.toInt(),
+      messageByteBufferPtr.ref,
+      nonceByteBufferPtr.ref,
+      secretBufferPtr,
+    );
+
+    final errorCode = ErrorCode.fromInt(result);
+
+    final Uint8List value = (errorCode == ErrorCode.success)
+        ? secretBufferToBytesList(secretBufferPtr.ref)
+        : Uint8List(0);
+    return AskarResult<Uint8List>(errorCode, value);
+  } finally {
+    freeSecretBufferPointer(secretBufferPtr);
+    freeByteBufferPointer(messageByteBufferPtr);
+    freeByteBufferPointer(nonceByteBufferPtr);
+  }
 }
 
 AskarResult<Uint8List> askarKeyCryptoBoxRandomNonce() {

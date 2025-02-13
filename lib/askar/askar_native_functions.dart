@@ -341,16 +341,16 @@ final int Function(
 typedef AskarKeyCryptoBoxOpenNative = Int32 Function(
   NativeLocalKeyHandle recip_key,
   NativeLocalKeyHandle sender_key,
-  Pointer<NativeByteBuffer> message,
-  Pointer<NativeByteBuffer> nonce,
+  NativeByteBuffer message,
+  NativeByteBuffer nonce,
   Pointer<NativeSecretBuffer> out,
 );
 
 final int Function(
   int recip_key,
   int sender_key,
-  Pointer<NativeByteBuffer> message,
-  Pointer<NativeByteBuffer> nonce,
+  NativeByteBuffer message,
+  NativeByteBuffer nonce,
   Pointer<NativeSecretBuffer> out,
 ) nativeAskarKeyCryptoBoxOpen = nativeLib
     .lookup<NativeFunction<AskarKeyCryptoBoxOpenNative>>('askar_key_crypto_box_open')

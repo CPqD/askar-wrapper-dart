@@ -86,7 +86,7 @@ class _ExecutePageState extends State<ExecutePage> {
   }
 
   closeSession() async {
-    print('CLOSE SESSION');
+    debugPrint('CLOSE SESSION');
     if (session != null) {
       await session!.close();
       result = '$result SessionClose:\n';

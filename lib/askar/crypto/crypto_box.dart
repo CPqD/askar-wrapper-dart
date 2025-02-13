@@ -20,27 +20,34 @@ class CryptoBox {
     required Uint8List nonce,
   }) {
     try {
-      return askarKeyCryptoBox(recipientKey.handle, senderKey.handle, message, nonce)
-          .getValueOrException();
+      return askarKeyCryptoBox(
+        recipientKey.handle,
+        senderKey.handle,
+        message,
+        nonce,
+      ).getValueOrException();
     } catch (e) {
       throw AskarKeyException('Error on crypto box: $e');
     }
   }
 
-// TODO
-  // static Uint8List open({
-  //   required AskarKey recipientKey,
-  //   required AskarKey senderKey,
-  //   required Uint8List message,
-  //   required Uint8List nonce,
-  // }) {
-  //   return askarKeyCryptoBoxOpen(
-  //     nonce: nonce,
-  //     message: message,
-  //     senderKey: senderKey.handle,
-  //     recipientKey: recipientKey.handle,
-  //   ).getValueOrException();
-  // }
+  static Uint8List open({
+    required Key recipientKey,
+    required Key senderKey,
+    required Uint8List message,
+    required Uint8List nonce,
+  }) {
+    try {
+      return askarKeyCryptoBoxOpen(
+        recipientKey.handle,
+        senderKey.handle,
+        message,
+        nonce,
+      ).getValueOrException();
+    } catch (e) {
+      throw AskarKeyException('Error on crypto box open: $e');
+    }
+  }
 
   static Uint8List seal({
     required Key recipientKey,

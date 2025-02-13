@@ -273,7 +273,9 @@ void main() {
 
       final message = utf8.encode("foobar");
 
-      keyCryptoBoxTest(recipKey, senderKey, message, nonce);
+      final messageEncrypted = keyCryptoBoxTest(recipKey, senderKey, message, nonce);
+
+      keyCryptoBoxOpenTest(recipKey, senderKey, messageEncrypted.value, nonce);
 
       askarKeyFree(recipKey);
       askarKeyFree(senderKey);
@@ -1366,6 +1368,17 @@ AskarResult<Uint8List> keyCryptoBoxTest(
   final result = askarKeyCryptoBox(recipKey, senderKey, message, nonce);
 
   printAskarResult('KeyCryptoBox', result);
+  expect(result.errorCode, ErrorCode.success);
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyCryptoBoxOpenTest(LocalKeyHandle recipKey,
+    LocalKeyHandle senderKey, Uint8List message, Uint8List nonce) {
+  final result = askarKeyCryptoBoxOpen(recipKey, senderKey, message, nonce);
+
+  printAskarResult('KeyCryptoBoxOpen', result);
   expect(result.errorCode, ErrorCode.success);
   expect(result.value.isNotEmpty, equals(true));
 
