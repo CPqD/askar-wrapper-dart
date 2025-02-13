@@ -48,9 +48,9 @@ void main() {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
-      await storeProvisionTest(storeKey);
+      await storeProvisionTest(profile: 'rekey', passKey: storeKey);
 
-      final storeOpenResult = await storeOpenTest(storeKey);
+      final storeOpenResult = await storeOpenTest(profile: 'rekey', passKey: storeKey);
       storeHandle = storeOpenResult.value;
     });
 
@@ -201,6 +201,8 @@ void main() {
 
       final publicBytes = keyGetPublicBytesTest(localKeyHandle).value;
 
+      keyGetJwkPublicTest(localKeyHandle, algorithm);
+
       keyFromPublicBytesTest(algorithm, publicBytes).value;
 
       // Início do keyFromKeyExchangeTest
@@ -235,6 +237,9 @@ void main() {
       keyEntryListCountTest(keyEntryListHandle, expectedValue: 3);
 
       askarKeyEntryListFree(keyEntryListHandle);
+
+      askarKeyFree(localKeyHandle);
+      askarKeyFree(newKeyHandle);
     });
 
     test('Sign Message and Verify Signature', () async {
@@ -296,9 +301,9 @@ void main() {
         'x': 'BT7aR0ItXfeDAldeeOlXL_wXqp-j5FltT0vRSG16kRw',
       };
 
-      final ephemeral = askarKeyFromJwk(jsonEncode(ephemeralJwk)).value;
-      final alice = askarKeyFromJwk(jsonEncode(aliceJwk)).value;
-      final bob = askarKeyFromJwk(jsonEncode(bobJwk)).value;
+      final ephemeral = keyFromJwkTest(jsonEncode(ephemeralJwk)).value;
+      final alice = keyFromJwkTest(jsonEncode(aliceJwk)).value;
+      final bob = keyFromJwkTest(jsonEncode(bobJwk)).value;
 
       final alg = "ECDH-1PU+A128KW";
       final apu = "Alice";
@@ -407,6 +412,9 @@ void main() {
       await sessionFetchKeyTest(sessionHandle, name, expectSuccess: false);
 
       keyEntryListCountTest(fetchKeyResult.value, expectedValue: 0);
+
+      askarKeyEntryListFree(fetchKeyResult.value);
+      askarKeyFree(localKeyHandle);
     });
     test('Store Get Default Profile', () async {
       String defaultProfile = 'rekey';
@@ -442,14 +450,16 @@ void main() {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
-      await storeProvisionTest(storeKey);
+      await storeProvisionTest(profile: 'rekey', passKey: storeKey);
 
-      final storeOpenResult = await storeOpenTest(storeKey);
+      final storeOpenResult = await storeOpenTest(profile: 'rekey', passKey: storeKey);
       storeHandle = storeOpenResult.value;
 
       String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
 
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
+
+      await askarStoreListProfilesTest(storeHandle);
 
       await storeCloseTest(storeHandle);
     });
@@ -458,9 +468,9 @@ void main() {
       final generateKeyResult = askarStoreGenerateRawKeyTest();
       storeKey = generateKeyResult.value;
 
-      await storeProvisionTest(storeKey);
+      await storeProvisionTest(profile: 'rekey', passKey: storeKey);
 
-      final storeOpenResult = await storeOpenTest(storeKey);
+      final storeOpenResult = await storeOpenTest(profile: 'rekey', passKey: storeKey);
       storeHandle = storeOpenResult.value;
 
       String newDefaultProfile = 'rekey2';
@@ -484,6 +494,8 @@ void main() {
 
       keyAeadEncryptTest(localKeyHandle, message, nonce: nonce.value, aad: aad);
       keyAeadEncryptTest(localKeyHandle, message);
+
+      askarKeyFree(localKeyHandle);
     });
   });
 
@@ -502,11 +514,11 @@ void main() {
       );
 
       keyAeadDecryptTest(localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value,
-          encryptedBuffer.value.tag,
-          aad: aad, expected: message);
+          tag: encryptedBuffer.value.tag, aad: aad, expected: message);
       keyAeadDecryptTest(localKeyHandle, encryptedBuffer.value.ciphertext, nonce.value,
-          encryptedBuffer.value.tag,
-          expected: message);
+          tag: encryptedBuffer.value.tag, expected: message);
+
+      askarKeyFree(localKeyHandle);
     });
   });
 
@@ -523,6 +535,19 @@ void main() {
       final opened = keyCryptoBoxSealOpenTest(localKeyHandle, sealed.value);
 
       expect(opened.value, equals(message));
+
+      askarKeyFree(localKeyHandle);
+    });
+  });
+
+  group('Without Optional Params:', () {
+    test('Store Provision and Open', () async {
+      final storeProvisionKey = (await storeProvisionTest()).value;
+
+      final storeOpenKey = (await storeOpenTest()).value;
+
+      storeCloseTest(storeProvisionKey);
+      storeCloseTest(storeOpenKey);
     });
   });
 }
@@ -566,8 +591,8 @@ AskarResult<EncryptedBuffer> keyAeadEncryptTest(LocalKeyHandle handle, Uint8List
 AskarResult<Uint8List> keyAeadDecryptTest(
   LocalKeyHandle handle,
   Uint8List ciphertext,
-  Uint8List nonce,
-  Uint8List tag, {
+  Uint8List nonce, {
+  Uint8List? tag,
   Uint8List? aad,
   required Uint8List expected,
 }) {
@@ -581,13 +606,17 @@ AskarResult<Uint8List> keyAeadDecryptTest(
   return result;
 }
 
-Future<AskarResult<LocalKeyHandle>> storeProvisionTest(String passKey) async {
+Future<AskarResult<StoreHandle>> storeProvisionTest(
+    {String? passKey, String? profile}) async {
   final String specUri = 'sqlite://storage.db';
-  final String profile = 'rekey';
-  final bool recreate = true;
 
   final result = await askarStoreProvision(
-      specUri, StoreKeyMethod.argon2IMod, passKey, profile, recreate);
+    specUri,
+    keyMethod: StoreKeyMethod.argon2IMod,
+    passKey: passKey,
+    profile: profile,
+    recreate: true,
+  );
 
   printAskarResult('StoreProvision', result);
 
@@ -597,12 +626,15 @@ Future<AskarResult<LocalKeyHandle>> storeProvisionTest(String passKey) async {
   return result;
 }
 
-Future<AskarResult<StoreHandle>> storeOpenTest(String passKey) async {
+Future<AskarResult<StoreHandle>> storeOpenTest({String? passKey, String? profile}) async {
   final String specUri = 'sqlite://storage.db';
-  final String profile = 'rekey';
 
-  final result =
-      await askarStoreOpen(specUri, StoreKeyMethod.argon2IMod, passKey, profile);
+  final result = await askarStoreOpen(
+    specUri,
+    keyMethod: StoreKeyMethod.argon2IMod,
+    passKey: passKey,
+    profile: profile,
+  );
 
   printAskarResult('StoreOpen', result);
 
@@ -643,10 +675,7 @@ Future<AskarResult<EntryListHandle>> scanNextTest(
 }
 
 Future<AskarResult<SessionHandle>> sessionStartTest(StoreHandle handle) async {
-  String profile = 'rekey';
-  bool asTransaction = true;
-
-  final result = await askarSessionStart(handle, profile, asTransaction);
+  final result = await askarSessionStart(handle, profile: 'rekey', asTransaction: true);
 
   printAskarResult('SessionStart', result);
 
@@ -1276,13 +1305,23 @@ AskarResult<String> stringListGetItemTest(StringListHandle handle, int index,
 
 Future<AskarCallbackResult> storeCreateProfileTest(StoreHandle handle, String profile,
     {required String expectedValue}) async {
-  final result = await askarStoreCreateProfile(handle, profile);
+  final result = await askarStoreCreateProfile(handle, profile: profile);
 
   printAskarResult('StoreCreateProfile', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
   expect(result.value, equals(expectedValue));
+
+  return result;
+}
+
+Future<AskarResult<int>> askarStoreListProfilesTest(StoreHandle handle) async {
+  final result = await askarStoreListProfiles(handle);
+
+  printAskarResult('StoreListProfiles', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
 
   return result;
 }

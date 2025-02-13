@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:askar_flutter_sdk/askar/repository/askar_store_repository.dart';
 import 'package:askar_flutter_sdk/askar_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   setStorage() async {
-    store = Store(
+    store = StoreRepository(
         specUri: (Platform.isIOS || Platform.isAndroid)
             ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
             : 'sqlite://storage.db',

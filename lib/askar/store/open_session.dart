@@ -5,11 +5,11 @@ import 'session.dart';
 
 class OpenSession {
   final StoreHandle store;
-  final String profile;
   final bool isTransaction;
+  String? profile;
   Session? session;
 
-  OpenSession({required this.store, required this.profile, required this.isTransaction});
+  OpenSession({required this.store, required this.isTransaction, this.profile});
 
   Future<Session> open() async {
     if (store.handle == 0) {
@@ -23,8 +23,8 @@ class OpenSession {
     try {
       final sessionStartResult = await askarSessionStart(
         store,
-        profile,
-        isTransaction,
+        asTransaction: isTransaction,
+        profile: profile,
       );
 
       final sessionHandle = sessionStartResult.getValueOrException();

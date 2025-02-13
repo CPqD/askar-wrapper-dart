@@ -1,165 +1,208 @@
-import 'dart:math';
 import 'dart:typed_data';
 
-import '../askar_wrapper.dart';
-import '../crypto/handles.dart';
-import '../enums/askar_error_code.dart';
-import '../enums/askar_store_key_method.dart';
-import '../exceptions/exceptions.dart';
-import '../repository/askar_string_repository.dart';
+import 'package:askar_flutter_sdk/askar/askar_wrapper.dart';
+import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
+import 'package:askar_flutter_sdk/askar/enums/askar_store_key_method.dart';
+import 'package:askar_flutter_sdk/askar/exceptions/exceptions.dart';
+import 'package:askar_flutter_sdk/askar/store/session.dart';
+import 'open_session.dart';
 
 class Store {
-  final String specUri;
-  final StoreKeyMethod method;
-  final String passKey;
-  final String profile;
-  final bool recreate;
+  final StoreHandle handle;
+  final String uri;
+  OpenSession? _opener;
 
-  AskarHandle? handle;
+  Store(this.handle, this.uri);
 
-  Store(
-      {required this.specUri,
-      required this.method,
-      required this.passKey,
-      required this.profile,
-      this.recreate = false}) {
-    if (recreate) {
-      provision();
-    } else {
-      open().then((resp) async {
-        if (resp) {
-          print('Store Opened');
-        } else {
-          print('Store not Opened - Provisioning');
-          await provision();
-        }
-      });
+  static String generateRawKey({Uint8List? seed}) {
+    try {
+      return askarStoreGenerateRawKey(seed: seed).getValueOrException();
+    } catch (e) {
+      throw AskarStoreException('Failed to generate new raw key for store: $e');
     }
   }
 
-  Future<bool> provision() async {
-    final result = await askarStoreProvision(specUri, method, passKey, profile, recreate);
-    if (result.errorCode == ErrorCode.success) {
-      handle = result.value;
-      return true;
+  Future<void> createProfile({String? name}) async {
+    try {
+      (await askarStoreCreateProfile(handle, profile: name)).throwOnError();
+    } catch (e) {
+      throw AskarStoreException('Failed to create profile: $e');
     }
-    return false;
-  }
-
-  checkStore() {
-    if (handle == null) {
-      throw AskarStoreException("Store não iniciado");
-    }
-  }
-
-  Future<bool> open() async {
-    final result = await askarStoreOpen(specUri, method, passKey, profile);
-    if (result.errorCode == ErrorCode.success) {
-      handle = result.value;
-      return true;
-    }
-    return false;
-  }
-
-  Future<bool> close() async {
-    if (handle != null) {
-      final result = await askarStoreClose(StoreHandle(handle!.toInt()));
-      if (result.errorCode == ErrorCode.success) {
-        handle = null;
-        return true;
-      }
-    }
-    return true;
-  }
-
-  Future<bool> createProfile() async {
-    checkStore();
-    final result =
-        await askarStoreCreateProfile(StoreHandle(handle!.toInt()), "${profile}2");
-    if (result.errorCode == ErrorCode.duplicate) {
-      throw ProfileDuplicatedException("Este Profile já existe");
-    }
-    if (result.errorCode == ErrorCode.success) {
-      return true;
-    }
-    return false;
-  }
-
-  Future<bool> copy() {
-    checkStore();
-    throw UnimplementedError();
-  }
-
-  String generateRawKey({Uint8List? seed}) {
-    checkStore();
-    final result = askarStoreGenerateRawKey(seed: seed ?? _generateRandomSeed());
-    if (result.errorCode == ErrorCode.success) {
-      return result.value;
-    }
-    return '';
   }
 
   Future<String> getDefaultProfile() async {
-    checkStore();
-    final result = await askarStoreGetDefaultProfile(StoreHandle(handle!.toInt()));
-    if (result.errorCode == ErrorCode.success) {
+    try {
+      final result = await askarStoreGetDefaultProfile(handle);
+
+      result.throwOnError();
+
       return result.value;
+    } catch (e) {
+      throw AskarStoreException('Failed to get default profile: $e');
     }
-    return '';
   }
 
-  Future<String> getProfileName() async {
-    checkStore();
-    final result = await askarStoreGetProfileName(StoreHandle(handle!.toInt()));
-    if (result.errorCode == ErrorCode.success) {
-      return result.value;
+  Future<void> setDefaultProfile(String name) async {
+    try {
+      (await askarStoreSetDefaultProfile(handle, name)).throwOnError();
+    } catch (e) {
+      throw AskarStoreException('Failed to set default profile: $e');
     }
-    return '';
   }
 
   Future<List<String>> listProfiles() async {
-    checkStore();
-    final result = await askarStoreListProfiles(StoreHandle(handle!.toInt()));
-    if (result.errorCode == ErrorCode.success) {
-      final stringList = AskarStringRepository(handle: handle!.toInt());
-      return stringList.getAllItems();
+    StringListHandle? stringListHandle;
+
+    try {
+      stringListHandle = (await askarStoreListProfiles(handle)).getValueOrException();
+
+      final count = askarStringListCount(stringListHandle).getValueOrException();
+
+      List<String> profiles = [];
+
+      for (int i = 0; i < count; i++) {
+        final profile = askarStringListGetItem(stringListHandle, i).getValueOrException();
+        profiles.add(profile);
+      }
+
+      return profiles;
+    } catch (e) {
+      throw AskarStoreException('Failed to list profiles: $e');
+    } finally {
+      if (stringListHandle != null) {
+        askarStringListFree(stringListHandle);
+      }
     }
-    return [];
   }
 
-  Future<bool> rekey(String newPassKey) async {
-    checkStore();
-    final result =
-        await askarStoreRekey(StoreHandle(handle!.toInt()), method, newPassKey);
-    if (result.errorCode == ErrorCode.success) {
-      return true;
+  // TODO
+  Future<void> removeProfile(String name) async {
+    try {
+      // (await askarStoreRemoveProfile(handle, name)).getValueOrException();
+    } catch (e) {
+      throw AskarStoreException('Failed to remove profile: $e');
     }
-    return false;
   }
 
-  Future<bool> remove() {
-    checkStore();
-    throw UnimplementedError();
-  }
-
-  Future<bool> removeProfile() {
-    checkStore();
-    throw UnimplementedError();
-  }
-
-  Future<bool> setDefaultProfile(String profileName) async {
-    checkStore();
-    final result =
-        await askarStoreSetDefaultProfile(StoreHandle(handle!.toInt()), profileName);
-    if (result.errorCode == ErrorCode.success) {
-      return true;
+  Future<void> rekey({StoreKeyMethod? keyMethod, required String passKey}) async {
+    try {
+      (await askarStoreRekey(handle, passKey, keyMethod: keyMethod)).throwOnError();
+    } catch (e) {
+      throw AskarStoreException('Failed to rekey: $e');
     }
-    return false;
   }
 
-  Uint8List _generateRandomSeed() {
-    final random = Random.secure();
-    final seed = List<int>.generate(32, (_) => random.nextInt(256));
-    return Uint8List.fromList(seed);
+  static Future<Store> provision({
+    required String uri,
+    StoreKeyMethod? keyMethod,
+    String? passKey,
+    String? profile,
+    required bool recreate,
+  }) async {
+    try {
+      final storeHandle = (await askarStoreProvision(uri,
+              recreate: recreate,
+              keyMethod: keyMethod,
+              passKey: passKey,
+              profile: profile))
+          .getValueOrException();
+
+      return Store(storeHandle, uri);
+    } catch (e) {
+      throw AskarStoreException('Error on store provision: $e');
+    }
   }
+
+  static Future<Store> open({
+    required String uri,
+    StoreKeyMethod? keyMethod,
+    String? passKey,
+    String? profile,
+  }) async {
+    try {
+      final storeHandle = (await askarStoreOpen(uri,
+              keyMethod: keyMethod, passKey: passKey, profile: profile))
+          .getValueOrException();
+
+      return Store(storeHandle, uri);
+    } catch (e) {
+      throw AskarStoreException('Failed to open store: $e');
+    }
+  }
+
+  Future<bool> close({bool remove = false}) async {
+    _opener = null;
+
+    await handle.close();
+
+    return remove ? await Store.remove(uri) : false;
+  }
+
+  // TODO
+  static Future<bool> remove(String uri) async {
+    try {
+      return /*await askarStoreRemove(uri)*/ false;
+    } catch (e) {
+      throw AskarStoreException('Failed to remove store: $e');
+    }
+  }
+
+  OpenSession session({String? profile}) {
+    return OpenSession(store: handle, profile: profile, isTransaction: false);
+  }
+
+  OpenSession transaction({String? profile}) {
+    return OpenSession(store: handle, profile: profile, isTransaction: true);
+  }
+
+  Future<Session> openSession({bool isTransaction = false}) async {
+    _opener ??= OpenSession(store: handle, isTransaction: isTransaction);
+    return await _opener!.open();
+  }
+
+  // // TODO
+  // Scan scan({
+  //   required String category,
+  //   Map<String, dynamic>? tagFilter,
+  //   int? offset,
+  //   int? limit,
+  //   String? profile,
+  //   String? orderBy,
+  //   bool? descending,
+  // }) {
+  //   return Scan(
+  //     store: this,
+  //     category: category,
+  //     tagFilter: tagFilter,
+  //     offset: offset,
+  //     limit: limit,
+  //     profile: profile,
+  //     orderBy: orderBy,
+  //     descending: descending,
+  //   );
+
+  //   try {} catch (e) {
+  //     throw AskarStoreException('Failed to scan: $e');
+  //   }
+  // }
+
+  // // TODO
+  // Future<void> copyTo({
+  //   required String uri,
+  //   StoreKeyMethod? keyMethod,
+  //   String? passKey,
+  //   required bool recreate,
+  // }) async {
+  //   try {
+  //     await askarStoreCopyTo(
+  //     storeHandle: handle,
+  //     targetUri: uri,
+  //     keyMethod: keyMethod?.toUri(),
+  //     passKey: passKey,
+  //     recreate: recreate,
+  //   );
+  //   } catch (e) {
+  //     throw AskarStoreException('Failed to copy: $e');
+  //   }
+  // }
 }

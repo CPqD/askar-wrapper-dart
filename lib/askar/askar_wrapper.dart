@@ -924,7 +924,7 @@ AskarResult<String> askarKeyGetJwkPublic(
   Pointer<Utf8> algPtr = nullptr;
 
   try {
-    final algPtr = algorithm.value.toNativeUtf8();
+    algPtr = algorithm.value.toNativeUtf8();
 
     final funcResult = nativeAskarKeyGetJwkPublic(
       handle.toInt(),
@@ -1322,8 +1322,6 @@ Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
   Pointer<Utf8> categoryPtr = nullptr;
   Pointer<Utf8> tagFilterPtr = nullptr;
 
-  limit ??= 0;
-
   try {
     categoryPtr = category.toNativeUtf8();
     tagFilterPtr = jsonEncode(tagFilter).toNativeUtf8();
@@ -1334,7 +1332,7 @@ Future<AskarResult<EntryListHandle>> askarSessionFetchAll(
       handle.toInt(),
       categoryPtr,
       tagFilterPtr,
-      limit,
+      (limit ?? 0),
       boolToInt(forUpdate),
       callback.nativeCallable.nativeFunction,
       callback.id,
@@ -1360,12 +1358,12 @@ Future<AskarResult<KeyEntryListHandle>> askarSessionFetchAllKeys(SessionHandle h
   Pointer<Utf8> thumbprintPointer = nullptr;
   Pointer<Utf8> tagFilterPointer = nullptr;
 
-  limit ??= 0;
+  final algorithmStr = (algorithm == null) ? "" : algorithm.value;
 
   try {
-    if (algorithm != null) algPointer = algorithm.value.toNativeUtf8();
-    if (thumbprint != null) thumbprintPointer = thumbprint.toNativeUtf8();
-    if (tagFilter != null) tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
+    algPointer = algorithmStr.toNativeUtf8();
+    thumbprintPointer = (thumbprint ?? "").toNativeUtf8();
+    tagFilterPointer = jsonEncode(tagFilter ?? {}).toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
@@ -1374,7 +1372,7 @@ Future<AskarResult<KeyEntryListHandle>> askarSessionFetchAllKeys(SessionHandle h
       algPointer,
       thumbprintPointer,
       tagFilterPointer,
-      limit,
+      (limit ?? 0),
       boolToInt(forUpdate),
       callback.nativeCallable.nativeFunction,
       callback.id,
@@ -1424,13 +1422,10 @@ Future<AskarCallbackResult> askarSessionInsertKey(
   Pointer<Utf8> metadataPointer = nullptr;
   Pointer<Utf8> tagsJsonPointer = nullptr;
 
-  expiryMs ??= 0;
-
   try {
     namePointer = name.toNativeUtf8();
-    tagsJsonPointer = jsonEncode(tags).toNativeUtf8();
-
-    if (metadata != null) metadataPointer = metadata.toNativeUtf8();
+    metadataPointer = (metadata ?? "").toNativeUtf8();
+    tagsJsonPointer = jsonEncode(tags ?? {}).toNativeUtf8();
 
     final callback = newCallbackWithoutHandle();
 
@@ -1440,7 +1435,7 @@ Future<AskarCallbackResult> askarSessionInsertKey(
       namePointer,
       metadataPointer,
       tagsJsonPointer,
-      expiryMs,
+      (expiryMs ?? 0),
       callback.nativeCallable.nativeFunction,
       callback.id,
     );
@@ -1448,8 +1443,8 @@ Future<AskarCallbackResult> askarSessionInsertKey(
     return await callback.handleResult(result);
   } finally {
     freePointer(namePointer);
-    freePointer(tagsJsonPointer);
     freePointer(metadataPointer);
+    freePointer(tagsJsonPointer);
   }
 }
 
@@ -1503,15 +1498,12 @@ Future<AskarCallbackResult> askarSessionRemoveKey(
   }
 }
 
-Future<AskarResult<SessionHandle>> askarSessionStart(
-  StoreHandle handle,
-  String profile,
-  bool asTransaction,
-) async {
+Future<AskarResult<SessionHandle>> askarSessionStart(StoreHandle handle,
+    {required bool asTransaction, String? profile}) async {
   Pointer<Utf8> profilePointer = nullptr;
 
   try {
-    final profilePointer = profile.toNativeUtf8();
+    profilePointer = (profile ?? "").toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
@@ -1539,15 +1531,11 @@ Future<AskarCallbackResult> askarSessionUpdate(
   Pointer<Utf8> tagsPointer = nullptr;
   Pointer<NativeByteBuffer> byteBufferPointer = nullptr;
 
-  value ??= "";
-  tags ??= {};
-  expiryMs ??= 0;
-
   try {
     categoryPointer = category.toNativeUtf8();
     namePointer = name.toNativeUtf8();
     tagsPointer = jsonEncode(tags).toNativeUtf8();
-    byteBufferPointer = stringToByteBuffer(value);
+    byteBufferPointer = stringToByteBuffer(value ?? "");
 
     final callback = newCallbackWithoutHandle();
 
@@ -1558,7 +1546,7 @@ Future<AskarCallbackResult> askarSessionUpdate(
       namePointer,
       byteBufferPointer.ref,
       tagsPointer,
-      expiryMs,
+      (expiryMs ?? 0),
       callback.nativeCallable.nativeFunction,
       callback.id,
     );
@@ -1583,13 +1571,11 @@ Future<AskarCallbackResult> askarSessionUpdateKey(
   Pointer<Utf8> metadataPointer = nullptr;
   Pointer<Utf8> tagsPointer = nullptr;
 
-  expiryMs ??= 0;
-
   try {
     namePointer = name.toNativeUtf8();
 
-    if (metadata != null) metadataPointer = metadata.toNativeUtf8();
-    if (tags != null) tagsPointer = jsonEncode(tags).toNativeUtf8();
+    metadataPointer = (metadata ?? "").toNativeUtf8();
+    tagsPointer = jsonEncode(tags ?? {}).toNativeUtf8();
 
     final callback = newCallbackWithoutHandle();
 
@@ -1598,7 +1584,7 @@ Future<AskarCallbackResult> askarSessionUpdateKey(
       namePointer,
       metadataPointer,
       tagsPointer,
-      expiryMs,
+      (expiryMs ?? 0),
       callback.nativeCallable.nativeFunction,
       callback.id,
     );
@@ -1659,14 +1645,12 @@ ErrorCode askarStoreCopy(
   }
 }
 
-Future<AskarCallbackResult> askarStoreCreateProfile(
-  StoreHandle handle,
-  String profile,
-) async {
+Future<AskarCallbackResult> askarStoreCreateProfile(StoreHandle handle,
+    {String? profile}) async {
   Pointer<Utf8> profilePointer = nullptr;
 
   try {
-    final profilePointer = profile.toNativeUtf8();
+    profilePointer = (profile ?? "").toNativeUtf8();
 
     final callback = newCallbackWithPtrUtf8();
 
@@ -1777,22 +1761,21 @@ Future<AskarResult<StringListHandle>> askarStoreListProfiles(
   return AskarResult(completedResult.errorCode, completedResult.value);
 }
 
-Future<AskarResult<StoreHandle>> askarStoreOpen(
-  String specUri,
-  StoreKeyMethod keyMethod,
-  String passKey,
-  String profile,
-) async {
+Future<AskarResult<StoreHandle>> askarStoreOpen(String specUri,
+    {StoreKeyMethod? keyMethod, String? passKey, String? profile}) async {
   Pointer<Utf8> specUriPointer = nullptr;
   Pointer<Utf8> keyMethodPointer = nullptr;
   Pointer<Utf8> passKeyPointer = nullptr;
   Pointer<Utf8> profilePointer = nullptr;
 
+  final keyMethodStr = (keyMethod == null) ? "" : keyMethod.value;
+
   try {
     specUriPointer = specUri.toNativeUtf8();
-    keyMethodPointer = keyMethod.value.toNativeUtf8();
-    passKeyPointer = passKey.toNativeUtf8();
-    profilePointer = profile.toNativeUtf8();
+
+    keyMethodPointer = keyMethodStr.toNativeUtf8();
+    passKeyPointer = (passKey ?? "").toNativeUtf8();
+    profilePointer = (profile ?? "").toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
@@ -1817,22 +1800,25 @@ Future<AskarResult<StoreHandle>> askarStoreOpen(
 }
 
 Future<AskarResult<StoreHandle>> askarStoreProvision(
-  String specUri,
-  StoreKeyMethod keyMethod,
-  String passKey,
-  String profile,
-  bool recreate,
-) async {
+  String specUri, {
+  required bool recreate,
+  StoreKeyMethod? keyMethod,
+  String? passKey,
+  String? profile,
+}) async {
   Pointer<Utf8> specUriPointer = nullptr;
   Pointer<Utf8> keyMethodPointer = nullptr;
   Pointer<Utf8> passKeyPointer = nullptr;
   Pointer<Utf8> profilePointer = nullptr;
 
+  final keyMethodStr = (keyMethod == null) ? "" : keyMethod.value;
+
   try {
     specUriPointer = specUri.toNativeUtf8();
-    keyMethodPointer = keyMethod.value.toNativeUtf8();
-    passKeyPointer = passKey.toNativeUtf8();
-    profilePointer = profile.toNativeUtf8();
+
+    keyMethodStr.toNativeUtf8();
+    passKeyPointer = (passKey ?? "").toNativeUtf8();
+    profilePointer = (profile ?? "").toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
@@ -1857,17 +1843,16 @@ Future<AskarResult<StoreHandle>> askarStoreProvision(
   }
 }
 
-Future<AskarCallbackResult> askarStoreRekey(
-  StoreHandle handle,
-  StoreKeyMethod keyMethod,
-  String passKey,
-) async {
-  Pointer<Utf8> keyMethodPointer = nullptr;
+Future<AskarCallbackResult> askarStoreRekey(StoreHandle handle, String passKey,
+    {StoreKeyMethod? keyMethod}) async {
   Pointer<Utf8> passKeyPointer = nullptr;
+  Pointer<Utf8> keyMethodPointer = nullptr;
+
+  final keyMethodStr = (keyMethod == null) ? "" : keyMethod.value;
 
   try {
-    keyMethodPointer = keyMethod.value.toNativeUtf8();
     passKeyPointer = passKey.toNativeUtf8();
+    keyMethodPointer = keyMethodStr.toNativeUtf8();
 
     final callback = newCallbackWithoutHandle();
 
@@ -1881,8 +1866,8 @@ Future<AskarCallbackResult> askarStoreRekey(
 
     return await callback.handleResult(result);
   } finally {
-    freePointer(keyMethodPointer);
     freePointer(passKeyPointer);
+    freePointer(keyMethodPointer);
   }
 }
 
