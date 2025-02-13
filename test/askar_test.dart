@@ -650,8 +650,14 @@ Future<AskarResult<ScanHandle>> scanStartTest(
   final int offset = 0;
   final int limit = 2;
 
-  final result =
-      await askarScanStart(handle, profile, category, tagFilter, offset, limit);
+  final result = await askarScanStart(
+    handle,
+    profile: profile,
+    category: category,
+    tagFilter: tagFilter,
+    offset: offset,
+    limit: limit,
+  );
 
   printAskarResult('ScanStart', result);
 

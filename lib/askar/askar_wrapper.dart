@@ -1198,21 +1198,15 @@ Future<AskarResult<EntryListHandle>> askarScanNext(ScanHandle handle) async {
       completedResult.errorCode, EntryListHandle(completedResult.value));
 }
 
-Future<AskarResult<ScanHandle>> askarScanStart(
-  StoreHandle handle,
-  String profile,
-  String category,
-  Map tagFilter,
-  int offset,
-  int limit,
-) async {
+Future<AskarResult<ScanHandle>> askarScanStart(StoreHandle handle,
+    {String? profile, String? category, Map? tagFilter, int? offset, int? limit}) async {
   Pointer<Utf8> profilePointer = nullptr;
   Pointer<Utf8> categoryPointer = nullptr;
   Pointer<Utf8> tagFilterPointer = nullptr;
 
   try {
-    profilePointer = profile.toNativeUtf8();
-    categoryPointer = category.toNativeUtf8();
+    profilePointer = (profile ?? "").toNativeUtf8();
+    categoryPointer = (category ?? "").toNativeUtf8();
     tagFilterPointer = jsonEncode(tagFilter).toNativeUtf8();
 
     final callback = newCallbackWithHandle();
@@ -1222,8 +1216,8 @@ Future<AskarResult<ScanHandle>> askarScanStart(
       profilePointer,
       categoryPointer,
       tagFilterPointer,
-      offset,
-      limit,
+      (offset ?? 0),
+      (limit ?? 0),
       callback.nativeCallable.nativeFunction,
       callback.id,
     );
