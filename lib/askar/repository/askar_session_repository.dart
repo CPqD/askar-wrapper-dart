@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:askar_flutter_sdk/askar/store/store.dart';
+
 import '../../askar/askar_wrapper.dart';
 import '../../askar/crypto/handles.dart';
-import '../../askar/repository/askar_store_repository.dart';
 import '../enums/askar_entry_operation.dart';
 import '../enums/askar_error_code.dart';
 import '../enums/askar_key_algorithm.dart';
@@ -10,7 +11,7 @@ import '../exceptions/exceptions.dart';
 import '../interface/askar_session_interface.dart';
 
 class AskarSessionRepository implements IAskarSession {
-  final AskarStoreRepository store;
+  final Store store;
   final bool asTransaction;
 
   SessionHandle? handle;

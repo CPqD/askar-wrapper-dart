@@ -1804,7 +1804,7 @@ Future<AskarResult<StoreHandle>> askarStoreOpen(
   }
 }
 
-Future<AskarResult<LocalKeyHandle>> askarStoreProvision(
+Future<AskarResult<StoreHandle>> askarStoreProvision(
   String specUri,
   StoreKeyMethod keyMethod,
   String passKey,
@@ -1836,7 +1836,7 @@ Future<AskarResult<LocalKeyHandle>> askarStoreProvision(
 
     final completedResult = await callback.handleResult(initialResult);
 
-    return AskarResult(completedResult.errorCode, LocalKeyHandle(completedResult.value));
+    return AskarResult(completedResult.errorCode, StoreHandle(completedResult.value));
   } finally {
     freePointer(specUriPointer);
     freePointer(keyMethodPointer);
