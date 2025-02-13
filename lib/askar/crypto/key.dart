@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:askar_flutter_sdk/askar/crypto/aead_params.dart';
 import 'package:askar_flutter_sdk/askar/crypto/encrypted_buffer.dart';
 import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/crypto/jwk.dart';
@@ -139,8 +140,13 @@ class Key {
     }
   }
 
-  // TODO
-  // Map<String, dynamic> get aeadParams => askar.keyAeadGetParams(localKeyHandle: handle);
+  AeadParams get aeadParams {
+    try {
+      return askarKeyAeadGetParams(localKeyHandle).getValueOrException();
+    } catch (e) {
+      throw AskarKeyException('Error getting aead params: $e');
+    }
+  }
 
   Uint8List get aeadRandomNonce {
     try {

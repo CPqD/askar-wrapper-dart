@@ -38,7 +38,7 @@
 
 - [ ] askar_key_aead_get_padding: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_aead_get_params: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_aead_get_params: (args_0: Buffer, args_1: Buffer) => number;
 
 - [x] askar_key_aead_random_nonce: (args_0: Buffer, args_1: Buffer) => number;
 
