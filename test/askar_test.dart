@@ -468,14 +468,14 @@ void main() {
       await askarStoreListProfilesTest(storeHandle);
 
       //await storeCopyTest(storeHandle, storeKey); FIXME
-
+      
+      final specUri = 'sqlite://storage.db';
+      await storeRemoveTest(specUri);
 
       await storeRemoveProfileTest(storeHandle, profile);
 
       await storeCloseTest(storeHandle);
 
-      final specUri = 'sqlite://storage.db';
-      await storeRemoveTest(specUri);
     });
 
     test('Store Set Default Profile', () async {
