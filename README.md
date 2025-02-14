@@ -19,18 +19,18 @@ Wrapper for Dart around https://github.com/openwallet-foundation/askar
 sh ./build_askar_android_dos.sh
 ```
 
-## Rodar testes
+## Run tests
 
 ```
 flutter test
 ```
 
-## Atualiza Libs
+## Update Libs
 
 ```
 flutter pub get
 ```
 
-## Referencias
+## References
 
 - [Funções Nativas Askar](etc/libaries_askar.h)

@@ -13,11 +13,13 @@ export 'askar/crypto/encrypted_buffer.dart';
 export 'askar/crypto/handles.dart';
 export 'askar/crypto/jwk.dart';
 export 'askar/crypto/key.dart';
+
 export 'askar/enums/askar_store_key_method.dart';
-export 'askar/askar_wrapper.dart';
-export 'askar/exceptions/exceptions.dart';
 export 'askar/enums/askar_entry_operation.dart';
 export 'askar/enums/askar_key_algorithm.dart';
-
 export 'askar/enums/askar_key_backend.dart';
 export 'askar/enums/askar_signature_algorithm.dart';
+
+export 'askar/exceptions/exceptions.dart';
+
+export 'askar/askar_wrapper.dart';
