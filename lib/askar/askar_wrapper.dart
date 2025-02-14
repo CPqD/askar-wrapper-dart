@@ -1635,15 +1635,13 @@ Future<AskarCallbackResult> askarStoreClose(StoreHandle handle) async {
   return await callback.handleResult(result);
 }
 
-ErrorCode askarStoreCopy(
+Future<AskarCallbackResult> askarStoreCopy(
   StoreHandle handle,
   String targetUri,
   String keyMethod,
   String passKey,
   int recreate,
-  Pointer<NativeFunction<AskarStoreCopyCallback>> cb,
-  int cbId,
-) {
+) async {
   Pointer<Utf8> targetUriPointer = nullptr;
   Pointer<Utf8> keyMethodPointer = nullptr;
   Pointer<Utf8> passKeyPointer = nullptr;
@@ -1653,17 +1651,19 @@ ErrorCode askarStoreCopy(
     keyMethodPointer = keyMethod.toNativeUtf8();
     passKeyPointer = passKey.toNativeUtf8();
 
+    final callback = newCallbackWithHandle();
+
     final result = nativeAskarStoreCopy(
       handle.toInt(),
       targetUriPointer,
       keyMethodPointer,
       passKeyPointer,
       recreate,
-      cb,
-      cbId,
+      callback.nativeCallable.nativeFunction,
+      callback.id,
     );
 
-    return ErrorCode.fromInt(result);
+    return await callback.handleResult(result);
   } finally {
     freePointer(targetUriPointer);
     freePointer(keyMethodPointer);
