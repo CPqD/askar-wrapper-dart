@@ -209,7 +209,7 @@ void main() {
 
       keyFromPublicBytesTest(algorithm, publicBytes).value;
 
-      // Início do keyFromKeyExchangeTest
+      // Start of keyFromKeyExchangeTest
       final convertedAlgorithm = KeyAlgorithm.x25519;
       final convertedKeyHandle = keyConvertTest(localKeyHandle, convertedAlgorithm).value;
 
@@ -222,7 +222,7 @@ void main() {
           keyFromKeyExchangeTest(exchangeAlgorithm, convertedKeyHandle, newKeyHandle)
               .value;
       keyGetAlgorithmTest(exchangedKeyHandle, expected: exchangeAlgorithm);
-      // Fim do keyFromKeyExchangeTest
+      // End of keyFromKeyExchangeTest
 
       await sessionInsertKeyTest(
           sessionHandle, localKeyHandle, '${name}_1', metadata, tags);
@@ -461,13 +461,14 @@ void main() {
       final storeOpenResult = await storeOpenTest(profile: 'rekey', passKey: storeKey);
       storeHandle = storeOpenResult.value;
 
-      String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
+      final profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
 
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
 
       await askarStoreListProfilesTest(storeHandle);
 
-      await storeRemoveTest();
+      final specUri = 'sqlite://storage.db';
+      await storeRemoveTest(specUri);
 
       await storeRemoveProfileTest(storeHandle, profile);
 
@@ -1296,9 +1297,7 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
   return result;
 }
 
-Future<AskarCallbackResult> storeRemoveTest() async {
-
-  final String specUri = 'sqlite://storage.db';
+Future<AskarCallbackResult> storeRemoveTest(String specUri) async {
   final result = await askarStoreRemove(specUri);
 
   printAskarResult('StoreRemove', result);
