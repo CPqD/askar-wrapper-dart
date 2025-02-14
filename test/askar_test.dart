@@ -1285,8 +1285,8 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
 }
 
 Future<AskarCallbackResult> storeRemoveTest(
-    String profile) async {
-  final result = await askarStoreRemoveProfile(specUri, profile);
+    String specUri) async {
+  final result = await askarStoreRemove(specUri);
 
   printAskarResult('StoreRemove', result);
 
