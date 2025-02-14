@@ -148,11 +148,11 @@
 
 - [x] askar_store_generate_raw_key: (args_0: Buffer, args_1: Buffer) => number; **(required)**
 
-- [ ] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
 
 - [x] askar_store_get_default_profile: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_list_profiles: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_list_profiles: (args_0: number, args_1: Buffer, args_2: number) => number;
 
 - [x] askar_store_open: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: Buffer, args_5: number) => number; **(required)**
 
