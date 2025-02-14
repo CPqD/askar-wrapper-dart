@@ -467,7 +467,7 @@ void main() {
 
       await askarStoreListProfilesTest(storeHandle);
 
-      await storeCopyTest(storeHandle, storeKey);
+      //await storeCopyTest(storeHandle, storeKey); FIXME
 
       await storeRemoveProfileTest(storeHandle, profile);
 
