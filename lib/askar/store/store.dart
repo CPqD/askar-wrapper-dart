@@ -76,6 +76,16 @@ class Store {
     }
   }
 
+  Future<bool> remove(String uri) async {
+    try {
+      final result = await askarStoreRemove(uri);
+      result.throwOnError();
+      return result.value;
+    } catch (e) {
+      throw AskarStoreException('Failed to remove store: $e');
+    }
+  }
+
   Future<bool> removeProfile(String name) async {
     try {
       final result = await askarStoreRemoveProfile(handle, name);
