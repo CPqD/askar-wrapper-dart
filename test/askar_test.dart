@@ -467,11 +467,13 @@ void main() {
 
       await askarStoreListProfilesTest(storeHandle);
 
-      await storeRemoveTest();
+      await storeCopyTest(storeHandle, storeKey);
 
       await storeRemoveProfileTest(storeHandle, profile);
 
       await storeCloseTest(storeHandle);
+
+      await storeRemoveTest();
     });
 
     test('Store Set Default Profile', () async {
@@ -1474,6 +1476,24 @@ AskarResult<Uint8List> keyCryptoBoxRandomNonceTest() {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+Future<AskarCallbackResult> storeCopyTest(StoreHandle handle, String passKey) async {
+
+  final String targetUri = 'sqlite://storage-copy.db';
+
+  final result = await askarStoreCopy(
+    handle,
+    targetUri, 
+    StoreKeyMethod.argon2IMod, 
+    passKey, 
+    true);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(intToBool(result.value), equals(true));
 
   return result;
 }
