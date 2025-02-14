@@ -205,6 +205,8 @@ void main() {
 
       keyGetJwkPublicTest(localKeyHandle, algorithm);
 
+      keyGetJwkSecretTest(localKeyHandle);
+
       keyFromPublicBytesTest(algorithm, publicBytes).value;
 
       // Início do keyFromKeyExchangeTest
@@ -727,6 +729,17 @@ AskarResult<String> keyGetJwkPublicTest(LocalKeyHandle handle, KeyAlgorithm algo
   final result = askarKeyGetJwkPublic(handle, algorithm);
 
   printAskarResult('KeyGetJwkPublic', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value.isNotEmpty, equals(true));
+
+  return result;
+}
+
+AskarResult<Uint8List> keyGetJwkSecretTest(LocalKeyHandle handle) {
+  final result = askarKeyGetJwkSecret(handle);
+
+  printAskarResult('KeyGetJwkSecret', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.isNotEmpty, equals(true));

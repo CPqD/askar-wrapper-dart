@@ -92,7 +92,7 @@
 
 - [x] askar_key_get_jwk_public: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
-- [ ] askar_key_get_jwk_secret: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_jwk_secret: (args_0: Buffer, args_1: Buffer) => number;
 
 - [x] askar_key_get_jwk_thumbprint: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
