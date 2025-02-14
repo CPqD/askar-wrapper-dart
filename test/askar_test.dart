@@ -467,6 +467,8 @@ void main() {
 
       await askarStoreListProfilesTest(storeHandle);
 
+      await storeRemoveTest();
+
       await storeRemoveProfileTest(storeHandle, profile);
 
       await storeCloseTest(storeHandle);
@@ -1290,6 +1292,20 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
 
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.finished, equals(true));
+
+  return result;
+}
+
+Future<AskarCallbackResult> storeRemoveTest() async {
+
+  final String specUri = 'sqlite://storage.db';
+  final result = await askarStoreRemove(specUri);
+
+  printAskarResult('StoreRemove', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.finished, equals(true));
+  expect(intToBool(result.value), equals(true));
 
   return result;
 }
