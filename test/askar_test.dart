@@ -460,13 +460,12 @@ void main() {
       storeHandle = storeOpenResult.value;
 
       String profile = 'tenant-b2f768c6-d53b-40ab-8e74-8e4ea50a3d3e';
-      String specUri = '';
 
       await storeCreateProfileTest(storeHandle, profile, expectedValue: profile);
 
       await askarStoreListProfilesTest(storeHandle);
 
-      await storeRemoveTest(specUri);
+      await storeRemoveTest();
 
       await storeRemoveProfileTest(storeHandle, profile);
 
@@ -1284,8 +1283,9 @@ Future<AskarCallbackBlankResult> sessionCloseTest(SessionHandle handle) async {
   return result;
 }
 
-Future<AskarCallbackResult> storeRemoveTest(
-    String specUri) async {
+Future<AskarCallbackResult> storeRemoveTest() async {
+
+  final String specUri = 'sqlite://storage.db';
   final result = await askarStoreRemove(specUri);
 
   printAskarResult('StoreRemove', result);
