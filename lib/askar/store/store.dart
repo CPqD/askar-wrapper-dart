@@ -76,16 +76,6 @@ class Store {
     }
   }
 
-  Future<bool> remove(String uri) async {
-    try {
-      final result = await askarStoreRemove(uri);
-      result.throwOnError();
-      return result.value;
-    } catch (e) {
-      throw AskarStoreException('Failed to remove store: $e');
-    }
-  }
-
   Future<bool> removeProfile(String name) async {
     try {
       final result = await askarStoreRemoveProfile(handle, name);
@@ -150,14 +140,17 @@ class Store {
     return remove ? await Store.remove(uri) : false;
   }
 
-  // TODO
   static Future<bool> remove(String uri) async {
     try {
-      return /*await askarStoreRemove(uri)*/ false;
+      final result = await askarStoreRemove(uri);
+      result.throwOnError();
+      return result.value;
     } catch (e) {
       throw AskarStoreException('Failed to remove store: $e');
     }
   }
+
+
 
   OpenSession session({String? profile}) {
     return OpenSession(store: handle, profile: profile, isTransaction: false);
