@@ -186,23 +186,25 @@ class Store {
     );
   }
 
-  // // TODO
-  // Future<void> copyTo({
-  //   required String uri,
-  //   StoreKeyMethod? keyMethod,
-  //   String? passKey,
-  //   required bool recreate,
-  // }) async {
-  //   try {
-  //     await askarStoreCopyTo(
-  //     storeHandle: handle,
-  //     targetUri: uri,
-  //     keyMethod: keyMethod?.toUri(),
-  //     passKey: passKey,
-  //     recreate: recreate,
-  //   );
-  //   } catch (e) {
-  //     throw AskarStoreException('Failed to copy: $e');
-  //   }
-  // }
+/*
+  // TODO
+  Future<void> copyTo({
+    required String uri,
+    StoreKeyMethod? keyMethod,
+    String? passKey,
+    required bool recreate,
+  }) async {
+    try {
+      await askarStoreCopyTo(
+      storeHandle: handle,
+      targetUri: uri,
+      keyMethod: keyMethod?.toUri(),
+      passKey: passKey,
+      recreate: recreate,
+    );
+    } catch (e) {
+      throw AskarStoreException('Failed to copy: $e');
+    }
+  }
+  */
 }
