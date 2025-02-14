@@ -969,16 +969,22 @@ AskarResult<String> askarKeyGetJwkPublic(
   }
 }
 
-ErrorCode askarKeyGetJwkSecret(
-  LocalKeyHandle handle,
-  Pointer<NativeSecretBuffer> out,
-) {
-  final result = nativeAskarKeyGetJwkSecret(
-    handle.toInt(),
-    out,
-  );
+AskarResult<Uint8List> askarKeyGetJwkSecret(LocalKeyHandle handle) {
+  Pointer<NativeSecretBuffer> secretBufferPtr = calloc<NativeSecretBuffer>();
 
-  return ErrorCode.fromInt(result);
+  try {
+    final funcResult = nativeAskarKeyGetJwkSecret(handle.toInt(), secretBufferPtr);
+
+    final errorCode = ErrorCode.fromInt(funcResult);
+
+    final value = (errorCode == ErrorCode.success)
+        ? secretBufferToBytesList(secretBufferPtr.ref)
+        : Uint8List(0);
+
+    return AskarResult<Uint8List>(errorCode, value);
+  } finally {
+    freeSecretBufferPointer(secretBufferPtr);
+  }
 }
 
 AskarResult<String> askarKeyGetJwkThumbprint(

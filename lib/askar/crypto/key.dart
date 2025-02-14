@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:askar_flutter_sdk/askar/crypto/aead_params.dart';
@@ -126,11 +127,14 @@ class Key {
     }
   }
 
-  // TODO
-  // Jwk get jwkSecret {
-  //   final secretBytes = askar.keyGetJwkSecret(localKeyHandle: handle);
-  //   return Jwk.fromString(Buffer.from(secretBytes).toString());
-  // }
+  Jwk get jwkSecret {
+    try {
+      return Jwk.fromString(
+          utf8.decode(askarKeyGetJwkSecret(localKeyHandle).getValueOrException()));
+    } catch (e) {
+      throw AskarKeyException('Failed to get JWK secret: $e');
+    }
+  }
 
   String get jwkThumbprint {
     try {
