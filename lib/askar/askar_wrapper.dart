@@ -305,18 +305,23 @@ AskarResult<EncryptedBuffer> askarKeyAeadEncrypt(
   }
 }
 
-ErrorCode askarKeyAeadGetPadding(
+AskarResult<int> askarKeyAeadGetPadding(
   LocalKeyHandle handle,
   int msgLen,
-  Pointer<Int32> out,
 ) {
-  final result = nativeAskarKeyAeadGetPadding(
-    handle.toInt(),
-    msgLen,
-    out,
-  );
-
-  return ErrorCode.fromInt(result);
+  Pointer<Int32> outPtr = calloc<Int32>();
+  try {
+    final result = nativeAskarKeyAeadGetPadding(
+      handle.toInt(),
+      msgLen,
+      outPtr,
+    );
+    final errorCode = ErrorCode.fromInt(result);
+    final padding = (errorCode == ErrorCode.success) ? outPtr.value : 0;
+    return AskarResult<int>(errorCode, padding);
+  } finally {
+    freePointer(outPtr);
+  }
 }
 
 AskarResult<AeadParams> askarKeyAeadGetParams(LocalKeyHandle handle) {
@@ -1914,7 +1919,6 @@ Future<AskarCallbackResult> askarStoreRemove(
     );
 
     return await callback.handleResult(result);
-
   } finally {
     freePointer(specUriPointer);
   }
