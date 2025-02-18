@@ -142,7 +142,7 @@
 
 - [x] askar_store_close: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_copy: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_store_copy: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
 
 - [x] askar_store_create_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number; **(required)**
 
