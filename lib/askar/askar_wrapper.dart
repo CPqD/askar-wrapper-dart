@@ -305,18 +305,23 @@ AskarResult<EncryptedBuffer> askarKeyAeadEncrypt(
   }
 }
 
-ErrorCode askarKeyAeadGetPadding(
+AskarResult<int> askarKeyAeadGetPadding(
   LocalKeyHandle handle,
   int msgLen,
-  Pointer<Int32> out,
 ) {
-  final result = nativeAskarKeyAeadGetPadding(
-    handle.toInt(),
-    msgLen,
-    out,
-  );
-
-  return ErrorCode.fromInt(result);
+  Pointer<Int32> outPtr = calloc<Int32>();
+  try {
+    final result = nativeAskarKeyAeadGetPadding(
+      handle.toInt(),
+      msgLen,
+      outPtr,
+    );
+    final errorCode = ErrorCode.fromInt(result);
+    final padding = (errorCode == ErrorCode.success) ? outPtr.value : 0;
+    return AskarResult<int>(errorCode, padding);
+  } finally {
+    freePointer(outPtr);
+  }
 }
 
 AskarResult<AeadParams> askarKeyAeadGetParams(LocalKeyHandle handle) {
@@ -1635,7 +1640,7 @@ Future<AskarCallbackResult> askarStoreClose(StoreHandle handle) async {
   return await callback.handleResult(result);
 }
 
-Future<AskarCallbackResult> askarStoreCopy(
+Future<AskarResult<StoreHandle>> askarStoreCopy(
   StoreHandle handle,
   String targetUri,
   StoreKeyMethod keyMethod,
@@ -1648,12 +1653,12 @@ Future<AskarCallbackResult> askarStoreCopy(
 
   try {
     targetUriPointer = targetUri.toNativeUtf8();
-    keyMethodPointer = keyMethod.toString().toNativeUtf8();
+    keyMethodPointer = keyMethod.value.toNativeUtf8();
     passKeyPointer = passKey.toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
-    final result = nativeAskarStoreCopy(
+    final initialResult = nativeAskarStoreCopy(
       handle.toInt(),
       targetUriPointer,
       keyMethodPointer,
@@ -1663,7 +1668,9 @@ Future<AskarCallbackResult> askarStoreCopy(
       callback.id,
     );
 
-    return await callback.handleResult(result);
+    final callbackResult = await callback.handleResult(initialResult);
+
+    return AskarResult(callbackResult.errorCode, StoreHandle(callbackResult.value));
   } finally {
     freePointer(targetUriPointer);
     freePointer(keyMethodPointer);
@@ -1914,7 +1921,6 @@ Future<AskarCallbackResult> askarStoreRemove(
     );
 
     return await callback.handleResult(result);
-
   } finally {
     freePointer(specUriPointer);
   }

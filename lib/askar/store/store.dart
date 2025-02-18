@@ -150,8 +150,6 @@ class Store {
     }
   }
 
-
-
   OpenSession session({String? profile}) {
     return OpenSession(store: handle, profile: profile, isTransaction: false);
   }

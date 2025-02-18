@@ -467,15 +467,15 @@ void main() {
 
       await askarStoreListProfilesTest(storeHandle);
 
-      //await storeCopyTest(storeHandle, storeKey); FIXME
-      
+      final newStore = await storeCopyTest(storeHandle, storeKey);
+
       final specUri = 'sqlite://storage.db';
       await storeRemoveTest(specUri);
 
       await storeRemoveProfileTest(storeHandle, profile);
 
       await storeCloseTest(storeHandle);
-
+      await storeCloseTest(newStore.value);
     });
 
     test('Store Set Default Profile', () async {
@@ -508,6 +508,9 @@ void main() {
 
       keyAeadEncryptTest(localKeyHandle, message, nonce: nonce.value, aad: aad);
       keyAeadEncryptTest(localKeyHandle, message);
+
+      keyAeadGetParamsTest(localKeyHandle);
+      keyAeadGetPaddingTest(localKeyHandle, message.length);
 
       askarKeyFree(localKeyHandle);
     });
@@ -628,6 +631,17 @@ AskarResult<AeadParams> keyAeadGetParamsTest(LocalKeyHandle handle) {
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value.tagLength, greaterThan(0));
   expect(result.value.nonceLength, greaterThan(0));
+
+  return result;
+}
+
+AskarResult<int> keyAeadGetPaddingTest(LocalKeyHandle handle, int msgLen) {
+  final result = askarKeyAeadGetPadding(handle, msgLen);
+
+  printAskarResult('KeyAeadGetPaddingTest', result);
+
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, equals(0)); // equal 0?
 
   return result;
 }
@@ -1480,20 +1494,16 @@ AskarResult<Uint8List> keyCryptoBoxRandomNonceTest() {
   return result;
 }
 
-Future<AskarCallbackResult> storeCopyTest(StoreHandle handle, String passKey) async {
-
+Future<AskarResult<StoreHandle>> storeCopyTest(StoreHandle handle, String passKey) async {
   final String targetUri = 'sqlite://storage-copy.db';
 
-  final result = await askarStoreCopy(
-    handle,
-    targetUri, 
-    StoreKeyMethod.argon2IMod, 
-    passKey, 
-    true);
+  final result =
+      await askarStoreCopy(handle, targetUri, StoreKeyMethod.argon2IMod, passKey, true);
+
+  printAskarResult('storeCopy', result);
 
   expect(result.errorCode, equals(ErrorCode.success));
-  expect(result.finished, equals(true));
-  expect(intToBool(result.value), equals(true));
+  expect(result.value.toInt(), greaterThan(0));
 
   return result;
 }
