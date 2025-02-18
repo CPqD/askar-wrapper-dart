@@ -184,25 +184,25 @@ class Store {
     );
   }
 
-/*
-  // TODO
-  Future<void> copyTo({
+  Future<StoreHandle> copyTo({
     required String uri,
     StoreKeyMethod? keyMethod,
     String? passKey,
     required bool recreate,
   }) async {
     try {
-      await askarStoreCopyTo(
-      storeHandle: handle,
-      targetUri: uri,
-      keyMethod: keyMethod?.toUri(),
-      passKey: passKey,
-      recreate: recreate,
-    );
+      final result = await askarStoreCopy(
+        handle,
+        uri,
+        keyMethod,
+        passKey,
+        recreate,
+      );
+      return result.value;
+
     } catch (e) {
       throw AskarStoreException('Failed to copy: $e');
     }
   }
-  */
+
 }

@@ -1643,8 +1643,8 @@ Future<AskarCallbackResult> askarStoreClose(StoreHandle handle) async {
 Future<AskarResult<StoreHandle>> askarStoreCopy(
   StoreHandle handle,
   String targetUri,
-  StoreKeyMethod keyMethod,
-  String passKey,
+  StoreKeyMethod? keyMethod,
+  String? passKey,
   bool recreate,
 ) async {
   Pointer<Utf8> targetUriPointer = nullptr;
@@ -1653,8 +1653,8 @@ Future<AskarResult<StoreHandle>> askarStoreCopy(
 
   try {
     targetUriPointer = targetUri.toNativeUtf8();
-    keyMethodPointer = keyMethod.value.toNativeUtf8();
-    passKeyPointer = passKey.toNativeUtf8();
+    keyMethodPointer = (keyMethod == null ? "" : keyMethod.value).toNativeUtf8();
+    passKeyPointer = (passKey ?? "").toNativeUtf8();
 
     final callback = newCallbackWithHandle();
 
