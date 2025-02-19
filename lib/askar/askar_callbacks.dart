@@ -5,10 +5,17 @@ import 'package:ffi/ffi.dart';
 import '../../askar/askar_native_functions.dart';
 import '../../askar/enums/askar_error_code.dart';
 
+/// Represents a blank result from an Askar callback.
+///
+/// This class contains the [errorCode] and [finished] status of the callback.
 base class AskarCallbackBlankResult {
+  /// The error code returned by the callback.
   final ErrorCode errorCode;
+
+  /// Indicates whether the callback has finished.
   final bool finished;
 
+  /// Constructs an instance of [AskarCallbackBlankResult].
   AskarCallbackBlankResult(this.errorCode, this.finished);
 
   @override
@@ -16,14 +23,20 @@ base class AskarCallbackBlankResult {
     return "AskarCallbackBlankResult($errorCode, finished: $finished)";
   }
 
+  /// Throws an exception if the error code indicates an error.
   void throwOnError() {
     errorCode.throwOnError();
   }
 }
 
+/// Represents a result from an Askar callback with a value.
+///
+/// This class extends [AskarCallbackBlankResult] and includes the [value] returned by the callback.
 base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
+  /// The value returned by the callback.
   final T value;
 
+  /// Constructs an instance of [AskarCallbackResult].
   AskarCallbackResult(super.errorCode, super.finished, this.value);
 
   @override
@@ -32,13 +45,25 @@ base class AskarCallbackResult<T> extends AskarCallbackBlankResult {
   }
 }
 
+/// Represents a callback with a specific function type.
+///
+/// This class contains the [id], [nativeCallable], and [completer] for the callback.
 base class Callback<T extends Function> {
+  /// The ID of the callback.
   final int id;
+
+  /// The native callable function for the callback.
   final NativeCallable<T> nativeCallable;
+
+  /// The completer for the callback result.
   final Completer<AskarCallbackResult> completer;
 
+  /// Constructs an instance of [Callback].
   Callback(this.nativeCallable, this.completer, this.id);
 
+  /// Handles the result of the callback.
+  ///
+  /// Returns a [Future] that completes with the [AskarCallbackResult].
   Future<AskarCallbackResult> handleResult(int initialResult) {
     final initialErrorCode = ErrorCode.fromInt(initialResult);
 
@@ -54,12 +79,16 @@ base class Callback<T extends Function> {
 
 int _callbackIdCounter = 0;
 
+/// Generates the next callback ID.
 int nextCallbackId() {
   return _callbackIdCounter++;
 }
 
 typedef CbFuncWithHandle = Void Function(NativeCallbackId, Int32, NativeSessionHandle);
 
+/// Creates a new callback with a handle.
+///
+/// Returns a [Callback] instance with the specified function type.
 Callback<CbFuncWithHandle> newCallbackWithHandle() {
   final completer = Completer<AskarCallbackResult>();
 
@@ -77,6 +106,9 @@ Callback<CbFuncWithHandle> newCallbackWithHandle() {
 
 typedef CbFuncWithInt64 = Void Function(NativeCallbackId, Int32, Int64);
 
+/// Creates a new callback with an Int64 value.
+///
+/// Returns a [Callback] instance with the specified function type.
 Callback<CbFuncWithInt64> newCallbackWithInt64() {
   final completer = Completer<AskarCallbackResult>();
 
@@ -94,6 +126,9 @@ Callback<CbFuncWithInt64> newCallbackWithInt64() {
 
 typedef CbFuncWithInt8 = Void Function(NativeCallbackId, Int32, Int8);
 
+/// Creates a new callback with an Int8 value.
+///
+/// Returns a [Callback] instance with the specified function type.
 Callback<CbFuncWithInt8> newCallbackWithInt8() {
   final completer = Completer<AskarCallbackResult>();
 
@@ -111,6 +146,9 @@ Callback<CbFuncWithInt8> newCallbackWithInt8() {
 
 typedef CbFuncWithoutHandle = Void Function(NativeCallbackId, Int32);
 
+/// Creates a new callback without a handle.
+///
+/// Returns a [Callback] instance with the specified function type.
 Callback<CbFuncWithoutHandle> newCallbackWithoutHandle() {
   final completer = Completer<AskarCallbackResult>();
 
@@ -128,14 +166,20 @@ Callback<CbFuncWithoutHandle> newCallbackWithoutHandle() {
 
 typedef CbFuncWithPtrUft8 = Void Function(NativeCallbackId, Int32, Pointer<Utf8>);
 
+/// Creates a new callback with a UTF-8 pointer.
+///
+/// Returns a [Callback] instance with the specified function type.
 Callback<CbFuncWithPtrUft8> newCallbackWithPtrUtf8() {
   final completer = Completer<AskarCallbackResult>();
 
   late final NativeCallable<CbFuncWithPtrUft8> nativeCallable;
 
   void callback(int callbackId, int errorCode, Pointer<Utf8> utf8) {
-    completer.complete(AskarCallbackResult(ErrorCode.fromInt(errorCode), true,
-        utf8 == nullptr ? null : utf8.toDartString()));
+    completer.complete(AskarCallbackResult(
+      ErrorCode.fromInt(errorCode),
+      true,
+      utf8 == nullptr ? null : utf8.toDartString(),
+    ));
     calloc.free(utf8);
     nativeCallable.close();
   }

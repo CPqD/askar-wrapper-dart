@@ -4,7 +4,17 @@ import '../../askar/askar_wrapper.dart';
 import '../../askar/exceptions/exceptions.dart';
 import 'key.dart';
 
+/// A class designed to encrypt and decrypt independent messages.
+///
+/// This class is compatible with libsodium's `crypto_box` construct.
+/// For more information, see libsodium documentation.
+///
+/// https://doc.libsodium.org/secret-key_cryptography/encrypted-messages
+
 class CryptoBox {
+  /// Generates a random nonce for use in a crypto box.
+  ///
+  /// - **Throws**: [AskarKeyException] if the nonce generation fails.
   static Uint8List randomNonce() {
     try {
       return askarKeyCryptoBoxRandomNonce().getValueOrException();
@@ -13,6 +23,9 @@ class CryptoBox {
     }
   }
 
+  /// Encrypts a message into a crypto box with a given nonce.
+  ///
+  /// - **Throws**: [AskarKeyException] if encryption fails.
   static Uint8List cryptoBox({
     required Key recipientKey,
     required Key senderKey,
@@ -31,6 +44,9 @@ class CryptoBox {
     }
   }
 
+  /// Decrypts a message from a crypto box.
+  ///
+  /// - **Throws**: An [AskarKeyException] if decryption fails.
   static Uint8List open({
     required Key recipientKey,
     required Key senderKey,
@@ -49,6 +65,9 @@ class CryptoBox {
     }
   }
 
+  /// Encrypts a message for a recipient using an ephemeral key and a deterministic nonce.
+  ///
+  /// - **Throws**: An [AskarKeyException] if encryption fails.
   static Uint8List seal({
     required Key recipientKey,
     required Uint8List message,
@@ -63,6 +82,8 @@ class CryptoBox {
     }
   }
 
+  /// Decrypts a sealed crypto box.
+  /// - **Throws**: An [AskarKeyException] if decryption fails.
   static Uint8List sealOpen({
     required Key recipientKey,
     required Uint8List ciphertext,

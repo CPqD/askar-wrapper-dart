@@ -336,7 +336,7 @@ AskarResult<AeadParams> askarKeyAeadGetParams(LocalKeyHandle handle) {
     final errorCode = ErrorCode.fromInt(result);
 
     final value = (errorCode == ErrorCode.success)
-        ? readNativAeadParams(aeadParamsPtr.ref)
+        ? readNativeAeadParams(aeadParamsPtr.ref)
         : AeadParams(0, 0);
 
     return AskarResult<AeadParams>(errorCode, value);

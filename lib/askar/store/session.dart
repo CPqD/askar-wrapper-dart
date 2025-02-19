@@ -10,12 +10,23 @@ import 'entry.dart';
 import 'entry_list.dart';
 import 'key_entry_list.dart';
 
+/// An opened Session instance.
+///
+/// This class represents an active session, including its [handle] and [isTransaction] status.
 class Session {
+  /// The handle for the session.
   SessionHandle? handle;
+
+  /// Determines if the session is a transaction.
   bool isTransaction;
 
+  /// Constructs an instance of [Session].
   Session({this.handle, required this.isTransaction});
 
+  /// Counts the records matching a category and tag filter.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  /// Returns the count of matching records.
   Future<int> count({required String category, Map<String, dynamic>? tagFilter}) async {
     _throwOnNullHandle("Cannot count from closed session");
 
@@ -27,6 +38,10 @@ class Session {
     }
   }
 
+  /// Fetches a record from the store by category and name.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  /// Returns an [EntryObject] if the record is found, otherwise returns null.
   Future<EntryObject?> fetch({
     required String category,
     required String name,
@@ -58,6 +73,10 @@ class Session {
     }
   }
 
+  /// Fetches all records matching a category and tag filter.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  /// Returns a list of [EntryObject] containing the fetched records.
   Future<List<EntryObject>> fetchAll({
     required String category,
     bool forUpdate = false,
@@ -96,6 +115,9 @@ class Session {
     }
   }
 
+  /// Inserts a new record into the store.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> insert({
     required String category,
     required String name,
@@ -122,6 +144,9 @@ class Session {
     }
   }
 
+  /// Replaces a record in the store matching a category and name.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> replace({
     required String category,
     required String name,
@@ -148,6 +173,9 @@ class Session {
     }
   }
 
+  /// Removes a record by category and name.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> remove({required String category, required String name}) async {
     _throwOnNullHandle('Cannot remove with a closed session');
 
@@ -165,13 +193,21 @@ class Session {
     }
   }
 
-  Future<void> removeAll(
-      {required String category, Map<String, dynamic>? tagFilter}) async {
+  /// Removes all records matching a category and tag filter.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  Future<void> removeAll({
+    required String category,
+    Map<String, dynamic>? tagFilter,
+  }) async {
     _throwOnNullHandle('Cannot remove all with a closed session');
 
     try {
-      final removeAllResult =
-          await askarSessionRemoveAll(handle!, category, tagFilter: tagFilter);
+      final removeAllResult = await askarSessionRemoveAll(
+        handle!,
+        category,
+        tagFilter: tagFilter,
+      );
 
       removeAllResult.errorCode.throwOnError();
     } catch (e) {
@@ -179,6 +215,9 @@ class Session {
     }
   }
 
+  /// Inserts a new key into the store.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> insertKey({
     required String name,
     required Key key,
@@ -204,7 +243,14 @@ class Session {
     }
   }
 
-  Future<KeyEntryObject?> fetchKey({required String name, bool forUpdate = false}) async {
+  /// Fetches a key in the store by name.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  /// Returns a [KeyEntryObject] if the key is found, otherwise returns null.
+  Future<KeyEntryObject?> fetchKey({
+    required String name,
+    bool forUpdate = false,
+  }) async {
     _throwOnNullHandle('Cannot fetch a key with a closed session');
 
     KeyEntryListHandle? keyEntryListHandle;
@@ -227,6 +273,10 @@ class Session {
     }
   }
 
+  /// Fetches a set of keys in the store.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
+  /// Returns a list of [KeyEntryObject] containing the fetched keys.
   Future<List<KeyEntryObject>> fetchAllKeys({
     bool forUpdate = false,
     KeyAlgorithm? algorithm,
@@ -260,6 +310,9 @@ class Session {
     }
   }
 
+  /// Updates details of a key in the store.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> updateKey({
     required String name,
     String? metadata,
@@ -283,6 +336,9 @@ class Session {
     }
   }
 
+  /// Removes a key from the store.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> removeKey({required String name}) async {
     _throwOnNullHandle('Cannot remove a key with a closed session');
 
@@ -295,6 +351,9 @@ class Session {
     }
   }
 
+  /// Commits the current transaction and closes the session.
+  ///
+  /// Throws an [AskarSessionException] if the session is not a transaction or if it is closed.
   Future<void> commit() async {
     _throwWhenNotTransaction('Session is not a transaction');
     _throwOnNullHandle('Cannot commit a closed session');
@@ -303,6 +362,9 @@ class Session {
     handle = null;
   }
 
+  /// Rolls back the current transaction and closes the session.
+  ///
+  /// Throws an [AskarSessionException] if the session is not a transaction or if it is closed.
   Future<void> rollback() async {
     _throwWhenNotTransaction('Session is not a transaction');
     _throwOnNullHandle('Cannot rollback a closed session');
@@ -311,6 +373,9 @@ class Session {
     handle = null;
   }
 
+  /// Closes the session without specifying the commit behaviour.
+  ///
+  /// Throws an [AskarSessionException] if the session is closed.
   Future<void> close() async {
     _throwOnNullHandle('Cannot close a closed session');
 
@@ -318,10 +383,12 @@ class Session {
     handle = null;
   }
 
+  /// Throws an exception if the session is not a transaction.
   void _throwWhenNotTransaction(String errorMsg) {
     if (!isTransaction) throw AskarSessionException(errorMsg);
   }
 
+  /// Throws an exception if the session handle is null.
   void _throwOnNullHandle(String errorMsg) {
     if (handle == null) throw AskarSessionException(errorMsg);
   }

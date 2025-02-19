@@ -7,13 +7,21 @@ import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
 import 'key.dart';
 
+/// A class for ECDH-ES key derivation
+///
+/// This class provides methods to derive shared keys for anonymous encryption
+/// and to perform direct encryption and decryption using the derived keys.
 class EcdhEs {
   final Uint8List algId;
   final Uint8List apu;
   final Uint8List apv;
 
+  /// Constructs an instance of [EcdhEs].
   EcdhEs({required this.algId, required this.apu, required this.apv});
 
+  /// Derives an ECDH-ES shared key for anonymous encryption.
+  ///
+  /// Throws an [AskarKeyException] if key derivation fails.
   Key deriveKey({
     required KeyAlgorithm encryptionAlgorithm,
     required Key ephemeralKey,
@@ -31,6 +39,9 @@ class EcdhEs {
     }
   }
 
+  /// Encrypts a message directly using the derived key.
+  ///
+  /// Returns an [EncryptedBuffer] containing the encrypted message.
   EncryptedBuffer encryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
     required Key recipientKey,
@@ -50,6 +61,9 @@ class EcdhEs {
     return encryptedBuffer;
   }
 
+  /// Decrypts a message directly using the derived key.
+  ///
+  /// Returns a [Uint8List] containing the decrypted message.
   Uint8List decryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
     required Key recipientKey,
@@ -71,6 +85,9 @@ class EcdhEs {
     return decryptedBuffer;
   }
 
+  /// Wraps a key for the sender using the derived key.
+  ///
+  /// Returns an [EncryptedBuffer] containing the wrapped key.
   EncryptedBuffer senderWrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
     required Key ephemeralKey,
@@ -88,6 +105,9 @@ class EcdhEs {
     return encryptedBuffer;
   }
 
+  /// Unwraps a key for the receiver using the derived key.
+  ///
+  /// Returns a [Key] containing the unwrapped key.
   Key receiverUnwrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
     required KeyAlgorithm encryptionAlgorithm,

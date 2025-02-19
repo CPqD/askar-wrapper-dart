@@ -8,13 +8,24 @@ import 'package:askar_flutter_sdk/askar/store/scan.dart';
 import 'package:askar_flutter_sdk/askar/store/session.dart';
 import 'open_session.dart';
 
+/// An opened Store instance.
+///
+/// This class represents an active store, including its [handle] and [uri].
 class Store {
+  /// The handle for the store.
   final StoreHandle handle;
+
+  /// The URI of the store.
   final String uri;
+
   OpenSession? _opener;
 
+  /// Constructs an instance of [Store].
   Store(this.handle, this.uri);
 
+  /// Generates a new raw key for a Store.
+  ///
+  /// Throws an [AskarStoreException] if the key generation fails.
   static String generateRawKey({Uint8List? seed}) {
     try {
       return askarStoreGenerateRawKey(seed: seed).getValueOrException();
@@ -23,6 +34,10 @@ class Store {
     }
   }
 
+  /// Creates a new profile in the store.
+  ///
+  /// Throws an [AskarStoreException] if the profile creation fails.
+  /// Returns the name of the profile, which is automatically generated if not provided.
   Future<void> createProfile({String? name}) async {
     try {
       (await askarStoreCreateProfile(handle, profile: name)).throwOnError();
@@ -31,6 +46,21 @@ class Store {
     }
   }
 
+  /// Gets the currently selected profile name.
+  ///
+  /// Throws an [AskarStoreException] if the profile name retrieval fails.
+  Future<String> getProfileName() async {
+    try {
+      final result = await askarStoreGetProfileName(handle);
+      return result.getValueOrException();
+    } catch (e) {
+      throw AskarStoreException('Failed to get profile name: $e');
+    }
+  }
+
+  /// Gets the default profile name when the store is opened.
+  ///
+  /// Throws an [AskarStoreException] if the default profile name retrieval fails.
   Future<String> getDefaultProfile() async {
     try {
       final result = await askarStoreGetDefaultProfile(handle);
@@ -43,6 +73,9 @@ class Store {
     }
   }
 
+  /// Sets the default profile name when the store is opened.
+  ///
+  /// Throws an [AskarStoreException] if setting the default profile fails.
   Future<void> setDefaultProfile(String name) async {
     try {
       (await askarStoreSetDefaultProfile(handle, name)).throwOnError();
@@ -51,6 +84,9 @@ class Store {
     }
   }
 
+  /// Lists the profile identifiers present in the store.
+  ///
+  /// Throws an [AskarStoreException] if listing profiles fails.
   Future<List<String>> listProfiles() async {
     StringListHandle? stringListHandle;
 
@@ -76,6 +112,9 @@ class Store {
     }
   }
 
+  /// Removes a profile from the store.
+  ///
+  /// Throws an [AskarStoreException] if removing the profile fails.
   Future<bool> removeProfile(String name) async {
     try {
       final result = await askarStoreRemoveProfile(handle, name);
@@ -86,6 +125,9 @@ class Store {
     }
   }
 
+  /// Updates the master encryption key of the store.
+  ///
+  /// Throws an [AskarStoreException] if rekeying fails.
   Future<void> rekey({StoreKeyMethod? keyMethod, required String passKey}) async {
     try {
       (await askarStoreRekey(handle, passKey, keyMethod: keyMethod)).throwOnError();
@@ -94,6 +136,9 @@ class Store {
     }
   }
 
+  /// Provisions a new store.
+  ///
+  /// Throws an [AskarStoreException] if provisioning fails.
   static Future<Store> provision({
     required String uri,
     StoreKeyMethod? keyMethod,
@@ -102,11 +147,13 @@ class Store {
     required bool recreate,
   }) async {
     try {
-      final storeHandle = (await askarStoreProvision(uri,
-              recreate: recreate,
-              keyMethod: keyMethod,
-              passKey: passKey,
-              profile: profile))
+      final storeHandle = (await askarStoreProvision(
+        uri,
+        recreate: recreate,
+        keyMethod: keyMethod,
+        passKey: passKey,
+        profile: profile,
+      ))
           .getValueOrException();
 
       return Store(storeHandle, uri);
@@ -115,6 +162,9 @@ class Store {
     }
   }
 
+  /// Opens an existing store.
+  ///
+  /// Throws an [AskarStoreException] if opening the store fails.
   static Future<Store> open({
     required String uri,
     StoreKeyMethod? keyMethod,
@@ -122,8 +172,12 @@ class Store {
     String? profile,
   }) async {
     try {
-      final storeHandle = (await askarStoreOpen(uri,
-              keyMethod: keyMethod, passKey: passKey, profile: profile))
+      final storeHandle = (await askarStoreOpen(
+        uri,
+        keyMethod: keyMethod,
+        passKey: passKey,
+        profile: profile,
+      ))
           .getValueOrException();
 
       return Store(storeHandle, uri);
@@ -132,6 +186,9 @@ class Store {
     }
   }
 
+  /// Closes and frees the store instance.
+  ///
+  /// Throws an [AskarStoreException] if closing the store fails.
   Future<bool> close({bool remove = false}) async {
     _opener = null;
 
@@ -140,6 +197,9 @@ class Store {
     return remove ? await Store.remove(uri) : false;
   }
 
+  /// Removes an existing store.
+  ///
+  /// Throws an [AskarStoreException] if removing the store fails.
   static Future<bool> remove(String uri) async {
     try {
       final result = await askarStoreRemove(uri);
@@ -150,19 +210,25 @@ class Store {
     }
   }
 
+  /// Opens a new session on the store without starting a transaction.
   OpenSession session({String? profile}) {
     return OpenSession(store: handle, profile: profile, isTransaction: false);
   }
 
+  /// Opens a new transactional session on the store.
   OpenSession transaction({String? profile}) {
     return OpenSession(store: handle, profile: profile, isTransaction: true);
   }
 
+  /// Opens a session on the store.
+  ///
+  /// Throws an [AskarStoreException] if opening the session fails.
   Future<Session> openSession({bool isTransaction = false}) async {
     _opener ??= OpenSession(store: handle, isTransaction: isTransaction);
     return await _opener!.open();
   }
 
+  /// Starts a new record scan.
   Scan scan({
     required String category,
     Map<String, dynamic>? tagFilter,
@@ -184,6 +250,9 @@ class Store {
     );
   }
 
+  /// Copies the store contents to a new location.
+  ///
+  /// Throws an [AskarStoreException] if copying the store fails.
   Future<StoreHandle> copyTo({
     required String uri,
     StoreKeyMethod? keyMethod,
@@ -199,10 +268,8 @@ class Store {
         recreate,
       );
       return result.value;
-
     } catch (e) {
       throw AskarStoreException('Failed to copy: $e');
     }
   }
-
 }

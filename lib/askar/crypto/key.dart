@@ -13,11 +13,18 @@ import '../../askar/enums/askar_signature_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
 import '../enums/askar_key_method.dart';
 
+/// An active key or keypair instance.
 class Key {
   final LocalKeyHandle localKeyHandle;
 
+  /// Initializes the [Key] instance.
   Key(this.localKeyHandle);
 
+  LocalKeyHandle get handle => localKeyHandle;
+
+  /// Generates a new key.
+  ///
+  /// Throws an [AskarKeyException] if key generation fails.
   static Key generate(KeyAlgorithm algorithm, KeyBackend keyBackend,
       {bool ephemeral = false}) {
     try {
@@ -28,6 +35,9 @@ class Key {
     }
   }
 
+  /// Creates a new deterministic key or keypair from a seed.
+  ///
+  /// Throws an [AskarKeyException] if key creation fails.
   static Key fromSeed(
       {required KeyAlgorithm algorithm,
       required Uint8List seed,
@@ -39,6 +49,9 @@ class Key {
     }
   }
 
+  /// Creates a new key instance from a slice of key secret bytes.
+  ///
+  /// Throws an [AskarKeyException] if key creation fails.
   static Key fromSecretBytes(
       {required KeyAlgorithm algorithm, required Uint8List secretKey}) {
     try {
@@ -48,6 +61,9 @@ class Key {
     }
   }
 
+  /// Creates a new key instance from a slice of public key bytes.
+  ///
+  /// Throws an [AskarKeyException] if key creation fails.
   static Key fromPublicBytes(
       {required KeyAlgorithm algorithm, required Uint8List publicKey}) {
     try {
@@ -57,6 +73,9 @@ class Key {
     }
   }
 
+  /// Create a new key instance from a JWK
+  ///
+  /// Throws an [AskarKeyException] if key creation fails.
   static Key fromJwk({required Jwk jwk}) {
     try {
       return Key(askarKeyFromJwk(jwk.toString()).getValueOrException());
@@ -65,6 +84,9 @@ class Key {
     }
   }
 
+  /// Converts this key or keypair to its equivalent for another key algorithm.
+  ///
+  /// Throws an [AskarKeyException] if key conversion fails.
   Key convertKey({required KeyAlgorithm algorithm}) {
     try {
       return Key(askarKeyConvert(localKeyHandle, algorithm).getValueOrException());
@@ -73,6 +95,9 @@ class Key {
     }
   }
 
+  /// Derives an instance of this key directly from a supported key exchange.
+  ///
+  /// Throws an [AskarKeyException] if key derivation fails.
   Key keyFromKeyExchange(
       {required KeyAlgorithm algorithm, required Key secretKey, required Key publicKey}) {
     try {
@@ -83,8 +108,9 @@ class Key {
     }
   }
 
-  LocalKeyHandle get handle => localKeyHandle;
-
+  /// Gets the key algorithm.
+  ///
+  /// Throws an [AskarKeyException] if the algorithm retrieval fails.
   KeyAlgorithm get algorithm {
     try {
       return KeyAlgorithm.fromString(
@@ -94,6 +120,9 @@ class Key {
     }
   }
 
+  /// Gets whether the key is ephemeral.
+  ///
+  /// Throws an [AskarKeyException] if the ephemeral status retrieval fails.
   bool get ephemeral {
     try {
       return askarKeyGetEphemeral(localKeyHandle).getValueOrException();
@@ -102,6 +131,9 @@ class Key {
     }
   }
 
+  /// Gets the public key bytes.
+  ///
+  /// Throws an [AskarKeyException] if the public key bytes retrieval fails.
   Uint8List get publicBytes {
     try {
       return askarKeyGetPublicBytes(localKeyHandle).getValueOrException();
@@ -110,6 +142,9 @@ class Key {
     }
   }
 
+  /// Gets the secret key bytes.
+  ///
+  /// Throws an [AskarKeyException] if the secret key bytes retrieval fails.
   Uint8List get secretBytes {
     try {
       return askarKeyGetSecretBytes(localKeyHandle).getValueOrException();
@@ -118,6 +153,9 @@ class Key {
     }
   }
 
+  /// Gets the public JWK.
+  ///
+  /// Throws an [AskarKeyException] if the JWK retrieval fails.
   Jwk get jwkPublic {
     try {
       return Jwk.fromString(
@@ -127,6 +165,9 @@ class Key {
     }
   }
 
+  /// Gets the secret JWK.
+  ///
+  /// Throws an [AskarKeyException] if the JWK retrieval fails.
   Jwk get jwkSecret {
     try {
       return Jwk.fromString(
@@ -136,6 +177,9 @@ class Key {
     }
   }
 
+  /// Gets the JWK thumbprint.
+  ///
+  /// Throws an [AskarKeyException] if the thumbprint retrieval fails.
   String get jwkThumbprint {
     try {
       return askarKeyGetJwkThumbprint(localKeyHandle, algorithm).getValueOrException();
@@ -144,6 +188,9 @@ class Key {
     }
   }
 
+  /// Gets the AEAD parameters.
+  ///
+  /// Throws an [AskarKeyException] if the parameters retrieval fails.
   AeadParams get aeadParams {
     try {
       return askarKeyAeadGetParams(localKeyHandle).getValueOrException();
@@ -152,6 +199,9 @@ class Key {
     }
   }
 
+  /// Generates a random nonce for AEAD.
+  ///
+  /// Throws an [AskarKeyException] if nonce generation fails.
   Uint8List get aeadRandomNonce {
     try {
       return askarKeyAeadRandomNonce(localKeyHandle).getValueOrException();
@@ -160,6 +210,9 @@ class Key {
     }
   }
 
+  /// Encrypts a message using AEAD.
+  ///
+  /// Throws an [AskarKeyException] if encryption fails.
   EncryptedBuffer aeadEncrypt(
       {required Uint8List message, Uint8List? nonce, Uint8List? aad}) {
     try {
@@ -170,6 +223,9 @@ class Key {
     }
   }
 
+  /// Decrypts a message using AEAD.
+  ///
+  /// Throws an [AskarKeyException] if decryption fails.
   Uint8List aeadDecrypt(
       {required Uint8List ciphertext,
       required Uint8List nonce,
@@ -183,6 +239,9 @@ class Key {
     }
   }
 
+  /// Signs a message.
+  ///
+  /// Throws an [AskarKeyException] if signing fails.
   Uint8List signMessage(
       {required Uint8List message, required SignatureAlgorithm sigType}) {
     try {
@@ -192,6 +251,9 @@ class Key {
     }
   }
 
+  /// Verifies a signature.
+  ///
+  /// Throws an [AskarKeyException] if verification fails.
   bool verifySignature(
       {required Uint8List message,
       required Uint8List signature,
@@ -204,6 +266,9 @@ class Key {
     }
   }
 
+  /// Wraps a key.
+  ///
+  /// Throws an [AskarKeyException] if wrapping fails.
   EncryptedBuffer wrapKey({required Key other, Uint8List? nonce}) {
     try {
       return askarKeyWrapKey(localKeyHandle, other.handle, nonce: nonce)
@@ -213,6 +278,9 @@ class Key {
     }
   }
 
+  /// Unwraps a key.
+  ///
+  /// Throws an [AskarKeyException] if unwrapping fails.
   Key unwrapKey(
       {required KeyAlgorithm algorithm,
       Uint8List? tag,

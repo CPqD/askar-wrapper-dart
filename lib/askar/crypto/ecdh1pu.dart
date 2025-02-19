@@ -7,13 +7,21 @@ import '../../askar/enums/askar_key_algorithm.dart';
 import '../../askar/exceptions/exceptions.dart';
 import 'key.dart';
 
+/// A class for ECDH-1PU key derivation
+///
+/// This class provides methods to derive shared keys for authenticated encryption
+/// and to perform direct encryption and decryption using the derived keys.
 class Ecdh1PU {
   final Uint8List algId;
   final Uint8List apu;
   final Uint8List apv;
 
+  /// Constructs an instance of [Ecdh1PU].
   Ecdh1PU({required this.algId, required this.apu, required this.apv});
 
+  /// Derives an ECDH-1PU shared key for authenticated encryption.
+  ///
+  /// Throws an [AskarKeyException] if key derivation fails.
   Key deriveKey({
     required KeyAlgorithm encryptionAlgorithm,
     required Key ephemeralKey,
@@ -34,6 +42,9 @@ class Ecdh1PU {
     }
   }
 
+  /// Encrypts a message directly using the derived key.
+  ///
+  /// Returns an [EncryptedBuffer] containing the encrypted message.
   EncryptedBuffer encryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
     required Key recipientKey,
@@ -55,6 +66,9 @@ class Ecdh1PU {
     return encryptedBuffer;
   }
 
+  /// Decrypts a message directly using the derived key.
+  ///
+  /// Returns a [Uint8List] containing the decrypted message.
   Uint8List decryptDirect({
     required KeyAlgorithm encryptionAlgorithm,
     required Key recipientKey,
@@ -78,6 +92,9 @@ class Ecdh1PU {
     return decryptedBuffer;
   }
 
+  /// Wraps a key for the sender using the derived key.
+  ///
+  /// Returns an [EncryptedBuffer] containing the wrapped key.
   EncryptedBuffer senderWrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
     required Key ephemeralKey,
@@ -99,6 +116,9 @@ class Ecdh1PU {
     return encryptedBuffer;
   }
 
+  /// Unwraps a key for the receiver using the derived key.
+  ///
+  /// Returns a [Key] containing the unwrapped key.
   Key receiverUnwrapKey({
     required KeyAlgorithm keyWrappingAlgorithm,
     required KeyAlgorithm encryptionAlgorithm,

@@ -3,14 +3,33 @@ import 'package:askar_flutter_sdk/askar/crypto/handles.dart';
 import 'package:askar_flutter_sdk/askar/exceptions/exceptions.dart';
 import 'session.dart';
 
+/// A pending session instance.
+///
+/// This class represents a session that is pending to be opened, including its [store], [isTransaction], [profile], and [session].
 class OpenSession {
+  /// The handle for the store.
   final StoreHandle store;
+
+  /// Determines if this instance would begin a transaction.
   final bool isTransaction;
+
+  /// Optional profile associated with the session.
   String? profile;
+
+  /// The session instance.
   Session? session;
 
-  OpenSession({required this.store, required this.isTransaction, this.profile});
+  /// Constructs an instance of [OpenSession].
+  OpenSession({
+    required this.store,
+    required this.isTransaction,
+    this.profile,
+  });
 
+  /// Opens this pending session.
+  ///
+  /// Throws an [AskarSessionException] if the store is closed or if the session is already opened.
+  /// Returns a [Session] instance if the session is successfully started.
   Future<Session> open() async {
     if (store.handle == 0) {
       throw AskarSessionException('Cannot start session from closed store');

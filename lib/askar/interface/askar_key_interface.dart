@@ -5,6 +5,7 @@ import '../crypto/handles.dart';
 import '../enums/askar_key_algorithm.dart';
 import '../enums/askar_signature_algorithm.dart';
 
+// TODO fix comments and documentation
 abstract class IAskarKey {
   Uint8List aeadDecrypt(Uint8List ciphertext, Uint8List nonce);
   EncryptedBuffer aeadEncrypt(Uint8List message, {Uint8List? nonce, Uint8List? aad});
