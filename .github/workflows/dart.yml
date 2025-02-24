@@ -44,7 +44,7 @@ jobs:
       - name: Run tests
         run: flutter test
         
-       # Generate documentation
+      # Generate documentation
       - name: Generate documentation
         run: dart doc
 
@@ -55,3 +55,26 @@ jobs:
           name: dartdoc
           path: doc/api
 
+      # Check for documentation changes
+      - name: Check for documentation changes
+        id: check_changes
+        run: |
+          if git diff --quiet docs/; then
+            echo "No changes in documentation."
+            echo "::set-output name=changed::false"
+          else
+            echo "Documentation has changed."
+            echo "::set-output name=changed::true"
+          fi
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: steps.check_changes.outputs.changed == 'true' && github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          rsync -av --delete doc/api/ docs/
+          touch docs/.nojekyll
+          git add docs
+          git commit -m "Deploy Dart documentation"
+          git push origin main
