@@ -1,5 +1,5 @@
-import 'package:askar_flutter_sdk/askar/repository/askar_store_repository.dart';
-import 'package:askar_flutter_sdk/askar_wrapper.dart';
+import 'package:askar_wrapper_dart/askar_wrapper_dart.dart';
+import 'package:example/repository/askar_store_repository.dart';
 
 String? specUri;
 final String passKey = 'mySecretKey';

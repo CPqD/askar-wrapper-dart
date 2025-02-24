@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:askar_flutter_sdk/askar/repository/askar_store_repository.dart';
-import 'package:askar_flutter_sdk/askar_wrapper.dart';
+import '../repository/askar_store_repository.dart';
+import 'package:askar_wrapper_dart/askar_wrapper_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../pages/execute_page.dart';
@@ -41,13 +41,15 @@ class _HomePageState extends State<HomePage> {
 
   setStorage() async {
     store = StoreRepository(
-        specUri: (Platform.isIOS || Platform.isAndroid)
-            ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
-            : 'sqlite://storage.db',
-        method: method,
-        passKey: passKey,
-        profile: profile,
-        recreate: recreate);
+      specUri:
+          (Platform.isIOS || Platform.isAndroid)
+              ? 'sqlite:/${(await getApplicationDocumentsDirectory()).path}/storage.db'
+              : 'sqlite://storage.db',
+      method: method,
+      passKey: passKey,
+      profile: profile,
+      recreate: recreate,
+    );
   }
 
   @override
@@ -74,25 +76,29 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-                child: ListView.builder(
-                    itemCount: menuItems.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(menuItems[index].title),
-                          onTap: () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ExecutePage(
-                                        title: menuItems[index].title,
-                                        index: index,
-                                      )),
-                            );
-                          },
-                        ),
-                      );
-                    }))
+              child: ListView.builder(
+                itemCount: menuItems.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(menuItems[index].title),
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ExecutePage(
+                                  title: menuItems[index].title,
+                                  index: index,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
