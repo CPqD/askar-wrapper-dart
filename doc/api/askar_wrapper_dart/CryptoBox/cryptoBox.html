@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the cryptoBox method from the CryptoBox class, for the Dart programming language.">
-  <title>cryptoBox method - CryptoBox class - askar_wrapper_dart library - Dart API</title>
+  <meta name="description" content="API docs for the CryptoBox constructor from Class CryptoBox from the askar_wrapper_dart library, for the Dart programming language.">
+  <title>CryptoBox constructor - CryptoBox - askar_wrapper_dart library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">askar_wrapper_dart</a></li>
     <li><a href="../../askar_wrapper_dart">askar_wrapper_dart.dart</a></li>
     <li><a href="../../askar_wrapper_dart/CryptoBox-class.html">CryptoBox</a></li>
-    <li class="self-crumb">cryptoBox static method</li>
+    <li class="self-crumb">CryptoBox constructor</li>
   </ol>
-  <div class="self-name">cryptoBox</div>
+  <div class="self-name">CryptoBox</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,57 +46,23 @@
   </div>
 </header>
 <main>
-<div
-    id="dartdoc-main-content"
-    class="main-content"
-    data-above-sidebar="askar_wrapper_dart&#47;CryptoBox-class-sidebar.html"
-    data-below-sidebar="">
-    <div>
-<h1><span class="kind-method">cryptoBox</span> static method 
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="askar_wrapper_dart&#47;CryptoBox-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">CryptoBox</span> constructor 
 </h1></div>
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-typed_data/Uint8List-class.html">Uint8List</a></span>
-<span class="name ">cryptoBox</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="cryptoBox-param-recipientKey"><span>required</span> <span class="type-annotation"><a href="../../askar_wrapper_dart/Key-class.html">Key</a></span> <span class="parameter-name">recipientKey</span>, </span></li>
-<li><span class="parameter" id="cryptoBox-param-senderKey"><span>required</span> <span class="type-annotation"><a href="../../askar_wrapper_dart/Key-class.html">Key</a></span> <span class="parameter-name">senderKey</span>, </span></li>
-<li><span class="parameter" id="cryptoBox-param-message"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-typed_data/Uint8List-class.html">Uint8List</a></span> <span class="parameter-name">message</span>, </span></li>
-<li><span class="parameter" id="cryptoBox-param-nonce"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-typed_data/Uint8List-class.html">Uint8List</a></span> <span class="parameter-name">nonce</span>, </span></li>
-</ol>})
-
-      
-
+      <span class="name ">CryptoBox</span>(<wbr>)
     </section>
     
-<section class="desc markdown">
-  <p>Encrypts a message into a crypto box with a given nonce.</p>
-<ul>
-<li><strong>Throws</strong>: <a href="../../askar_wrapper_dart/AskarKeyException-class.html">AskarKeyException</a> if encryption fails.</li>
-</ul>
-</section>
 
 
     
-<section class="summary source-code" id="source">
-  <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static Uint8List cryptoBox({
-  required Key recipientKey,
-  required Key senderKey,
-  required Uint8List message,
-  required Uint8List nonce,
-}) {
-  try {
-    return askarKeyCryptoBox(
-      recipientKey.handle,
-      senderKey.handle,
-      message,
-      nonce,
-    ).getValueOrException();
-  } catch (e) {
-    throw AskarKeyException(&#39;Error on crypto box: $e&#39;);
-  }
-}</code></pre>
-</section>
 
 
   </div> <!-- /.main-content -->
@@ -111,14 +77,14 @@
     <li><a href="../../index.html">askar_wrapper_dart</a></li>
     <li><a href="../../askar_wrapper_dart">askar_wrapper_dart</a></li>
     <li><a href="../../askar_wrapper_dart/CryptoBox-class.html">CryptoBox</a></li>
-    <li class="self-crumb">cryptoBox static method</li>
+    <li class="self-crumb">CryptoBox constructor</li>
 </ol>
 
     <h5>CryptoBox class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
-  </div><!--/.sidebar-offcanvas-->
+  </div><!--/.sidebar-offcanvas-left-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
-</div><!--/.sidebar-offcanvas-->
+  </div><!--/.sidebar-offcanvas-->
 </main>
 <footer>
   <span class="no-break">

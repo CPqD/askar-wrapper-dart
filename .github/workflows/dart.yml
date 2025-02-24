@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build Askar
+        run: ./build_askar_linux.sh
+
       # Note: This workflow uses the latest stable version of the Flutter SDK.
       # You can specify other versions if desired, see documentation here:
       # https://github.com/flutter-actions/setup-flutter/blob/main/.github/workflows/flutter-linux.yml
