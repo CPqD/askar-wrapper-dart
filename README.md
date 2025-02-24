@@ -7,17 +7,15 @@
 
 Package for the Rust library Askar, a secure-storage and key management service.
 
-## Build Askar for Android
-
-### Linux
+### Build Askar for Android
 
 ```bash
-./build_askar_android_unix.sh 
+./build_askar_android.sh 
 ```
 
-### Windows
+### Build Askar for Linux
 ```bash
-sh ./build_askar_android_dos.sh
+./build_askar_linux.sh
 ```
 
 ## Run tests

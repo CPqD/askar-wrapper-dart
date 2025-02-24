@@ -81,7 +81,7 @@ final DynamicLibrary nativeLib =
 String getLibAskarPath() {
   return Platform.isAndroid
       ? 'libaries_askar.so'
-      : 'example/linux/libaries_askar/libaries_askar.so';
+      : 'linux/lib/libaries_askar.so';
 }
 
 final Pointer<Utf8> Function() nativeAskarVersion =
