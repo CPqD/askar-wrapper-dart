@@ -18,9 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set execute permission
-        run: chmod +x ./build_askar_linux.sh
-  
       - name: Build Askar
         run: ./build_askar_linux.sh
 
